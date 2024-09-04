@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECNNOHEVEN</title>
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/line-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+</head>
+
+<body data-bs-spy="scroll" data-bs-target=".navbar">
+
+    <!-- Navbar 1 - HCF Bootstrap 5 Component -->
+    <nav class="navbar hcf-navbar navbar-expand-md fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#!">
+                <img src="{% static 'images/t_logo.svg' %}" alt="" width="150" height="43">
+            </a>
+            <button class="navbar-toggler" style="color: red;" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-list" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
+                </svg>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">CyTech Hub</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1">
+
+                        <li class="nav-item {% if request.path == '/' or request.path == '/home/'   %}active{% endif %}">
+                            <a class="nav-link " href="{% url 'home' %}">HOME</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/about/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'about' %}">ABOUT</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/gallery/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'gallery' %}">gallery</a>
+                        </li>
+                        <li class="nav-item {% if '/team/' in request.path or '/team/' in request.path %}active{% endif %}" >
+                            <a class="nav-link" href="{% url 'team' %}">TEAM</a>
+                        </li>
+
+
+                        <li class="nav-item {% if '/resources/' in request.path or '/resources/' in request.path %}active{% endif %}" >
+                            <a class="nav-link" href="{% url 'resources' %}">Resources</a>
+                        </li>
+
+
+                        <li class="nav-item {% if request.path == '/projects/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'projects' %}">PROJECT</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/publications/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'publications' %}">PUBLICATIONS</a>
+                        </li>
+
+                        <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'contact' %}">CONTACT</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+ <section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>TEAM</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="Team">
+    <div class="team-boxed">
+        <div class="container">
+            <div class="intro">
+                <h1 class="text-center">Meet our team</h1>
+            </div>
+            <div class="row people">
+                {% for team_member in team_members %}
+                <div class="col-md-6 col-lg-3 item">
+                    <div class="box">
+                        <img class="rounded-circle" data-bs-hover-animate="pulse" src="{{ team_member.member_img.url }}">
+                        <a href="{% url 'team_details' slug=team_member.slug %}"><h3 class="name">{{ team_member.member_name }}</h3></a>
+                        <p class="description">{{ team_member.member_title }} / {{ team_member.department }}</p>
+                        <p class="title"><br>{{ team_member.institution }}<br><br></p>
+                         <div class="d-grid gap-2 d-md-block">
+                              <a href="{% url 'team_details' slug=team_member.slug %}"><button class="btn btn-primary" type="button">view details </button></a>
+
+                         </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:4 and not forloop.last %}
+            </div>
+            <div class="row people">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

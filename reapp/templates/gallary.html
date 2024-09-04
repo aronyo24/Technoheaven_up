@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>GALLERY</h2>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="gallery">
+    <div class="container">
+        <div class="row">
+            {% for my_gallery in gallery %}
+                <div class="col-sm-3 gy-3 ">
+                    <div class="ih-item square effect5 left_to_right">
+                        <a href="#">
+                            <div class="img"><img src="{{ my_gallery.gallery_img.url }}" width="100%" alt="g1"></div>
+                            <div class="info">
+                                <h3>{{ my_gallery.gallery_title }}</h3>
+                                <p>{{ my_gallery.gallery_description }}</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                {% if forloop.counter|divisibleby:4 and not forloop.last %}
+        </div>
+        <div class="row">
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

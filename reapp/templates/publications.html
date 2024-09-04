@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>PUBLICATIONS</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+     <section id="Publications" class="full-height px-lg-5">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8 pb-4">
+
+                    <h1 data-aos="fade-up" data-aos-delay="500">Explore Our Latest Publications</h1>
+                </div>
+            </div>
+            <div class="row gy-4">
+                <div class="table-responsive" data-aos="fade-up" data-aos-delay="900">
+                    <table class="table table-sm table-bordered" id="publicationsTable" data-aos="fade-up" data-aos-delay="900">
+                        <thead class="thead-dark" data-aos="fade-up" data-aos-delay="1000">
+                            <tr>
+                                <th class="sortable" data-column="0">No</th>
+                                <th class="sortable" data-column="1" scope="col">Title</th>
+
+                                <th class="sortable" data-column="3" scope="col">Year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for publication in publications %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <a href="{{ publication.link }}">{{ publication.title }}</a>
+                                        <p>{{ publication.author }}, {{ publication.pages }}<br>{{ publication.journal }}</p>
+                                    </td>
+                                    <td>{{ publication.year }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+{% endblock %}
+

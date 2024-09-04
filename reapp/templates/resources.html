@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>RESOURCES</h2>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="resources" class="full-height px-lg-5">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-lg-8 text-center">
+                <h1 data-aos="fade-up" data-aos-delay="400">RESOURCES</h1>
+            </div>
+        </div>
+        <div class="row gy-5">
+            {% for resource in resources %}
+                {% if resource.slug %}
+                    <div class="col-lg-3 col-md-6">
+                        <a href="{% url 'resources_details' slug=resource.slug %}">
+                            <div class="col-12 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="500">
+                                <div class="bg-base p-4 rounded-4 shadow-effect">
+                                    <div>
+                                        <img class="img-fluid" style="height: 200px; object-fit: cover;" data-bs-hover-animate="pulse" src="{{ resource.resource_img.url }}" alt="Image 2"><br>
+                                        <h5>{{ resource.resource_name }}</h5>
+                                        <p class="text-brand mb-3">{{ resource.resource_description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

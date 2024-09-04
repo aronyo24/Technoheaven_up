@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix" style="height: 350px">
+        <div class="container d-flex align-items-center justify-content-center" style="height: 100%;  text-align: center;">
+            <div class="gallery_main_1 text-white mt-4  " >
+                <h2 style="color: #0ce538;">CONTACT</h2>
+            </div>
+        </div>
+    </div>
+</section>
+ <section id="contact " class="px-lg-5 h-100 pt-5">
+    <div class="container rounded-4" style="background: #152239; color: #ffffff;">
+        {% if messages %}
+            <div class="row">
+                {% for message in messages %}
+                    <div class="col-12 text-center">
+                        <h4 style="color: #0cf50c;">{{ message }}</h4>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8 pb-4" data-aos="fade-up" data-aos-delay="400">
+                <h1>Contact Us</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <form id="contactForm" class="row g-lg-3 gy-3" method="post" action="{% url 'contact' %}">
+                    {% csrf_token %}
+                    <div class="form-group col-md-6" data-aos="fade-up" data-aos-delay="500">
+                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group col-md-6" data-aos="fade-up" data-aos-delay="600">
+                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group col-md-12" data-aos="fade-up" data-aos-delay="700">
+                        <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group col-md-12" data-aos="fade-up" data-aos-delay="800">
+                        <textarea name="message" rows="4" class="form-control" placeholder="Your Message" required></textarea>
+                    </div>
+                    <div class="form-group col-md-12" data-aos="fade-right" data-aos-delay="800">
+                        <button type="button" class="btn btn-primary col-md-12" onclick="validateForm()">Submit</button>
+                    </div>
+                    <div>
+                        <h1></h1>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+

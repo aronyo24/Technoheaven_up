@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>PROJECT</h2>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="contact" >
+       <section id="Contact" class="full-height px-lg-5">
+        <div class="container">
+            {% if messages %}
+                <div class="row">
+                    {% for message in messages %}
+                        <h4 style="text-align: center; color: #0cf50c;">{{ message }}</h4>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8 pb-4">
+
+                    <h1 data-aos="fade-up" data-aos-delay="400">Major Grants and Funding</h1>
+                </div>
+            </div>
+
+            <div class="row justify-content-center rounded" data-aos="fade-up" data-aos-delay="600">
+                <div class="wrapper clearfix border" style="background: #4d5154">
+                    <div data-aos="fade-up" data-aos-delay="700">
+                        {% for project in projects %}
+                            <div class="image-wrapper">
+                                <img src="{{ project.logo.url }}" alt="{{ project.project_title }} Logo">
+                            </div>
+                            <div class="text-wrapper">
+                                <h5 class="card-title" style="color: #36ef2c">{{ project.project_title }}</h5>
+                                <h5 class=""><span style="font-weight: bold ;color: #f1de0d">{{ project.funded_by }}</span>  ({{ project.durations }}) - {{ project.funding_amount }} {{ project.role }}</h5>
+                                <p>{{ project.summary }}</p>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</section>
+
+
+{% endblock %}
+

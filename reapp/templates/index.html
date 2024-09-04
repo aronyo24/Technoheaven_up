@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container" style="height: 65px"></div>
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" style="max-height: 650px; overflow: hidden;">
+    <div class="carousel-indicators">
+        <!-- Carousel Indicators Buttons -->
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+            aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+            aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+            aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <!-- Carousel Items -->
+        <div class="carousel-item active">
+            <img src="{% static 'images/ha2.png' %}" class="d-block w-100 h-75" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>First slide label</h5>
+                <p>Some representative placeholder content for the first slide.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'images/ha1.png' %}" class="d-block w-100 h-75" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Second slide label</h5>
+                <p>Some representative placeholder content for the second slide.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'images/ha2.png' %}" class="d-block w-100 h-75" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Third slide label</h5>
+                <p>Some representative placeholder content for the third slide.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Carousel Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<section id="about" class="pt-5">
+    <div class="container">
+        <div class=" h_about border-0 shadow mb-4">
+            <div class="row g-0">
+                <div class="col-md-8">
+                    <div class="container pt-4">
+                        <h2 class="card-title fw-bold text-primary mb-4" style="font-family: 'Arial', sans-serif; font-size: 28px; text-align: justify;">About Us</h2>
+                        <p class="card-text" style="font-family: 'Arial', sans-serif; font-size: 18px; text-align: justify;">
+                           TECHNOHEAVEN is a leading research and development company at the forefront of innovation.
+                        We specialize in exploring the frontiers of technology, focusing on blockchain, artificial intelligence,
+                        machine learning, and deep learning. Our passion lies in unraveling the complexities of these fields and
+                        pushing the boundaries of what is possible.
+                        </p>
+                        <a href="{% url 'about' %}"class="btn btn-primary text-decoration-none mt-3" style="font-size: 20px;">Learn More</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <img src="{% static 'images/home_ab.svg' %}" alt="About Us Image" class="img-fluid rounded-start">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        <section class="r_publications pt-4">
+        <div class="container text-center">
+            <h2>Recent Publication</h2>
+        </div>
+
+        <div class="container">
+            <ul class="cards">
+                {% for publication in publications %}
+                    {% if forloop.counter <= 4 %}
+                        <li class="card">
+                            <div>
+                                <h3 class="card-title">{{ publication.title }}</h3>
+                                <div class="card-content">
+                                    <p>{{ publication.journal }}</p>
+                                    <p>{{ publication.author }}</p>
+                                </div>
+                            </div>
+                            <div class="card-link-wrapper">
+                                <a href="{{ publication.link }}" class="card-link">Learn More</a>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+       </div>
+    </section>
+
+
+
+
+    <div class="container news">
+            <div class="row">
+                <div class="col-12 py-4 rounded-4 " style="background: #152239">
+                    <div class="row align-items-center ">
+                        <div class="col-md-3 col-lg-2 pr-md-0">
+                            <div class="p-2 bg-primary rounded-3 text-white text-center breaking-caret">
+                                <span class="font-weight-bold">News</span>
+                            </div>
+                        </div>
+                        <div class="col-md-9 col-lg-10 pl-md-4 py-2">
+                            <div class="breaking-box">
+                                <div id="carouselbreaking" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        {% for single_news in news %}
+                                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                                <a href="{{ single_news.link }}">
+                                                    <span class="position-relative mx-2 badge badge-primary rounded-0"
+                                                        style="color: #36ef2c">{{ single_news.date }}</span>
+                                                </a>
+                                                <a class="text-white" href="{{ single_news.link }}">
+                                                    {{ single_news.news_title }}
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                        {% if news.count == 0 %}
+                                            <p>No News available</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var myCarousel = new bootstrap.Carousel(document.getElementById('carouselExampleCaptions'), {
+                interval: 2000, 
+                ride: 'carousel',
+                pause: 'hover', 
+            });
+        });
+    </script>
+{% endblock %}
