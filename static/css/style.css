@@ -836,32 +836,33 @@ height: 100%;
 
 
  /* -----------------CV--------- */
-/* List Styles */
+
 .list-unstyled li {
-    font-size: 20px;
+    font-size: 15px;
 }
 
-/* Icon Styles */
+
 .list-unstyled i {
-    font-size: 20px;
+     font-size: 19px;
+    color: #0af60a;
 }
 
-/* Contact Section */
+
 .contact-section {
 
 }
 
-/* Publication Profile Section */
+
 .publication-profile-section {
 
 }
 
-/* Web Page & Social Link Section */
+
 .web-link-section {
 
 }
 
-/* Additional Styling for Links */
+
 .list-unstyled a {
     color: white;
     text-decoration: none;
@@ -901,6 +902,6 @@ height: 100%;
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: #100c44;
-    color: white;
+    background-color: rgba(6, 44, 246, 0.51);
+    color:  #ffffff;
 }

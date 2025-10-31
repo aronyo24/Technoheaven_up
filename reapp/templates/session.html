@@ -1,0 +1,43 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Sessions - TECHNOHEAVEN{% endblock %}
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>Sessions</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="sessions" style="margin-bottom: 3rem;">
+    <div class="container">
+        <h2 class="text-center mb-5" style="color: #d3d3d3;">Major Sessions </h2>
+        <div class="p-4 rounded " style="background-color: #2f3437; border: 1px solid #777;">
+            <div class="mb-4 pb-3 border-top border-secondary"></div>
+            {% for session in sessions %}
+                <div class="mb-4 pb-3 border-bottom border-secondary">
+                    <h5 style="color: #36ef2c; font-weight: bold;">
+                        {{ session.session_name }}
+                    </h5>
+                    <p style="color: #f1de0d; font-weight: bold;">
+                        {{ session.title }} <span style="color: #ccc;">({{ session.date_range }})</span> - {{ session.location }}
+                    </p>
+                    <p style="color: #ddd; font-size: 15px;">
+                        {{ session.tagline }}
+                    </p>
+                    {% if session.html_file %}
+                        <a href="{{ session.html_file.url }}" class="btn btn-sm btn-outline-light mt-2" target="_blank">View Full Details</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+</section>
+{% endblock %}

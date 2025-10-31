@@ -1,0 +1,81 @@
+{% load static %}
+<nav class="navbar hcf-navbar navbar-expand-md fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}" aria-label="Technoheaven home">
+            <img src="{% static 'images/t_logo.svg' %}" alt="Technoheaven" width="180" height="53">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteNav"
+            aria-controls="siteNav" aria-label="Toggle navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-list" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+            </svg>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="siteNav" aria-labelledby="siteNavLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="siteNavLabel">TECHNOHEAVEN</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1">
+                    <li class="nav-item {% if request.path == '/' or request.path == '/home/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'home' %}" {% if request.path == '/' or request.path == '/home/' %}aria-current="page"{% endif %}>HOME</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/about/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'about' %}" {% if request.path == '/about/' %}aria-current="page"{% endif %}>ABOUT</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/services/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'services' %}" {% if request.path == '/services/' %}aria-current="page"{% endif %}>SERVICES</a>
+                    </li>
+                    <li class="nav-item {% if request.path|slice:':7' == '/blogs/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'blog_list' %}" {% if request.path|slice:':7' == '/blogs/' %}aria-current="page"{% endif %}>BLOG</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/gallery/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'gallery' %}" {% if request.path == '/gallery/' %}aria-current="page"{% endif %}>GALLERY</a>
+                    </li>
+                    <li class="nav-item {% if request.path|slice:':6' == '/team/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'team' %}" {% if request.path|slice:':6' == '/team/' %}aria-current="page"{% endif %}>TEAM</a>
+                    </li>
+                    <li class="nav-item {% if request.path|slice:':10' == '/sessions/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'session_list' %}" {% if request.path|slice:':10' == '/sessions/' %}aria-current="page"{% endif %}>SESSIONS</a>
+                    </li>
+                    <li class="nav-item {% if request.path|slice:':9' == '/clients/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'clients' %}" {% if request.path|slice:':9' == '/clients/' %}aria-current="page"{% endif %}>CLIENTS</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/projects/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'projects' %}" {% if request.path == '/projects/' %}aria-current="page"{% endif %}>PROJECTS</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/publications/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'publications' %}" {% if request.path == '/publications/' %}aria-current="page"{% endif %}>PUBLICATIONS</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'contact' %}" {% if request.path == '/contact/' %}aria-current="page"{% endif %}>CONTACT</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item {% if request.path == '/blogs/submit/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'blog_submit' %}" {% if request.path == '/blogs/submit/' %}aria-current="page"{% endif %}>WRITE</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'user_dashboard' %}" {% if request.path == '/dashboard/' %}aria-current="page"{% endif %}>DASHBOARD</a>
+                        </li>
+                        {% if request.user.is_staff %}
+                            <li class="nav-item {% if request.path == '/blogs/manage/' %}active{% endif %}">
+                                <a class="nav-link" href="{% url 'pending_blogs' %}" {% if request.path == '/blogs/manage/' %}aria-current="page"{% endif %}>REVIEW</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item {% if request.path == '/login/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'login' %}" {% if request.path == '/login/' %}aria-current="page"{% endif %}>LOGIN</a>
+                        </li>
+                        <li class="nav-item {% if request.path == '/register/' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'register' %}" {% if request.path == '/register/' %}aria-current="page"{% endif %}>REGISTER</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

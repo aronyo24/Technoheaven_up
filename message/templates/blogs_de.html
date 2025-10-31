@@ -1,0 +1,140 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home - TECHNOHEAVEN{% endblock %}
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="text-center" id="resourcesContainer">
+                <h2>Blog</h2>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="background:#ffffff; padding: 40px 0;">
+  <div class="container" style="margin-top: 30px;">
+    <div class="row gy-4">
+      <!-- Blog Details -->
+      <div class="col-md-8">
+        <div class="container-fluid p-0" style="border-radius:10px; overflow:hidden; box-shadow:0 10px 30px rgba(13,110,253,0.06);">
+          {% if blog.image %}
+          <img src="{{ blog.image.url }}" class="img-fluid" alt="Blog image"
+               style="width:100%; max-height:400px; object-fit:cover; display:block;">
+          {% else %}
+          <img src="https://www.bootdey.com/image/1200x400/20B2AA/ffffff" class="img-fluid"
+               alt="Default blog image" style="width:100%; height:auto; display:block;">
+          {% endif %}
+        </div>
+
+        <h2 class="mt-4" style="color:#0b4ed8; font-weight:700; font-size:28px;">{{ blog.title }}</h2>
+        <p style="color: #6c757d; margin-top: 10px; font-size:14px;">
+          <i class="fa fa-user" style="color:#0d6efd; margin-right:6px;"></i> <b style="color:#0d6efd;">{{ blog.author }}</b> &nbsp; |
+          <i class="fa fa-calendar" style="color:#20c997; margin-left:8px; margin-right:6px;"></i> <span style="color:#495057;">{{ blog.date }}</span> &nbsp; |
+          <i class="fa fa-comments" style="color:#6610f2; margin-left:8px; margin-right:6px;"></i> <span style="color:#495057;">{{ comments|length }} Comments</span>
+        </p>
+        <hr style="border-top:1px solid #eef0f2;">
+        <div style="color: #333; line-height: 1.8; font-size: 16px;">
+          {{ blog.content|safe }}
+        </div>
+        <hr style="border-top:1px solid #eef0f2;">
+
+        <form method="post" style="margin-top: 15px; display:inline-block;">
+          {% csrf_token %}
+          <input type="hidden" name="slug" value="{{ blog.slug }}">
+          <button type="submit" name="like" value="1"
+            class="btn"
+            style="background:linear-gradient(90deg,#ff6b6b,#e83e8c); border:none; color:#fff; padding:10px 16px; border-radius:999px; display:inline-flex; align-items:center; gap:10px; box-shadow:0 6px 18px rgba(232,62,140,0.12);">
+            <i class="fa fa-heart" style="color:#fff; font-size:16px;"></i>
+            <span style="font-weight:700;">{{ blog.likes }}</span>
+          </button>
+        </form>
+
+        <!-- Comment Form -->
+        <h5 class="fw-bold mt-4" style="color:#0b4ed8;">Leave a Comment</h5>
+        <form method="post" style="margin-bottom:24px;">
+          {% csrf_token %}
+          <div class="mb-3">
+            <input type="text" name="name" class="form-control" placeholder="Your Name"
+                   style="border-radius:50px; border:1px solid #eef0f2; padding:12px 18px;">
+          </div>
+          <div class="mb-3">
+            <textarea name="comment" class="form-control" rows="4" placeholder="Your Comment"
+                      style="border-radius:8px; border:1px solid #eef0f2; padding:12px 14px;"></textarea>
+          </div>
+          <button type="submit"
+                  style="background:#0d6efd; color:#fff; border:none; padding:10px 18px; border-radius:50px; font-weight:700;">
+            Post Comment
+          </button>
+        </form>
+
+        <!-- Comment Section -->
+        <h4 class="fw-bold mt-5" style="color:#495057;">Comments</h4>
+        {% for comment in comments %}
+        <div class="mb-3" style="background:#fbfcff; border:1px solid #eef0f2; padding:14px; border-radius:8px;">
+          <b style="color:#0d6efd;">{{ comment.name }}</b>
+          <span class="d-block" style="font-size: 13px; color:#6c757d;">{{ comment.date|date:"M d, Y H:i" }}</span>
+          <p style="margin-top: 8px; color:#333;">{{ comment.comment }}</p>
+        </div>
+        {% empty %}
+        <p class="text-muted">No comments yet.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-md-4">
+        <h5 class="fw-bold mb-3" style="color:#0b4ed8;">Categories</h5>
+        <ul class="list-group mb-4" style="padding:0; list-style:none;">
+          <li class="list-group-item" style="border:1px solid #eef0f2; background:#fff; padding:10px 12px; border-radius:8px; margin-bottom:8px;">
+            <a href="{% url 'blog_list' %}" class="d-flex justify-content-between text-decoration-none" style="color:#333;">
+              <span style="display:flex; align-items:center; gap:8px;"><i class="fa fa-list" style="color:#0d6efd;"></i> All</span>
+              <span class="badge" style="background:#f4f6f8; color:#333; border-radius:12px; padding:4px 8px;">{{ all_blogs.count }}</span>
+            </a>
+          </li>
+          {% for cat in categories %}
+          <li class="list-group-item" style="border:1px solid #eef0f2; background:#fff; padding:10px 12px; border-radius:8px; margin-bottom:8px; {% if selected_category == cat.value %}box-shadow:0 8px 20px rgba(13,110,253,0.06);{% endif %}">
+            <a href="{% url 'blog_list' %}?category={{ cat.value }}" class="text-decoration-none d-flex justify-content-between" style="color:#333;">
+              <span style="display:flex; align-items:center; gap:8px;">
+                <i class="fa fa-circle" style="color:{{ cat.color|default:'#0d6efd' }}; font-size:10px;"></i> {{ cat.label }}
+              </span>
+              <span class="badge" style="background:#f4f6f8; color:#333; border-radius:12px; padding:4px 8px;">{{ cat.count }}</span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <!-- Popular Posts -->
+        <h5 class="fw-bold mb-3" style="color:#0b4ed8;">Popular Posts</h5>
+        {% with popular_blogs=all_blogs|dictsortreversed:"likes" %}
+        {% for pop_blog in popular_blogs|slice:":3" %}
+        <div class="d-flex mb-3 align-items-center" style="background:#fff; border:1px solid #eef0f2; padding:10px; border-radius:8px; box-shadow:0 6px 18px rgba(14,20,23,0.03);">
+          {% if pop_blog.image %}
+          <img src="{{ pop_blog.image.url }}" class="rounded me-3" alt="Popular Post"
+               style="width: 60px; height: 60px; object-fit: cover; border-radius:8px;">
+          {% else %}
+          <img src="https://www.bootdey.com/image/60x60/20B2AA/ffffff" class="rounded me-3" alt="Default Post" style="width:60px;height:60px;border-radius:8px;">
+          {% endif %}
+          <div style="flex: 1;">
+            <a href="{% url 'blog_detail' pop_blog.slug %}" class="text-dark text-decoration-none fw-bold" style="color:#0d6efd;">
+              {{ pop_blog.title|truncatechars:60 }}
+            </a>
+            <div class="text-muted" style="font-size: 13px; color:#6c757d;">{{ pop_blog.date }}</div>
+          </div>
+          <div style="margin-left:8px; display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <form method="post" style="margin:0;">
+              {% csrf_token %}
+              <input type="hidden" name="slug" value="{{ pop_blog.slug }}">
+              <button type="submit" name="like" value="1" style="border:none; background:linear-gradient(90deg,#ff6b6b,#e83e8c); color:#fff; padding:6px 10px; border-radius:999px; font-weight:700; cursor:pointer;">
+                <i class="fa fa-heart" style="margin-right:6px;"></i>{{ pop_blog.likes }}
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

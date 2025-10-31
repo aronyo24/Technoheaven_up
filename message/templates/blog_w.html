@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WriteFlow - Blog Editor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts for font family choices -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@300;400;700&family=Roboto+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f8f9ff, #eef3ff);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: transparent;
+      padding: 1rem 2rem;
+    }
+
+    .editor-box {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 2rem;
+    }
+
+    #title {
+      border: none;
+      width: 100%;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #333;
+      outline: none;
+      margin-bottom: 1rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toolbar button {
+      border: none;
+      background: transparent;
+      color: #444;
+      font-size: 1.2rem;
+      margin: 0 0.4rem;
+      transition: color 0.2s;
+    }
+
+    .toolbar select,
+    .toolbar input[type="color"] {
+      border: 1px solid #e6e9f2;
+      background: #fff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #333;
+      height: 36px;
+    }
+
+    .toolbar .select-small {
+      min-width: 110px;
+    }
+
+    .toolbar button:hover {
+      color: #4b6bfb;
+    }
+
+    #editor {
+      border: none;
+      min-height: 250px;
+      outline: none;
+      width: 100%;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .btn-purple {
+      background-color: #4b6bfb;
+      color: #fff;
+      border-radius: 8px;
+      padding: 0.5rem 1.2rem;
+      font-weight: 500;
+    }
+
+    .btn-purple:hover {
+      background-color: #3858e0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar d-flex justify-content-between align-items-center">
+    <a href="#" class="navbar-brand fw-bold text-primary fs-4">WriteFlow</a>
+    <div>
+      <button type="button" class="btn btn-link text-muted me-2 btn-save-draft">Save Draft</button>
+      <button type="button" class="btn btn-link text-muted me-2 btn-preview">Preview</button>
+      <button type="button" class="btn btn-purple" id="publishBtn">Publish</button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="text-center mt-3">
+    <h1 class="fw-bold text-primary">Start Writing Your Story</h1>
+    <p class="text-secondary">A beautiful, distraction-free editor for your ideas</p>
+  </div>
+
+  <!-- Editor -->
+  <div class="editor-box">
+    <form id="postForm" method="post">
+      {% csrf_token %}
+      <div class="mb-2">
+        <label for="title" class="form-label fw-semibold">Title * </label>
+        <input id="title" name="title" class="form-control" type="text" placeholder="Your Awesome Title..." value="The Rising Demand for Django and Python in Modern Web Development" required />
+      </div>
+
+      <div class="d-flex gap-2 mb-3 align-items-center">
+        <div style="flex:1">
+          <label for="author" class="form-label">Author</label>
+          <input id="author" name="author" class="form-control" type="text" placeholder="Author" value="Aronyo Mojumder">
+        </div>
+        <div style="width:220px">
+          <label for="category" class="form-label">Category</label>
+          <input id="category" name="category" class="form-control" type="text" placeholder="Category">
+        </div>
+        <div style="width:240px">
+          <label for="dateInput" class="form-label fw-semibold">Date *</label>
+          <div class="d-flex gap-1">
+            <input id="dateInput" name="date" class="form-control" type="date" value="2025-10-24" required>
+            <button id="todayBtn" type="button" class="btn btn-outline-secondary">Today</button>
+          </div>
+          <small class="text-muted">Note: You are 6 hours ahead of server time.</small>
+        </div>
+      </div>
+
+  <div class="toolbar border rounded p-2 mb-3">
+      <button onclick="format('bold')" title="Bold"><i class="bi bi-type-bold"></i></button>
+      <button onclick="format('italic')" title="Italic"><i class="bi bi-type-italic"></i></button>
+      <button onclick="format('underline')" title="Underline"><i class="bi bi-type-underline"></i></button>
+
+      <select id="headingSelect" class="select-small" title="Heading">
+        <option value="p">Normal</option>
+        <option value="h1">Heading 1</option>
+        <option value="h2">Heading 2</option>
+        <option value="h3">Heading 3</option>
+        <option value="h4">Heading 4</option>
+      </select>
+
+      <select id="fontSelect" class="select-small" title="Font family">
+        <option value="Inter, sans-serif">Inter (Sans)</option>
+        <option value="Merriweather, serif">Merriweather (Serif)</option>
+        <option value="Roboto Mono, monospace">Roboto Mono (Mono)</option>
+        <option value="Arial, sans-serif">Arial</option>
+      </select>
+
+      <select id="fontSizeSelect" title="Font size">
+        <option value="3">Normal</option>
+        <option value="2">Small</option>
+        <option value="4">Large</option>
+        <option value="5">X-Large</option>
+      </select>
+
+      <input id="colorPicker" type="color" title="Text color" value="#333333">
+
+      <button onclick="format('insertUnorderedList')" title="Bullet list"><i class="bi bi-list-ul"></i></button>
+      <button onclick="format('justifyLeft')" title="Align left"><i class="bi bi-text-left"></i></button>
+      <button onclick="format('justifyCenter')" title="Align center"><i class="bi bi-text-center"></i></button>
+      <button onclick="format('justifyRight')" title="Align right"><i class="bi bi-text-right"></i></button>
+      <button onclick="addLink()" title="Add link"><i class="bi bi-link-45deg"></i></button>
+      <button onclick="addImage()" title="Insert image"><i class="bi bi-image"></i></button>
+
+      <!-- Image writing options -->
+      <div title="Image options" class="d-flex align-items-center">
+        <button type="button" class="btn" onclick="setImageAlignment('left')" title="Align image left"><i class="bi bi-text-left"></i></button>
+        <button type="button" class="btn" onclick="setImageAlignment('center')" title="Center image"><i class="bi bi-text-center"></i></button>
+        <button type="button" class="btn" onclick="setImageAlignment('right')" title="Align image right"><i class="bi bi-text-right"></i></button>
+        <label class="mb-0 ms-2 me-1 small text-muted">Width</label>
+        <input id="imageWidth" type="range" min="50" max="1000" value="600" style="width:110px" title="Image width (px)">
+      </div>
+
+      <button onclick="format('removeFormat')" title="Clear formatting"><i class="bi bi-eraser"></i></button>
+    </div>
+
+      <div id="editor" contenteditable="true" placeholder="Tell your story..."></div>
+
+      <input type="hidden" id="contentInput" name="content">
+      <input type="file" id="imageInput" accept="image/*" style="display:none">
+
+      <div class="text-muted small mt-2 d-flex justify-content-between">
+        <span id="wordCount">0 words</span>
+        <span id="charCount">0 characters</span>
+      </div>
+    </form>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="previewTitle">Preview</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="previewBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS bundle (for modal) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Script: improved editor features -->
+  <script>
+    // Helper: read cookie (for Django CSRF)
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // DOM refs
+    const editor = document.getElementById('editor');
+    const titleEl = document.getElementById('title');
+    const wordCount = document.getElementById('wordCount');
+    const charCount = document.getElementById('charCount');
+    const publishBtn = document.getElementById('publishBtn');
+    const saveDraftBtn = document.querySelector('.btn-save-draft');
+    const previewBtn = document.querySelector('.btn-preview');
+    const postForm = document.getElementById('postForm');
+    const contentInput = document.getElementById('contentInput');
+    const imageInput = document.getElementById('imageInput');
+  const dateInput = document.getElementById('dateInput');
+  const todayBtn = document.getElementById('todayBtn');
+  const authorInput = document.getElementById('author');
+  const categoryInput = document.getElementById('category');
+  const imageWidth = document.getElementById('imageWidth');
+
+  // Track selected or last inserted image
+  let selectedImage = null;
+  let lastInsertedImage = null;
+
+    // Keyboard shortcuts (Ctrl/Cmd + B/I/U)
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey) {
+        if (e.key === 'b' || e.key === 'B') { e.preventDefault(); document.execCommand('bold'); }
+        if (e.key === 'i' || e.key === 'I') { e.preventDefault(); document.execCommand('italic'); }
+        if (e.key === 'u' || e.key === 'U') { e.preventDefault(); document.execCommand('underline'); }
+      }
+    });
+
+    // Format helpers
+    function format(command, value = null) {
+      document.execCommand(command, false, value);
+      editor.focus();
+    }
+
+    // Styling controls: heading, font family, font size, and color
+    const headingSelect = document.getElementById('headingSelect');
+    const fontSelect = document.getElementById('fontSelect');
+    const fontSizeSelect = document.getElementById('fontSizeSelect');
+    const colorPicker = document.getElementById('colorPicker');
+
+    headingSelect.addEventListener('change', (e) => {
+      const v = e.target.value;
+      if (v === 'p') document.execCommand('formatBlock', false, '<p>');
+      else document.execCommand('formatBlock', false, `<${v}>`);
+      editor.focus();
+    });
+
+    fontSelect.addEventListener('change', (e) => {
+      const v = e.target.value;
+      document.execCommand('fontName', false, v);
+      editor.focus();
+    });
+
+    // fontSize uses 1-7 scale for execCommand; map options to that scale
+    fontSizeSelect.addEventListener('change', (e) => {
+      const v = e.target.value; // 2,3,4,5 etc
+      document.execCommand('fontSize', false, v);
+      editor.focus();
+    });
+
+    colorPicker.addEventListener('input', (e) => {
+      const v = e.target.value;
+      document.execCommand('foreColor', false, v);
+      editor.focus();
+    });
+
+    function addLink() {
+      const url = prompt('Enter the URL:');
+      if (url) document.execCommand('createLink', false, url);
+    }
+
+    // Insert image: either upload to server (if endpoint exists) or fallback to base64
+    function addImage() {
+      imageInput.click();
+    }
+
+    imageInput.addEventListener('change', async (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      // Try server upload
+      const uploadUrl = '/api/upload-image/'; // Assumption: backend endpoint
+      const form = new FormData();
+      form.append('image', file);
+      try {
+        const csrf = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || getCookie('csrftoken');
+        const res = await fetch(uploadUrl, { method: 'POST', body: form, headers: csrf ? { 'X-CSRFToken': csrf } : {} });
+        if (res.ok) {
+          const data = await res.json();
+          // Expect { url: '...' }
+          if (data.url) {
+            document.execCommand('insertImage', false, data.url);
+            return;
+          }
+        }
+      } catch (err) {
+        // fall through to base64
+      }
+
+      // Fallback: insert as base64
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.execCommand('insertImage', false, reader.result);
+        // remember last inserted image by selecting last img in editor after a short delay
+        setTimeout(() => {
+          const imgs = editor.querySelectorAll('img');
+          if (imgs.length) {
+            lastInsertedImage = imgs[imgs.length - 1];
+            lastInsertedImage.classList.add('editor-image');
+            selectedImage = lastInsertedImage;
+          }
+        }, 50);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Drag & drop image support
+    editor.addEventListener('dragover', (e) => { e.preventDefault(); editor.classList.add('drag-over'); });
+    editor.addEventListener('dragleave', () => { editor.classList.remove('drag-over'); });
+    editor.addEventListener('drop', (e) => {
+      e.preventDefault();
+      editor.classList.remove('drag-over');
+      const file = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        // reuse imageInput change handler by creating a synthetic event
+        const dt = new DataTransfer(); dt.items.add(file);
+        imageInput.files = dt.files;
+        imageInput.dispatchEvent(new Event('change'));
+      }
+    });
+
+    // Click inside editor: if clicking an image, mark it selected
+    editor.addEventListener('click', (e) => {
+      if (e.target && e.target.tagName === 'IMG') {
+        selectedImage = e.target;
+        selectedImage.classList.add('editor-image-selected');
+        // remove selection class from other images
+        editor.querySelectorAll('img.editor-image-selected').forEach(img => { if (img !== selectedImage) img.classList.remove('editor-image-selected'); });
+      } else {
+        // deselect images when clicking elsewhere
+        editor.querySelectorAll('img.editor-image-selected').forEach(img => img.classList.remove('editor-image-selected'));
+        selectedImage = null;
+      }
+    });
+
+    // Word/char count and autosave
+    function updateStats() {
+      const text = editor.innerText.trim();
+      wordCount.textContent = (text ? text.split(/\s+/).filter(Boolean).length : 0) + ' words';
+      charCount.textContent = editor.innerText.length + ' characters';
+    }
+
+    editor.addEventListener('input', () => {
+      updateStats();
+      scheduleAutosave();
+    });
+    titleEl.addEventListener('input', scheduleAutosave);
+
+    // Autosave to localStorage
+    const DRAFT_KEY = 'writeflow-draft-v1';
+    let autosaveTimer = null;
+    function scheduleAutosave() {
+      if (autosaveTimer) clearTimeout(autosaveTimer);
+      autosaveTimer = setTimeout(saveDraftLocal, 2000);
+    }
+
+    function saveDraftLocal() {
+      const draft = { title: titleEl.value, content: editor.innerHTML, updated: new Date().toISOString() };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+      // small visual feedback
+      saveDraftBtn.innerText = 'Draft saved';
+      setTimeout(() => saveDraftBtn.innerText = 'Save Draft', 1200);
+    }
+
+    // Load draft if present
+    function loadDraftLocal() {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      try {
+        const draft = JSON.parse(raw);
+        if (draft.title) titleEl.value = draft.title;
+        if (draft.content) editor.innerHTML = draft.content;
+        updateStats();
+      } catch (e) { /* ignore */ }
+    }
+
+    // Save draft button (also tries to send to backend endpoint /api/posts/draft/)
+    saveDraftBtn.addEventListener('click', async () => {
+      saveDraftLocal();
+      const payload = { title: titleEl.value.trim(), content: editor.innerHTML.trim(), status: 'draft' };
+      try {
+        const csrf = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || getCookie('csrftoken');
+        const res = await fetch('/api/posts/draft/', { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json', ...(csrf ? { 'X-CSRFToken': csrf } : {}) } });
+        if (res.ok) {
+          const j = await res.json();
+          saveDraftBtn.innerText = 'Draft saved to server';
+          setTimeout(() => saveDraftBtn.innerText = 'Save Draft', 1200);
+        } else {
+          // server may not exist — silent fallback
+        }
+      } catch (err) { /* ignore network errors */ }
+    });
+
+    // Date: Today button behavior
+    todayBtn.addEventListener('click', () => {
+      const now = new Date();
+      // set to local date string YYYY-MM-DD
+      const localISO = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0,10);
+      dateInput.value = localISO;
+    });
+
+    // Image option handlers
+    function getActiveImage() {
+      return selectedImage || lastInsertedImage;
+    }
+
+    function setImageAlignment(align) {
+      const img = getActiveImage();
+      if (!img) { alert('Select an image first (click it) or insert one.'); return; }
+      img.style.display = (align === 'center') ? 'block' : 'inline-block';
+      img.style.marginLeft = (align === 'left') ? '0' : (align === 'center' ? 'auto' : 'auto');
+      img.style.marginRight = (align === 'right') ? '0' : (align === 'center' ? 'auto' : '0');
+      if (align === 'left') { img.style.float = 'left'; img.style.marginRight = '1rem'; }
+      else if (align === 'right') { img.style.float = 'right'; img.style.marginLeft = '1rem'; }
+      else { img.style.float = 'none'; img.style.margin = '0 auto 1rem auto'; }
+    }
+
+    imageWidth.addEventListener('input', (e) => {
+      const v = e.target.value;
+      const img = getActiveImage();
+      if (!img) return;
+      img.style.width = v + 'px';
+      img.style.maxWidth = '100%';
+    });
+
+    // Preview modal
+    const previewModalEl = document.getElementById('previewModal');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewBody = document.getElementById('previewBody');
+    const bsPreviewModal = new bootstrap.Modal(previewModalEl);
+
+    previewBtn.addEventListener('click', () => {
+      previewTitle.innerText = titleEl.value || 'Untitled';
+      previewBody.innerHTML = editor.innerHTML || '<p><em>No content yet</em></p>';
+      bsPreviewModal.show();
+    });
+
+    // Publish (send to backend). Assumes /api/posts/ accepts JSON POST. If not available, logs data.
+    publishBtn.addEventListener('click', async () => {
+      const payload = {
+        title: titleEl.value.trim(),
+        author: authorInput.value.trim(),
+        category: categoryInput.value.trim(),
+        date: dateInput.value,
+        content: editor.innerHTML.trim(),
+        status: 'published'
+      };
+      if (!payload.title || !payload.content || !payload.date) { alert('Please write a title, date and some content before publishing!'); return; }
+      try {
+        const csrf = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || getCookie('csrftoken');
+        const res = await fetch('/api/posts/', { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'application/json', ...(csrf ? { 'X-CSRFToken': csrf } : {}) } });
+        if (res.ok) {
+          const data = await res.json();
+          alert('Published successfully');
+          // clear local draft
+          localStorage.removeItem(DRAFT_KEY);
+        } else {
+          const text = await res.text();
+          console.log('Publish failed', res.status, text);
+          alert('Publish request failed (see console).');
+        }
+      } catch (err) {
+        console.log('Publish fallback, no server — logging data:', payload);
+        alert('No server detected — blog data logged to console.');
+        console.log(payload);
+      }
+    });
+
+    // Form submission (in case user uses form submit) — copy content into hidden input
+    postForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      contentInput.value = editor.innerHTML;
+      // send via fetch to keep UX consistent
+      publishBtn.click();
+    });
+
+    // Init
+    loadDraftLocal();
+    updateStats();
+  </script>
+</body>
+</html>

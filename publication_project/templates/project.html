@@ -1,0 +1,58 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home - TECHNOHEAVEN{% endblock %}
+{% block content %}
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>PROJECT</h2>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="contact" >
+       <section id="Contact" class="full-height px-lg-5">
+        <div class="container">
+            {% if messages %}
+                <div class="row">
+                    {% for message in messages %}
+                        <h4 style="text-align: center; color: #0cf50c;">{{ message }}</h4>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8 pb-4">
+
+                    <h1 data-aos="fade-up" data-aos-delay="400">Running Projects</h1>
+                </div>
+            </div>
+
+            <div class="row justify-content-center rounded" data-aos="fade-up" data-aos-delay="600">
+                <div class="wrapper clearfix border" style="background: linear-gradient(120deg, #f8fafc 60%, #e0e7ff 100%); border-radius: 22px; box-shadow: 0 8px 32px rgba(44,62,80,0.13);">
+                    <div data-aos="fade-up" data-aos-delay="700">
+                        {% for project in projects %}
+                            <div class="image-wrapper" style="text-align:center;">
+                                <img src="{{ project.logo.url }}" alt="{{ project.project_title }} Logo" style="max-width:100px; border-radius:14px; background:linear-gradient(135deg,#fff 70%,#e0e7ff 100%); box-shadow:0 4px 16px rgba(80,80,180,0.10); padding:8px;">
+                            </div>
+                            <div class="text-wrapper" style="background: linear-gradient(120deg, #fff 80%, #f0f4ff 100%); border-radius: 16px; padding: 22px 28px 18px 28px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(80,80,180,0.08);">
+                                <h5 class="card-title" style="color: #2d1582; font-weight: 800; letter-spacing: 0.5px; font-size: 1.3em;">{{ project.project_title }}</h5>
+                                <h5 class="" style="color: #ff6f00; font-size: 1.08em; margin-bottom: 0.5em;"><span style="font-weight: bold; color: #2d1582;">{{ project.funded_by }}</span>  <span style="color:#5e60ce;">({{ project.durations }})</span> - <span style="color:#00b4d8; font-weight:600;">{{ project.funding_amount }}</span> <span style="color:#43a047;">{{ project.role }}</span></h5>
+                                <p style="color: #222a3f; font-size: 1.08em;">{{ project.summary }}</p>
+                                 {% if project.url %}
+                                 <a href="{{ project.url }}" target="_blank" style="display:inline-block; margin-top:12px; background: linear-gradient(90deg, #2d1582 0%, #00b4d8 100%); color:#fff; border-radius:22px; padding:9px 32px; text-decoration:none; font-weight:700; font-size:1.08em; box-shadow:0 4px 16px rgba(45,21,130,0.10); transition: background 0.3s; border:none; outline:none;">Learn More</a>
+                                 {% endif %}
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</section>
+
+
+{% endblock %}

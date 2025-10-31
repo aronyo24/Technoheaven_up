@@ -1,0 +1,139 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Services - TECHNOHEAVEN{% endblock %}
+{% block content %}
+
+<section id="gallery_main">
+    <div class="about_main clearfix">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="container text-center" id="resourcesContainer">
+                <h2>RESOURCES</h2>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="py-5" style="background: linear-gradient(145deg, #f9fbfd, #eef3ff);">
+    <div class="container text-center">
+        <h1 class="mb-3" style="font-size: 2.25rem; font-weight: 700; color: #0c1e43;">Our Service Offerings</h1>
+        <p class="mb-0" style="max-width: 720px; margin: 0 auto; color: #5c6a82;">
+            Explore Technoheaven's advanced, research-driven solutions designed to power innovation,
+            automation, and data-led transformation.
+        </p>
+    </div>
+</section>
+
+<section class="pb-5" style="background-color: #ffffff; margin-bottom: 3rem;">
+    <div class="container">
+        {% if categories %}
+            <ul class="nav nav-tabs justify-content-center flex-wrap" id="serviceTabs" role="tablist" style="border: none; gap: 0.5rem;">
+                {% for cat in categories %}
+                    <li class="nav-item" role="presentation">
+                        <button
+                            class="nav-link {% if forloop.first %}active{% endif %}"
+                            id="tab-{{ forloop.counter }}"
+                            data-bs-toggle="tab"
+                            data-bs-target="#panel-{{ forloop.counter }}"
+                            type="button"
+                            role="tab"
+                            aria-controls="panel-{{ forloop.counter }}"
+                            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                            style="border: none; margin: 0 0.25rem; background: transparent; color: #25334d; font-weight: 500; position: relative; padding: 0.8rem 1.4rem; border-radius: 0.6rem 0.6rem 0 0; transition: color 0.25s ease; border-bottom: 3px solid transparent;"
+                        >
+                            {{ cat.label }}
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="tab-content pt-4" id="serviceTabsContent">
+                {% for cat in categories %}
+                    <div
+                        class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+                        id="panel-{{ forloop.counter }}"
+                        role="tabpanel"
+                        aria-labelledby="tab-{{ forloop.counter }}"
+                    >
+                        <div class="row g-4">
+                            {% for svc in cat.services %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="service-card h-100" style="background: linear-gradient(145deg, #ffffff, #f7f9fb); border: 1px solid #edf1f4; border-radius: 16px; padding: 24px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                                        <div>
+                                            <div class="service-icon" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px; background: radial-gradient(circle at 30% 30%, #e5f8f3, #ffffff); color: #00725c; font-size: 1.6rem; box-shadow: 0 2px 6px rgba(0, 114, 92, 0.12); margin-bottom: 1rem;">
+                                                {% if svc.icon %}
+                                                    <i class="{{ svc.icon }}" aria-hidden="true"></i>
+                                                {% else %}
+                                                    <i class="bi bi-circle-square" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </div>
+                                            <h2 style="font-size: 1.125rem; font-weight: 600; color: #0e1b3d; margin-bottom: 0.5rem;">{{ svc.service_name }}</h2>
+                                            <p style="color: #546074; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                                                {{ svc.description|default:'Details coming soon.'|truncatechars:130|linebreaksbr }}
+                                            </p>
+                                        </div>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <a href="{% url 'contact' %}" class="btn btn-sm" style="background-color: #00725c; color: #ffffff; font-weight: 500; padding: 0.45rem 1.1rem; border-radius: 0.5rem; text-decoration: none;">Get Quote</a>
+                                            <a href="{% url 'service_detail' svc.slug %}" class="btn btn-sm" style="border: 1px solid #bcdad3; color: #0e1b3d; font-weight: 500; padding: 0.45rem 1.1rem; border-radius: 0.5rem; text-decoration: none; background: transparent;">Learn more</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="col-12">
+                                    <p class="text-center" style="color: #6c757d; margin-bottom: 0;">No services listed under {{ cat.label }} yet.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center" style="color: #6c757d; margin-bottom: 0;">Service categories are coming soon.</p>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('#serviceTabs .nav-link');
+        const activeStyles = (btn) => {
+            btn.style.color = '#00725c';
+            btn.style.fontWeight = '600';
+            btn.style.borderBottom = '3px solid #00725c';
+        };
+        const resetStyles = (btn) => {
+            btn.style.color = '#25334d';
+            btn.style.fontWeight = '500';
+            btn.style.borderBottom = '3px solid transparent';
+        };
+
+        const applyTabStyles = () => {
+            tabs.forEach(btn => {
+                if (btn.classList.contains('active')) {
+                    activeStyles(btn);
+                } else {
+                    resetStyles(btn);
+                }
+            });
+        };
+
+        tabs.forEach(btn => {
+            btn.addEventListener('shown.bs.tab', applyTabStyles);
+            btn.addEventListener('hidden.bs.tab', applyTabStyles);
+        });
+
+        applyTabStyles();
+
+        const cards = document.querySelectorAll('.service-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-6px)';
+                card.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.05)';
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,5 +1,7 @@
+
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}Home - TECHNOHEAVEN{% endblock %}
 {% block content %}
 <section id="gallery_main">
     <div class="about_main clearfix" style="height: 350px">
@@ -10,8 +12,8 @@
         </div>
     </div>
 </section>
- <section id="contact " class="px-lg-5 h-100 pt-5">
-    <div class="container rounded-4" style="background: #152239; color: #ffffff;">
+<section id="contact" class="px-lg-5 h-100 pt-5" style="margin-bottom: 3rem;">
+     <div class="container rounded-4" style="background: #152239; color: #ffffff;">
         {% if messages %}
             <div class="row">
                 {% for message in messages %}
