@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Account Settings - TECHNOHEAVEN{% endblock %}
+{% block content %}
+<section class="blog-form">
+    <div class="container">
+        <div class="blog-form__card">
+            <div class="blog-form__header">
+                <a href="{% url 'user_dashboard' %}" class="btn-link blog-form__back"><i class="fa-solid fa-arrow-left"></i> Back to dashboard</a>
+                <span class="blog-form__eyebrow">Account settings</span>
+                <h1>Refine your profile</h1>
+                <p>Keep your workspace details current so collaborators know how to reach you and our recommendations stay precise.</p>
+            </div>
+
+            {% if identity_form.non_field_errors or profile_form.non_field_errors %}
+            <div class="blog-form__errors" role="alert">
+                <ul>
+                    {% for error in identity_form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                    {% for error in profile_form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post" class="blog-form__form">
+                {% csrf_token %}
+                <div class="blog-form__fieldset">
+                    <div class="blog-form__fieldset-head">
+                        <h2 class="blog-form__fieldset-title"><i class="fa-solid fa-id-card-clip"></i> Account identity</h2>
+                        <p>Update the contact details that appear on Technoheaven communications.</p>
+                    </div>
+                    <div class="blog-form__grid blog-form__grid--two">
+                        {% for field in identity_form %}
+                        <div class="blog-form__field{% if field.errors %} blog-form__field--error{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="blog-form__required">*</span>{% endif %}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <small class="blog-form__help">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <ul class="blog-form__field-errors">
+                                {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="blog-form__fieldset">
+                    <div class="blog-form__fieldset-head">
+                        <h2 class="blog-form__fieldset-title"><i class="fa-solid fa-user-gear"></i> Profile information</h2>
+                        <p>These details personalise your dashboard and help the team curate better insights.</p>
+                    </div>
+                    <div class="blog-form__grid blog-form__grid--two">
+                        {% for field in profile_form %}
+                        <div class="blog-form__field{% if field.errors %} blog-form__field--error{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="blog-form__required">*</span>{% endif %}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <small class="blog-form__help">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <ul class="blog-form__field-errors">
+                                {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="blog-form__actions">
+                    <a href="{% url 'change_password' %}" class="btn-pill btn-pill--ghost"><i class="fa-solid fa-shield-halved"></i> Update password</a>
+                    <a href="{% url 'user_dashboard' %}" class="btn-pill btn-pill--ghost">Cancel</a>
+                    <button type="submit" class="btn-pill btn-pill--primary"><i class="fa-solid fa-floppy-disk"></i> Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

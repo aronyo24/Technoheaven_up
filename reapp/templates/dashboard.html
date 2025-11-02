@@ -1,0 +1,901 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard - TECHNOHEAVEN{% endblock %}
+{% block content %}
+
+<div class="dashboard-page">
+    <div class="container dashboard-container">
+        <section class="dashboard-hero">
+            <span class="dashboard-hero-glow"></span>
+            <div class="dashboard-stats-strip">
+                <div class="dashboard-stats-header">
+                    <h3 class="dashboard-stats-title">Workspace stats</h3>
+                    <span class="dashboard-stats-meta">Snapshot</span>
+                </div>
+                {% if account_meta %}
+                <ul class="dashboard-stats-list">
+                    {% for item in account_meta|slice:":4" %}
+                    <li class="dashboard-stats-item">
+                        <span class="dashboard-stats-icon"><i class="fa-solid {{ item.icon }}"></i></span>
+                        <div class="dashboard-stats-meta-box">
+                            <span class="dashboard-stats-label">{{ item.label }}</span>
+                            <strong class="dashboard-stats-value">{{ item.value }}</strong>
+                            {% if item.caption %}
+                            <span class="dashboard-stats-caption">{{ item.caption }}</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="dashboard-stats-empty">Add more profile details to unlock tailored workspace analytics.</p>
+                {% endif %}
+            </div>
+            <div class="dashboard-hero-main">
+                <span class="dashboard-eyebrow"><i class="fa-solid fa-flask"></i> Workspace</span>
+                <h1 class="dashboard-hero-title">Meet your Technoheaven Command Center</h1>
+                {% if profile and profile.country %}
+                <p class="dashboard-hero-text">Welcome back {{ display_name|default:"Researcher" }}, streaming insights from {{ profile.country }}. Pick up right where you left off and keep your research momentum high.</p>
+                {% else %}
+                <p class="dashboard-hero-text">Welcome back {{ display_name|default:"Researcher" }}. This hub keeps your research workload organised so you can launch tasks, review progress, and act fast.</p>
+                {% endif %}
+                <div class="dashboard-actions">
+                    <a href="{% url 'submit_blog' %}" class="dashboard-action-btn dashboard-action-btn--primary">Start a blog <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                    <a href="{% url 'edit_profile' %}" class="dashboard-action-btn dashboard-action-btn--ghost">Manage profile <i class="fa-solid fa-gear"></i></a>
+                    <a href="{% url 'change_password' %}" class="dashboard-action-btn dashboard-action-btn--shield">Update password <i class="fa-solid fa-shield-halved"></i></a>
+                    <a href="{% url 'contact' %}" class="dashboard-action-btn dashboard-action-btn--support">Contact support <i class="fa-solid fa-headset"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-quick-stats">
+            <div class="dashboard-section-header">
+                <h2>Quick stats</h2>
+                <span class="dashboard-section-meta">Updated {% now "M d, Y" %}</span>
+            </div>
+            {% if blog_counts %}
+            <div class="dashboard-quick-stats-grid">
+                <article class="quick-stat-card">
+                    <span class="quick-stat-card__title">All submissions</span>
+                    <strong class="quick-stat-card__value">{{ blog_counts.total|default:0 }}</strong>
+                    <p class="quick-stat-card__description">Total blogs you have submitted so far.</p>
+                </article>
+                <article class="quick-stat-card quick-stat-card--pending">
+                    <span class="quick-stat-card__title">Pending</span>
+                    <strong class="quick-stat-card__value">{{ blog_counts.pending|default:0 }}</strong>
+                    <p class="quick-stat-card__description">Awaiting review from the editorial team.</p>
+                </article>
+                <article class="quick-stat-card quick-stat-card--published">
+                    <span class="quick-stat-card__title">Published</span>
+                    <strong class="quick-stat-card__value">{{ blog_counts.published|default:0 }}</strong>
+                    <p class="quick-stat-card__description">Live on the platform and drawing readers.</p>
+                </article>
+                <article class="quick-stat-card quick-stat-card--rejected">
+                    <span class="quick-stat-card__title">Needs attention</span>
+                    <strong class="quick-stat-card__value">{{ blog_counts.rejected|default:0 }}</strong>
+                    <p class="quick-stat-card__description">Submissions that require follow-up or edits.</p>
+                </article>
+            </div>
+            {% else %}
+            <div class="dashboard-empty-card">Your stats will appear once you submit your first blog. Start a new story to see the dashboard light up.</div>
+            {% endif %}
+        </section>
+
+        <section class="dashboard-secondary-grid">
+            <div class="quick-launch-card">
+                <div>
+                    <h3>Quick launch</h3>
+                    <p>Jump into your most common workflows without searching around.</p>
+                </div>
+                <div class="quick-launch-list">
+                    <div class="quick-launch-item quick-launch-item--write">
+                        <div class="quick-launch-copy">
+                            <strong class="quick-launch-heading">Write a blog</strong>
+                            <span class="quick-launch-subtext">Share fresh research updates and analysis.</span>
+                        </div>
+                        <div class="quick-launch-meta">
+                            <span class="quick-launch-status quick-launch-status--active">Active</span>
+                            <a href="{% url 'submit_blog' %}" class="quick-launch-action quick-launch-action--mint">Open</a>
+                        </div>
+                    </div>
+                    <div class="quick-launch-item quick-launch-item--profile">
+                        <div class="quick-launch-copy">
+                            <strong class="quick-launch-heading">Manage profile</strong>
+                            <span class="quick-launch-subtext">Update your bio, expertise, and visibility.</span>
+                        </div>
+                        <div class="quick-launch-meta">
+                            <span class="quick-launch-status quick-launch-status--ready">Ready</span>
+                            <a href="{% url 'edit_profile' %}" class="quick-launch-action quick-launch-action--lavender">Open</a>
+                        </div>
+                    </div>
+                    <div class="quick-launch-item quick-launch-item--secure">
+                        <div class="quick-launch-copy">
+                            <strong class="quick-launch-heading">Secure account</strong>
+                            <span class="quick-launch-subtext">Rotate your password to keep access safe.</span>
+                        </div>
+                        <div class="quick-launch-meta">
+                            <span class="quick-launch-status quick-launch-status--security">Security</span>
+                            <a href="{% url 'change_password' %}" class="quick-launch-action quick-launch-action--rose">Open</a>
+                        </div>
+                    </div>
+                    <div class="quick-launch-item quick-launch-item--support">
+                        <div class="quick-launch-copy">
+                            <strong class="quick-launch-heading">Need assistance?</strong>
+                            <span class="quick-launch-subtext">Reach the Technoheaven support desk quickly.</span>
+                        </div>
+                        <div class="quick-launch-meta">
+                            <span class="quick-launch-status quick-launch-status--support">Support</span>
+                            <a href="{% url 'contact' %}" class="quick-launch-action quick-launch-action--sky">Open</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-header">
+                    <h3>Recent activity</h3>
+                    <a href="{% url 'submit_blog' %}" class="activity-header-link">New submission</a>
+                </div>
+                {% if blog_counts and blog_counts.total %}
+                <ul class="activity-list">
+                    {% for blog in user_blogs|slice:":4" %}
+                    <li class="activity-entry">
+                        <div class="activity-summary">
+                            <p class="activity-title">{{ blog.title }}</p>
+                            <span class="activity-category">{{ blog.get_category_display|default:"Uncategorized" }}</span>
+                            {% if blog.status_description %}
+                            <span class="activity-description"><i class="fa-solid fa-circle-info"></i> {{ blog.status_description }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="activity-meta">
+                            {% if blog.status == 'published' %}
+                            <span class="status-badge status-badge--published">{{ blog.get_status_display }}</span>
+                            {% elif blog.status == 'pending' %}
+                            <span class="status-badge status-badge--pending">{{ blog.get_status_display }}</span>
+                            {% elif blog.status == 'rejected' %}
+                            <span class="status-badge status-badge--rejected">{{ blog.get_status_display }}</span>
+                            {% else %}
+                            <span class="status-badge status-badge--default">{{ blog.get_status_display }}</span>
+                            {% endif %}
+                            <time datetime="{{ blog.updated_at|date:'c' }}" class="activity-time">{{ blog.updated_at|date:"M d, Y" }} · {{ blog.updated_at|timesince }} ago</time>
+                            <div class="activity-actions">
+                                <a href="{% url 'edit_blog' blog.slug %}" class="activity-link activity-link--edit"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                                {% if blog.can_view_live %}
+                                <a href="{% url 'blog_detail' blog.slug %}" class="activity-link activity-link--view" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> View</a>
+                                {% endif %}
+                            </div>
+                            {% if blog.status == 'rejected' %}
+                            <span class="activity-note"><i class="fa-solid fa-circle-exclamation"></i> Needs revisions</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="dashboard-empty-state">You have not submitted any blogs yet. Launch a new story to see activity appear here.</div>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+<style>
+    .dashboard-page {
+        background: #060a18;
+        padding: 48px 0 72px;
+    }
+
+    .dashboard-container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 48px;
+    }
+
+    .dashboard-hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(8, 15, 32, 0.95));
+        border-radius: 28px;
+        padding: 42px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        align-items: stretch;
+        box-shadow: 0 32px 72px rgba(6, 14, 36, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        color: #e2e8f0;
+    }
+
+    .dashboard-hero-glow {
+        position: absolute;
+        top: -80px;
+        right: -60px;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(circle at center, rgba(79, 130, 247, 0.55), rgba(12, 18, 36, 0));
+        filter: blur(2px);
+        opacity: 0.65;
+        pointer-events: none;
+    }
+
+    .dashboard-stats-strip {
+        flex: 1 1 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background: rgba(6, 12, 28, 0.65);
+        border-radius: 22px;
+        padding: 18px;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        color: #cbd5f5;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-stats-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .dashboard-stats-title {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(226, 232, 240, 0.85);
+    }
+
+    .dashboard-stats-meta {
+        font-size: 0.72rem;
+        color: rgba(148, 163, 184, 0.7);
+    }
+
+    .dashboard-stats-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .dashboard-stats-item {
+        flex: 1 1 180px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 14px;
+        background: rgba(15, 23, 42, 0.82);
+        border: 1px solid rgba(79, 130, 247, 0.28);
+    }
+
+    .dashboard-stats-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(79, 130, 247, 0.24);
+        color: #93c5fd;
+        font-size: 1rem;
+    }
+
+    .dashboard-stats-meta-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .dashboard-stats-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(203, 213, 225, 0.65);
+    }
+
+    .dashboard-stats-value {
+        font-size: 1.05rem;
+        color: #f8fafc;
+    }
+
+    .dashboard-stats-caption {
+        font-size: 0.7rem;
+        color: rgba(203, 213, 225, 0.6);
+    }
+
+    .dashboard-stats-empty {
+        margin: 0;
+        font-size: 0.82rem;
+        color: rgba(226, 232, 240, 0.72);
+    }
+
+    .dashboard-hero-main {
+        flex: 1;
+        min-width: 280px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        color: #e2e8f0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 18px;
+        border-radius: 999px;
+        background: rgba(79, 130, 247, 0.18);
+        color: #93c5fd;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    .dashboard-hero-title {
+        margin: 0;
+        font-size: clamp(2.6rem, 5vw, 3.4rem);
+        font-weight: 700;
+        line-height: 1.12;
+        color: #f8fafc;
+    }
+
+    .dashboard-hero-text {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.7;
+        color: rgba(226, 232, 240, 0.82);
+    }
+
+    .dashboard-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 8px;
+    }
+
+    .dashboard-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 12px 24px;
+        border-radius: 999px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashboard-action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .dashboard-action-btn--primary {
+        padding: 12px 26px;
+        background: linear-gradient(135deg, #34d399, #22c55e);
+        color: #052e16;
+        box-shadow: 0 20px 36px rgba(34, 197, 94, 0.35);
+    }
+
+    .dashboard-action-btn--primary:hover {
+        box-shadow: 0 24px 40px rgba(34, 197, 94, 0.42);
+    }
+
+    .dashboard-action-btn--ghost {
+        background: rgba(15, 23, 42, 0.82);
+        color: #f8fafc;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        box-shadow: 0 16px 30px rgba(7, 14, 35, 0.45);
+    }
+
+    .dashboard-action-btn--ghost:hover {
+        box-shadow: 0 18px 34px rgba(7, 14, 35, 0.5);
+    }
+
+    .dashboard-action-btn--shield {
+        background: rgba(30, 41, 59, 0.72);
+        color: #e2e8f0;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        box-shadow: 0 16px 30px rgba(7, 14, 35, 0.45);
+    }
+
+    .dashboard-action-btn--shield:hover {
+        box-shadow: 0 18px 34px rgba(7, 14, 35, 0.5);
+    }
+
+    .dashboard-action-btn--support {
+        background: rgba(79, 70, 229, 0.28);
+        color: #c4b5fd;
+        border: 1px solid rgba(129, 140, 248, 0.35);
+        box-shadow: 0 16px 30px rgba(7, 14, 35, 0.4);
+    }
+
+    .dashboard-action-btn--support:hover {
+        box-shadow: 0 18px 34px rgba(7, 14, 35, 0.45);
+    }
+
+    .dashboard-quick-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .dashboard-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .dashboard-section-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+
+    .dashboard-section-meta {
+        font-size: 0.85rem;
+        color: rgba(203, 213, 225, 0.65);
+    }
+
+    .dashboard-quick-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .quick-stat-card {
+        border-radius: 22px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        border: 1px solid rgba(59, 130, 246, 0.22);
+        box-shadow: 0 24px 48px rgba(5, 12, 26, 0.5);
+        background: #101b2a;
+        color: #e2e8f0;
+    }
+
+    .quick-stat-card__title {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgba(148, 163, 184, 0.85);
+    }
+
+    .quick-stat-card__value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #f8fafc;
+    }
+
+    .quick-stat-card__description {
+        margin: 0;
+        font-size: 0.88rem;
+        color: rgba(203, 213, 225, 0.75);
+    }
+
+    .quick-stat-card--pending {
+        background: #0e1b2e;
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        box-shadow: 0 24px 48px rgba(7, 18, 32, 0.48);
+        color: #fcd34d;
+    }
+
+    .quick-stat-card--pending .quick-stat-card__title {
+        color: rgba(252, 211, 77, 0.8);
+    }
+
+    .quick-stat-card--pending .quick-stat-card__value {
+        color: #fcd34d;
+    }
+
+    .quick-stat-card--pending .quick-stat-card__description {
+        color: rgba(252, 211, 77, 0.75);
+    }
+
+    .quick-stat-card--published {
+        background: #0d1f25;
+        border: 1px solid rgba(34, 197, 94, 0.28);
+        box-shadow: 0 24px 48px rgba(4, 20, 16, 0.5);
+        color: #4ade80;
+    }
+
+    .quick-stat-card--published .quick-stat-card__title {
+        color: rgba(74, 222, 128, 0.85);
+    }
+
+    .quick-stat-card--published .quick-stat-card__value {
+        color: #4ade80;
+    }
+
+    .quick-stat-card--published .quick-stat-card__description {
+        color: rgba(74, 222, 128, 0.75);
+    }
+
+    .quick-stat-card--rejected {
+        background: #261219;
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        box-shadow: 0 24px 48px rgba(28, 6, 10, 0.55);
+        color: #f87171;
+    }
+
+    .quick-stat-card--rejected .quick-stat-card__title {
+        color: rgba(248, 113, 113, 0.85);
+    }
+
+    .quick-stat-card--rejected .quick-stat-card__value {
+        color: #f87171;
+    }
+
+    .quick-stat-card--rejected .quick-stat-card__description {
+        color: rgba(248, 113, 113, 0.75);
+    }
+
+    .dashboard-empty-card {
+        background: #101b2a;
+        border-radius: 22px;
+        padding: 28px;
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        color: rgba(226, 232, 240, 0.8);
+        text-align: center;
+        font-size: 0.95rem;
+    }
+
+    .dashboard-secondary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+    }
+
+    .quick-launch-card,
+    .activity-card {
+        background: #0d1626;
+        border-radius: 24px;
+        padding: 28px;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 0 26px 56px rgba(5, 12, 28, 0.55);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        color: #e2e8f0;
+    }
+
+    .quick-launch-card h3,
+    .activity-card h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+
+    .quick-launch-card p {
+        margin: 8px 0 0;
+        font-size: 0.9rem;
+        color: rgba(203, 213, 225, 0.7);
+    }
+
+    .quick-launch-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .quick-launch-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .quick-launch-item--write {
+        background: rgba(15, 23, 42, 0.92);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        box-shadow: 0 18px 30px rgba(6, 14, 32, 0.45);
+    }
+
+    .quick-launch-item--profile {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(129, 140, 248, 0.3);
+        box-shadow: 0 18px 30px rgba(6, 14, 32, 0.4);
+    }
+
+    .quick-launch-item--secure {
+        background: rgba(15, 23, 42, 0.82);
+        border: 1px solid rgba(248, 113, 113, 0.28);
+        box-shadow: 0 18px 30px rgba(6, 14, 32, 0.38);
+    }
+
+    .quick-launch-item--support {
+        background: rgba(15, 23, 42, 0.78);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        box-shadow: 0 18px 30px rgba(6, 14, 32, 0.35);
+    }
+
+    .quick-launch-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .quick-launch-heading {
+        font-size: 1rem;
+        color: #f8fafc;
+    }
+
+    .quick-launch-subtext {
+        font-size: 0.85rem;
+        color: rgba(203, 213, 225, 0.68);
+    }
+
+    .quick-launch-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    .quick-launch-status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .quick-launch-status--active {
+        background: rgba(34, 197, 94, 0.22);
+        color: #4ade80;
+    }
+
+    .quick-launch-status--ready {
+        background: rgba(129, 140, 248, 0.22);
+        color: #c4b5fd;
+    }
+
+    .quick-launch-status--security {
+        background: rgba(248, 113, 113, 0.22);
+        color: #f87171;
+    }
+
+    .quick-launch-status--support {
+        background: rgba(56, 189, 248, 0.22);
+        color: #7dd3fc;
+    }
+
+    .quick-launch-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .quick-launch-action:hover {
+        transform: translateY(-2px);
+    }
+
+    .quick-launch-action--mint {
+        background: linear-gradient(135deg, #34d399, #10b981);
+        color: #052e16;
+        box-shadow: 0 18px 30px rgba(34, 197, 94, 0.32);
+    }
+
+    .quick-launch-action--lavender {
+        background: rgba(129, 140, 248, 0.28);
+        color: #ddd6fe;
+    }
+
+    .quick-launch-action--rose {
+        background: rgba(248, 113, 113, 0.26);
+        color: #fecaca;
+    }
+
+    .quick-launch-action--sky {
+        background: rgba(56, 189, 248, 0.28);
+        color: #f0f9ff;
+    }
+
+    .activity-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .activity-header-link {
+        font-size: 0.85rem;
+        text-decoration: none;
+        color: #93c5fd;
+    }
+
+    .activity-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .activity-entry {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        box-shadow: 0 18px 34px rgba(6, 14, 32, 0.42);
+    }
+
+    .activity-summary {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .activity-title {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+
+    .activity-category {
+        font-size: 0.85rem;
+        color: rgba(203, 213, 225, 0.72);
+    }
+
+    .activity-description {
+        font-size: 0.8rem;
+        color: rgba(148, 163, 184, 0.72);
+    }
+
+    .activity-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        min-width: 150px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-badge--published {
+        background: rgba(34, 197, 94, 0.18);
+        color: #4ade80;
+    }
+
+    .status-badge--pending {
+        background: rgba(234, 179, 8, 0.24);
+        color: #facc15;
+    }
+
+    .status-badge--rejected {
+        background: rgba(248, 113, 113, 0.24);
+        color: #f87171;
+    }
+
+    .status-badge--default {
+        background: rgba(59, 130, 246, 0.26);
+        color: #93c5fd;
+    }
+
+    .activity-time {
+        font-size: 0.78rem;
+        color: rgba(148, 163, 184, 0.75);
+    }
+
+    .activity-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .activity-link {
+        font-size: 0.85rem;
+        text-decoration: none;
+    }
+
+    .activity-link--edit {
+        color: #93c5fd;
+    }
+
+    .activity-link--view {
+        color: #34d399;
+    }
+
+    .activity-note {
+        font-size: 0.78rem;
+        color: rgba(248, 113, 113, 0.75);
+    }
+
+    .dashboard-empty-state {
+        padding: 28px;
+        border-radius: 18px;
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px dashed rgba(148, 163, 184, 0.25);
+        text-align: center;
+        color: rgba(226, 232, 240, 0.78);
+        font-size: 0.95rem;
+    }
+
+    @media (max-width: 992px) {
+        .dashboard-hero {
+            padding: 36px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 0 18px;
+        }
+
+        .dashboard-hero {
+            padding: 32px;
+        }
+
+        .dashboard-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .dashboard-action-btn {
+            width: 100%;
+        }
+
+        .dashboard-secondary-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .dashboard-hero {
+            padding: 28px;
+        }
+
+        .dashboard-stats-item {
+            flex: 1 1 100%;
+        }
+
+        .activity-entry {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .activity-meta {
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .activity-actions {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+{% endblock %}

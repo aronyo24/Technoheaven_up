@@ -1,13 +1,8 @@
-
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Home - TECHNOHEAVEN{% endblock %}
 {% block content %}
-
-    <!-- Navbar 1 - HCF Bootstrap 5 Component -->
-    
-
-    <div class="container" style="height: 65px"></div>
+<div class="container" style="height: 65px"></div>
     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" style="max-height: 650px; overflow: hidden;">
     <div class="carousel-indicators">
         <!-- Carousel Indicators Buttons -->
@@ -54,146 +49,134 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-<section id="about" class="pt-5">
-    <div class="container">
-        <div class=" h_about border-0 shadow mb-4">
-            <div class="row g-0">
-                <div class="col-md-8">
-                    <div class="container pt-4">
-                        <h2 class="card-title fw-bold text-primary mb-4" style="font-family: 'Arial', sans-serif; font-size: 28px; text-align: justify;">About Us</h2>
-                        <p class="card-text" style="font-family: 'Arial', sans-serif; font-size: 18px; text-align: justify;">
-                           TECHNOHEAVEN is a leading research and development company at the forefront of innovation.
-                        We specialize in exploring the frontiers of technology, focusing on blockchain, artificial intelligence,
-                        machine learning, and deep learning. Our passion lies in unraveling the complexities of these fields and
-                        pushing the boundaries of what is possible.
-                        </p>
-                        <a href="{% url 'about' %}"class="btn btn-primary text-decoration-none mt-3" style="font-size: 20px;">Learn More</a>
+
+
+<!-- <section class="trusted-band">
+    <div class="container trusted-band__inner">
+        <span class="trusted-band__label">Trusted by teams at</span>
+        <div class="trusted-band__logos">
+            <img src="{% static 'images/client_logos/logo1.png' %}" alt="Client 1">
+            <img src="{% static 'images/client_logos/logo2.png' %}" alt="Client 2">
+            <img src="{% static 'images/client_logos/logo3.png' %}" alt="Client 3">
+            <img src="{% static 'images/client_logos/logo4.png' %}" alt="Client 4">
+        </div>
+    </div>
+</section> -->
+
+<section class="about-snapshot background--gray">
+    <div class="container about-snapshot__grid">
+        <div class="about-snapshot__copy">
+            <h2>Research engineered for measurable impact</h2>
+            <p>From concept exploration to scaled deployment, Technoheaven teams co-create with industry pioneers to build resilient, human-centric technologies.</p>
+            <div class="about-snapshot__list">
+                <div class="about-snapshot__item">
+                    <span>1</span>
+                    <div>
+                        <p class="about-snapshot__item-title">Strategic foresight</p>
+                        <p>Dedicated research sprints mapping emerging opportunities across industries.</p>
                     </div>
                 </div>
+                <div class="about-snapshot__item">
+                    <span>2</span>
+                    <div>
+                        <p class="about-snapshot__item-title">Applied intelligence</p>
+                        <p>Hybrid teams translating research insights into production-ready systems.</p>
+                    </div>
+                </div>
+               
+            </div>
+            <a class="link-underline" href="{% url 'about' %}">Dive deeper into our mission</a>
+        </div>
+        <div class="about-snapshot__media">
+            <img src="{% static 'images/home_ab.svg' %}" alt="Collaborative research">
+        </div>
+    </div>
+</section>
+{% with publications|slice:":4" as recent_publications %}
+{% if recent_publications %}
+<section class="recent-publications">
+    <div class="container">
+        <div class="section-heading">
+            <span class="eyebrow">Research Spotlight</span>
+            <h2>Recent Publications</h2>
+            <p>Discover the latest breakthroughs from the Technoheaven innovation lab, carefully curated to highlight the ideas shaping tomorrow.</p>
+        </div>
+        <ul class="recent-publications__grid">
+            {% for publication in recent_publications %}
+            <li class="recent-publications__card">
+                <span class="recent-publications__accent"></span>
+                <div class="recent-publications__content">
+                    <p class="recent-publications__index">Publication {{ forloop.counter }}</p>
+                    <h3>{{ publication.title }}</h3>
+                    <p class="recent-publications__journal">{{ publication.journal }}</p>
+                    {% if publication.author %}
+                    <p class="recent-publications__author">By {{ publication.author }}</p>
+                    {% endif %}
+                </div>
+                {% if publication.link %}
+                <a class="btn-pill btn-pill--dark" href="{{ publication.link }}" target="_blank" rel="noopener">View Publication<span>&gt;</span></a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endif %}
+{% endwith %}
 
-                <div class="col-md-4">
-                    <img src="{% static 'images/home_ab.svg' %}" alt="About Us Image" class="img-fluid rounded-start">
+<section class="insights">
+    <div class="container">
+        <div class="insights__header">
+            <div>
+                <h2>Intelligence Briefings</h2>
+                <p>Stay ahead with real-time updates from our labs and industry partners.</p>
+            </div>
+            <a class="link-underline link-underline--accent" href="{% url 'blog_list' %}">View all insights</a>
+        </div>
+        <div class="insights__grid">
+            {% for single_news in news|slice:":3" %}
+            <article class="insights__card">
+                <div>
+                    <p class="insights__date">{{ single_news.date|date:"M d, Y" }}</p>
+                    <h3>{{ single_news.news_title }}</h3>
+                </div>
+                <a class="insights__link" href="{{ single_news.link }}">Read update<span>&gt;</span></a>
+            </article>
+            {% empty %}
+            <div class="insights__empty">No news available at the moment. Check back soon.</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="analytics">
+    <div class="container analytics__grid">
+        <div class="analytics__copy">
+            <h2>Real-time engagement analytics</h2>
+            <p>We translate audience signals into actionable insights, ensuring every collaboration stays adaptive and impact-driven.</p>
+            <ul class="analytics__list">
+                <li>Privacy-first tracking with zero personal identifiers stored.</li>
+                <li>Predictive models forecasting engagement up to 30 days ahead.</li>
+                <li>Automated insight streams for partner dashboards.</li>
+            </ul>
+        </div>
+        <div class="analytics__stats">
+            <div class="analytics__highlight">
+                <p class="analytics__label">Total visitors</p>
+                <p class="analytics__value">{{ total_visitors }}</p>
+                <p class="analytics__caption">Across all active research portals.</p>
+            </div>
+            <div class="analytics__breakdown">
+                <div class="analytics__tile">
+                    <p class="analytics__tile-label">Total visits</p>
+                    <p class="analytics__tile-value">{{ total_visits }}</p>
+                </div>
+                <div class="analytics__tile">
+                    <p class="analytics__tile-label">Last 30 days</p>
+                    <p class="analytics__tile-value">{{ last_month_visits }}</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
-        <section class="r_publications pt-4">
-        <div class="container text-center">
-            <h2>Recent Publication</h2>
-        </div>
-
-        <div class="container">
-            <ul class="cards">
-                {% for publication in publications %}
-                    {% if forloop.counter <= 4 %}
-                        <li class="card">
-                            <div>
-                                <h3 class="card-title">{{ publication.title }}</h3>
-                                <div class="card-content">
-                                    <p>{{ publication.journal }}</p>
-                                    <p>{{ publication.author }}</p>
-                                </div>
-                            </div>
-                            <div class="card-link-wrapper">
-                                <a href="{{ publication.link }}" class="card-link">Learn More</a>
-                            </div>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-       </div>
-    </section>
-
-
-
-
-    <div class="container news">
-            <div class="row">
-                <div class="col-12 py-4 rounded-4 " style="background: #152239">
-                    <div class="row align-items-center ">
-                        <div class="col-md-3 col-lg-2 pr-md-0">
-                            <div class="p-2 bg-primary rounded-3 text-white text-center breaking-caret">
-                                <span class="font-weight-bold">News</span>
-                            </div>
-                        </div>
-                        <div class="col-md-9 col-lg-10 pl-md-4 py-2">
-                            <div class="breaking-box">
-                                <div id="carouselbreaking" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner">
-                                        {% for single_news in news %}
-                                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                <a href="{{ single_news.link }}">
-                                                    <span class="position-relative mx-2 badge badge-primary rounded-0"
-                                                        style="color: #36ef2c">{{ single_news.date }}</span>
-                                                </a>
-                                                <a class="text-white" href="{{ single_news.link }}">
-                                                    {{ single_news.news_title }}
-                                                </a>
-                                            </div>
-                                        {% endfor %}
-                                        {% if news.count == 0 %}
-                                            <p>No News available</p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row justify-content-center align-items-center" style="min-height: 300px;">
-            <div class="col-md-8">
-                <div class="border-0" style="overflow: hidden; border-radius: 15px;">
-                  <!--  <div class="card-header text-center py-1">
-                        <h2 class="card-title mb-0 text-white"
-                            style="font-size: 1.8rem; font-weight: bold; animation: fadeInDown 1s; color: #edf1ee;">
-                            Visitor Statistics
-                        </h2> -->
-                    </div>
-                    <div class="card-body" style="animation: fadeInUp 1s;">
-                        <div class="row text-center card-body">
-                            <div class="col-12 col-md-4 mb-3 mb-md-0">
-                                <div class="stat-box shadow-sm p-1 rounded"
-                                     style="transition: transform 0.3s ease, box-shadow 0.3s ease; animation: bounceIn 1s;">
-                                    <h3 id="total-visitors"
-                                        style="font-size: 2rem; font-weight: bold; color: white;">
-                                        {{ total_visitors }}
-                                    </h3>
-                                    <p style="font-size: 1rem; font-weight: bold; color: rgb(9, 231, 42);">
-                                        Total Visitors
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="stat-box shadow-sm p-1 rounded"
-                                     style="transition: transform 0.3s ease, box-shadow 0.3s ease; animation: bounceIn 1.2s;">
-                                    <h3 id="monthly-visitors"
-                                        style="font-size: 2rem; font-weight: bold; color: white;">
-                                        {{ total_visits }}
-                                    </h3>
-                                    <p style="font-size: 1rem; font-weight:bold; color: rgb(9, 231, 42);">
-                                        Total Visits
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="stat-box shadow-sm p-1 rounded"
-                                     style="transition: transform 0.3s ease, box-shadow 0.3s ease; animation: bounceIn 1.2s;">
-                                    <h3 id="monthly-visitors"
-                                        style="font-size: 2rem; font-weight: bold; color: white;">
-                                        {{ last_month_visits }}
-                                    </h3>
-                                    <p style="font-size: 1rem; font-weight: bold; color: rgb(9, 231, 42);">
-                                        Last Month's Visits
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 {% endblock %}

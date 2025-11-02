@@ -23,7 +23,12 @@ import reapp
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('reapp.urls'))
+    path('', include('reapp.urls')),
+    path('', include('publication_project.urls')),
+    path('', include('message.urls')),
+    path('', include('team_gallary.urls')),
+    path('', include('session.urls')),
+
 ]
 
 

@@ -3,41 +3,67 @@
 {% load static %}
 {% block title %}Sessions - TECHNOHEAVEN{% endblock %}
 {% block content %}
-<section id="gallery_main">
-    <div class="about_main clearfix">
-        <div class="container d-flex justify-content-center align-items-center">
-            <div class="container text-center" id="resourcesContainer">
-                <h2>Sessions</h2>
-            </div>
-        </div>
+
+<section class="page-hero">
+    <div class="container">
+        <span class="eyebrow"><i class="fa-solid fa-person-chalkboard"></i> Sessions</span>
+        <h1>Keynotes, workshops, and knowledge exchanges</h1>
+        <p>
+            Our experts regularly share insights at industry forums, academic conferences, and in-house innovation
+            sprints. Explore the highlights from our recent sessions.
+        </p>
     </div>
 </section>
 
-
-<section id="sessions" style="margin-bottom: 3rem;">
+<section class="section-pad section-pad--alt">
     <div class="container">
-        <h2 class="text-center mb-5" style="color: #d3d3d3;">Major Sessions </h2>
-        <div class="p-4 rounded " style="background-color: #2f3437; border: 1px solid #777;">
-            <div class="mb-4 pb-3 border-top border-secondary"></div>
+        <div class="glass-card timeline-wrapper">
+            <div class="timeline-line"></div>
             {% for session in sessions %}
-                <div class="mb-4 pb-3 border-bottom border-secondary">
-                    <h5 style="color: #36ef2c; font-weight: bold;">
-                        {{ session.session_name }}
-                    </h5>
-                    <p style="color: #f1de0d; font-weight: bold;">
-                        {{ session.title }} <span style="color: #ccc;">({{ session.date_range }})</span> - {{ session.location }}
+                <article class="timeline-entry">
+                    <span class="timeline-dot"></span>
+                    <h3>{{ session.session_name }}</h3>
+                    <p class="theme-meta mb-1">
+                        {{ session.title }}{% if session.date_range %} · {{ session.date_range }}{% endif %}
+                        {% if session.location %}<span class="ms-1">· {{ session.location }}</span>{% endif %}
                     </p>
-                    <p style="color: #ddd; font-size: 15px;">
-                        {{ session.tagline }}
-                    </p>
+                    <p class="mb-2">{{ session.tagline }}</p>
                     {% if session.html_file %}
-                        <a href="{{ session.html_file.url }}" class="btn btn-sm btn-outline-light mt-2" target="_blank">View Full Details</a>
+                        <a href="{{ session.html_file.url }}" class="theme-link" target="_blank" rel="noopener">View full details</a>
                     {% endif %}
+                </article>
+            {% empty %}
+                <div class="text-center">
+                    <p class="theme-meta mb-0">Session highlights will return soon.</p>
                 </div>
             {% endfor %}
         </div>
     </div>
 </section>
 
-</section>
+<style>
+    .timeline-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .timeline-wrapper .timeline-line {
+        left: clamp(14px, 3vw, 24px);
+    }
+
+    .timeline-entry h3 {
+        font-size: 1.15rem;
+        font-weight: 640;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-entry p {
+        color: var(--th-text-muted);
+    }
+
+    .timeline-entry + .timeline-entry {
+        padding-top: 1rem;
+    }
+</style>
+
 {% endblock %}

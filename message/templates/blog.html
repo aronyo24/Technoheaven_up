@@ -54,24 +54,24 @@
 
         <div style="background:#fff; padding:16px; border-radius:10px; box-shadow:0 8px 20px rgba(14,20,23,0.06); border:1px solid #eef0f2; margin-bottom:16px;">
           <h5 style="color:#0d6efd; margin-bottom:12px; font-weight:700;">Categories</h5>
-          <ul class="list-group mb-4" style="padding:0; list-style:none;">
-          <li class="list-group-item" style="border:1px solid #eef0f2; background:#fff; padding:10px 12px; border-radius:8px; margin-bottom:8px;">
-            <a href="{% url 'blog_list' %}" class="d-flex justify-content-between text-decoration-none" style="color:#333;">
-              <span style="display:flex; align-items:center; gap:8px;"><i class="fa fa-list" style="color:#0d6efd;"></i> All</span>
-              <span class="badge" style="background:#f4f6f8; color:#333; border-radius:12px; padding:4px 8px;">{{ all_blogs.count }}</span>
-            </a>
-          </li>
-          {% for cat in categories %}
-          <li class="list-group-item category-item {% if selected_category == cat.value %}category-item--active{% endif %}" style="border:1px solid #eef0f2; background:#fff; padding:10px 12px; border-radius:8px; margin-bottom:8px;">
-            <a href="{% url 'blog_list' %}?category={{ cat.value }}" class="text-decoration-none d-flex justify-content-between" style="color:#333;">
-              <span style="display:flex; align-items:center; gap:8px;">
-                <i class="fa fa-circle" style="color:#0d6efd; font-size:10px;"></i> {{ cat.label }}
-              </span>
-              <span class="badge" style="background:#f4f6f8; color:#333; border-radius:12px; padding:4px 8px;">{{ cat.count }}</span>
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
+          <ul class="list-group mb-4 category-list">
+            <li class="list-group-item category-item {% if not selected_category %}category-item--active{% endif %}">
+              <a href="{% url 'blog_list' %}" class="category-link">
+                <span class="category-label"><i class="fa fa-list category-dot"></i> All</span>
+                <span class="badge category-count">{{ all_blogs.count }}</span>
+              </a>
+            </li>
+            {% for cat in categories %}
+            <li class="list-group-item category-item {% if selected_category == cat.value %}category-item--active{% endif %}">
+              <a href="{% url 'blog_list' %}?category={{ cat.value }}" class="category-link">
+                <span class="category-label">
+                  <i class="fa fa-circle category-dot category-dot-{{ cat.palette_index }}"></i> {{ cat.label }}
+                </span>
+                <span class="badge category-count">{{ cat.count }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
         </div>
 
         <!-- Popular Posts -->
@@ -197,7 +197,22 @@ aside h5, .card h5 { color: var(--text-strong); font-weight:700; }
 .list-group-item { border:1px solid var(--soft-border); color: var(--muted-2); background: #fff; }
 .list-group-item a { color: inherit; text-decoration: none; display:flex; justify-content:space-between; align-items:center; }
 .list-group-item.active { background: rgba(13,110,253,0.06); border-color: rgba(13,110,253,0.12); color: var(--text-strong); }
-.category-item--active { box-shadow:0 8px 20px rgba(13,110,253,0.06); }
+.category-list { padding: 0; list-style: none; }
+.category-item { transition: transform 0.2s ease, box-shadow 0.2s ease; border-radius: 8px; margin-bottom: 8px; }
+.category-item--active { box-shadow:0 8px 20px rgba(13,110,253,0.06); transform: translateY(-2px); }
+.category-link { display:flex; justify-content:space-between; align-items:center; color: inherit; text-decoration:none; }
+.category-label { display:flex; align-items:center; gap:8px; }
+.category-count { background: var(--soft-badge); color: var(--text-strong); border-radius:12px; padding:4px 8px; font-weight:600; }
+.category-dot { font-size:10px; }
+.category-dot-0 { color: #007bff; }
+.category-dot-1 { color: #6610f2; }
+.category-dot-2 { color: #20c997; }
+.category-dot-3 { color: #e83e8c; }
+.category-dot-4 { color: #fd7e14; }
+.category-dot-5 { color: #17a2b8; }
+.category-dot-6 { color: #6f42c1; }
+.category-dot-7 { color: #20a8d8; }
+.category-dot-8 { color: #343a40; }
 
 /* badges */
 .badge { background: var(--soft-badge); color: var(--text-strong); border-radius: 12px; padding: 4px 8px; font-weight:600; }

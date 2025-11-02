@@ -52,7 +52,7 @@ class Blog(models.Model):
     )
     likes = models.PositiveIntegerField(default=0)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='published')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     submitted_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,

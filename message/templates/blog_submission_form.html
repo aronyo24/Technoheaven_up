@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{% if is_edit %}Edit Blog{% else %}Submit Blog{% endif %} - TECHNOHEAVEN{% endblock %}
+{% block content %}
+<section class="blog-form">
+    <div class="container">
+        <div class="blog-form__card">
+            <div class="blog-form__header">
+                <a href="{% url 'user_dashboard' %}" class="btn-link blog-form__back">
+                    <i class="fa-solid fa-arrow-left"></i> Back to dashboard
+                </a>
+                <span class="blog-form__eyebrow">{% if is_edit %}Update submission{% else %}New submission{% endif %}</span>
+                <h1>{% if is_edit %}Refine your story{% else %}Write a blog post{% endif %}</h1>
+                <p>
+                    {% if is_edit %}
+                        Adjust the content below and re-submit. We'll notify you when the editorial team finishes the review.
+                    {% else %}
+                        Share your perspective with the Technoheaven community. Once submitted, our editors will review your post before publishing.
+                    {% endif %}
+                </p>
+                {% if is_edit and blog %}
+                <div class="blog-form__status">
+                    <span class="status-badge status-badge--{{ blog.status }}">{{ blog.get_status_display }}</span>
+                    <span class="blog-form__status-copy">{{ blog.status_description }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="blog-form__errors" role="alert">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" class="blog-form__form">
+                {% csrf_token %}
+                <div class="blog-form__grid">
+                    {% for field in form %}
+                    <div class="blog-form__field{% if field.errors %} blog-form__field--error{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                        <small class="blog-form__help">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                        <ul class="blog-form__field-errors">
+                            {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="blog-form__actions">
+                    <a href="{% url 'user_dashboard' %}" class="btn-pill btn-pill--ghost">Cancel</a>
+                    <button type="submit" class="btn-pill btn-pill--primary">
+                        {% if is_edit %}
+                        <i class="fa-solid fa-paper-plane"></i> Resubmit for review
+                        {% else %}
+                        <i class="fa-solid fa-paper-plane"></i> Submit for review
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

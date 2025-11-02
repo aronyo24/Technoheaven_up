@@ -3,56 +3,131 @@
 {% load static %}
 {% block title %}Home - TECHNOHEAVEN{% endblock %}
 {% block content %}
-<section id="gallery_main">
-    <div class="about_main clearfix">
-        <div class="container d-flex justify-content-center align-items-center">
-            <div class="container text-center" id="resourcesContainer">
-                <h2>PROJECT</h2>
-            </div>
-        </div>
+
+<section class="page-hero">
+    <div class="container">
+        <span class="eyebrow"><i class="fa-solid fa-flask"></i> Research Portfolio</span>
+        <h1>Running Projects</h1>
+        <p>
+            Discover the initiatives powering our research and development roadmap. Each engagement blends deep domain
+            expertise with applied innovation to create measurable impact for our partners.
+        </p>
     </div>
 </section>
-<section id="contact" >
-       <section id="Contact" class="full-height px-lg-5">
-        <div class="container">
-            {% if messages %}
-                <div class="row">
-                    {% for message in messages %}
-                        <h4 style="text-align: center; color: #0cf50c;">{{ message }}</h4>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <div class="row justify-content-center text-center">
-                <div class="col-lg-8 pb-4">
 
-                    <h1 data-aos="fade-up" data-aos-delay="400">Running Projects</h1>
-                </div>
+<section class="section-pad">
+    <div class="container">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="glass-card glass-card--soft mb-3">{{ message }}</div>
+                {% endfor %}
             </div>
+        {% endif %}
 
-            <div class="row justify-content-center rounded" data-aos="fade-up" data-aos-delay="600">
-                <div class="wrapper clearfix border" style="background: linear-gradient(120deg, #f8fafc 60%, #e0e7ff 100%); border-radius: 22px; box-shadow: 0 8px 32px rgba(44,62,80,0.13);">
-                    <div data-aos="fade-up" data-aos-delay="700">
-                        {% for project in projects %}
-                            <div class="image-wrapper" style="text-align:center;">
-                                <img src="{{ project.logo.url }}" alt="{{ project.project_title }} Logo" style="max-width:100px; border-radius:14px; background:linear-gradient(135deg,#fff 70%,#e0e7ff 100%); box-shadow:0 4px 16px rgba(80,80,180,0.10); padding:8px;">
+        {% if projects %}
+            <div class="card-grid card-grid--two">
+                {% for project in projects %}
+                    <article class="glass-card project-card h-100">
+                        <div class="d-flex flex-wrap align-items-center gap-3 mb-3 project-card__header">
+                            <div class="project-logo">
+                                {% if project.logo %}
+                                    <img src="{{ project.logo.url }}" alt="{{ project.project_title }} logo">
+                                {% else %}
+                                    <span class="project-logo__placeholder"><i class="fa-solid fa-diagram-project"></i></span>
+                                {% endif %}
                             </div>
-                            <div class="text-wrapper" style="background: linear-gradient(120deg, #fff 80%, #f0f4ff 100%); border-radius: 16px; padding: 22px 28px 18px 28px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(80,80,180,0.08);">
-                                <h5 class="card-title" style="color: #2d1582; font-weight: 800; letter-spacing: 0.5px; font-size: 1.3em;">{{ project.project_title }}</h5>
-                                <h5 class="" style="color: #ff6f00; font-size: 1.08em; margin-bottom: 0.5em;"><span style="font-weight: bold; color: #2d1582;">{{ project.funded_by }}</span>  <span style="color:#5e60ce;">({{ project.durations }})</span> - <span style="color:#00b4d8; font-weight:600;">{{ project.funding_amount }}</span> <span style="color:#43a047;">{{ project.role }}</span></h5>
-                                <p style="color: #222a3f; font-size: 1.08em;">{{ project.summary }}</p>
-                                 {% if project.url %}
-                                 <a href="{{ project.url }}" target="_blank" style="display:inline-block; margin-top:12px; background: linear-gradient(90deg, #2d1582 0%, #00b4d8 100%); color:#fff; border-radius:22px; padding:9px 32px; text-decoration:none; font-weight:700; font-size:1.08em; box-shadow:0 4px 16px rgba(45,21,130,0.10); transition: background 0.3s; border:none; outline:none;">Learn More</a>
-                                 {% endif %}
+                            <div class="flex-grow-1">
+                                <h2 class="project-title mb-1">{{ project.project_title }}</h2>
+                                <p class="theme-meta mb-0">
+                                    {% if project.funded_by %}
+                                        Funded by <strong>{{ project.funded_by }}</strong>
+                                    {% endif %}
+                                    {% if project.durations %}
+                                        <span class="ms-1">· {{ project.durations }}</span>
+                                    {% endif %}
+                                </p>
                             </div>
-                            <hr>
-                        {% endfor %}
-                    </div>
-                </div>
+                        </div>
+
+                        <div class="project-card__body">
+                            <p class="mb-3">{{ project.summary }}</p>
+                            <ul class="project-facts list-unstyled mb-0">
+                                {% if project.funding_amount %}
+                                    <li><i class="fa-solid fa-coins"></i>Investment: {{ project.funding_amount }}</li>
+                                {% endif %}
+                                {% if project.role %}
+                                    <li><i class="fa-solid fa-user-gear"></i>Role: {{ project.role }}</li>
+                                {% endif %}
+                                {% if project.url %}
+                                    <li><i class="fa-solid fa-arrow-up-right-from-square"></i><a href="{{ project.url }}" target="_blank" class="theme-link">Visit project site</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </article>
+                {% endfor %}
             </div>
-        </div>
-    </section>
-
+        {% else %}
+            <div class="glass-card text-center">
+                <h3 class="mb-2">Projects in progress</h3>
+                <p class="mb-0 theme-meta">We're curating our live engagements. Please check back shortly for our latest collaborations.</p>
+            </div>
+        {% endif %}
+    </div>
 </section>
 
+<style>
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .project-card__header {
+        border-bottom: 1px solid rgba(91, 141, 247, 0.25);
+        padding-bottom: 1rem;
+    }
+
+    .project-title {
+        font-size: 1.25rem;
+        font-weight: 650;
+    }
+
+    .project-logo img,
+    .project-logo__placeholder {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(76, 110, 245, 0.12);
+        border: 1px solid rgba(76, 110, 245, 0.28);
+        color: #4c6ef5;
+        box-shadow: 0 10px 30px rgba(5, 17, 45, 0.35);
+        padding: 0.6rem;
+    }
+
+    .project-logo__placeholder i {
+        font-size: 1.5rem;
+    }
+
+    .project-facts {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .project-facts li {
+        color: var(--th-text-muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.95rem;
+    }
+
+    .project-facts i {
+        color: #00d4a8;
+    }
+</style>
 
 {% endblock %}

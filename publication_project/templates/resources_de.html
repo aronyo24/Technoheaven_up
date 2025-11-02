@@ -3,34 +3,75 @@
 {% load static %}
 {% block title %}RESOURCES - TECHNOHEAVEN{% endblock %}
 {% block content %}
-<section id="gallery_main">
-    <div class="about_main clearfix">
-        <div class="container d-flex justify-content-center align-items-center">
-            <div class="container text-center" id="resourcesContainer">
-                <h2>RESOURCES</h2>
-            </div>
-        </div>
-    </div>
-</section>
-<section id="about" class="pt-5">
-    <div class="container">
-        <div class=" h_about border-0 shadow mb-4">
-            <div class="row g-0">
-                <div class="col-md-8">
-                    <div class="container pt-4">
-                        <h2 class="card-title fw-bold text-primary mb-4" style="font-family: 'Arial', sans-serif; font-size: 28px; text-align: justify;">{{ resource.resource_name }}</h2>
-                        <p class="card-text" style="font-family: 'Arial', sans-serif; font-size: 18px; text-align: justify;">
-                           {{ resource.resource_description }}
-                        </p>
-                        <a href="{{ resource.pdf_file.url }}"class="btn btn-primary text-decoration-none mt-3" style="font-size: 20px;">Learn More</a>
-                    </div>
-                </div>
 
-                <div class="col-md-4">
-                    <img src="{{ resource.resource_img.url }}" alt="About Us Image" class="img-fluid rounded-start">
+<section class="page-hero">
+    <div class="container">
+        <span class="eyebrow"><i class="fa-solid fa-folder-open"></i> Resource Spotlight</span>
+        <h1>{{ resource.resource_name }}</h1>
+        <p>{{ resource.resource_description|truncatewords:28 }}</p>
+        {% if resource.pdf_file %}
+            <a href="{{ resource.pdf_file.url }}" class="theme-btn mt-3" target="_blank" rel="noopener">
+                Download briefing <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section-pad">
+    <div class="container">
+        <div class="glass-card resource-detail">
+            <div class="resource-detail__content">
+                <div class="resource-detail__overview">
+                    <h2 class="mb-3">Overview</h2>
+                    <p>{{ resource.resource_description|linebreaksbr }}</p>
+                    {% if resource.pdf_file %}
+                        <div class="mt-4">
+                            <a href="{{ resource.pdf_file.url }}" class="theme-link" target="_blank" rel="noopener">
+                                View the full resource (PDF)
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
+                {% if resource.resource_img %}
+                    <div class="resource-detail__media">
+                        <img src="{{ resource.resource_img.url }}" alt="{{ resource.resource_name }} visual" loading="lazy">
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    .resource-detail {
+        padding: clamp(2rem, 5vw, 3rem);
+    }
+
+    .resource-detail__content {
+        display: grid;
+        gap: 2.5rem;
+        align-items: start;
+    }
+
+    @media (min-width: 992px) {
+        .resource-detail__content {
+            grid-template-columns: 1.3fr 1fr;
+        }
+    }
+
+    .resource-detail__media img {
+        width: 100%;
+        border-radius: var(--th-radius-md);
+        border: 1px solid rgba(76, 110, 245, 0.25);
+        box-shadow: var(--th-shadow-sm);
+        background: rgba(76, 110, 245, 0.12);
+    }
+
+    .resource-detail__overview p {
+        color: var(--th-text-muted);
+        line-height: 1.8;
+        font-size: 1.02rem;
+    }
+</style>
+
 {% endblock %}

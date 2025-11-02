@@ -3,26 +3,28 @@
 {% block title %}Join Technoheaven{% endblock %}
 
 {% block content %}
-<section class="py-5" style="background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);">
-  <div class="container py-4">
-    <div class="row g-5 align-items-center">
-      <div class="col-lg-6" data-aos="fade-right">
-        <div class="position-relative">
-          <img src="{% static 'assets/img/health/consultation-3.webp' %}" alt="Innovation workshop" class="img-fluid rounded-4 shadow-sm w-100">
-          <div class="position-absolute top-0 start-0 m-3 badge text-bg-primary rounded-pill px-3 py-2 shadow">
-            Innovation Partner
-          </div>
-        </div>
-        <div class="mt-4">
-          <h2 class="fw-semibold text-primary mb-3">Begin Your Innovation Journey</h2>
-          <p class="text-muted mb-0">Become part of our research community to explore emerging tech, co-create solutions, and stay informed on the latest breakthroughs from Technoheaven.</p>
-        </div>
-      </div>
 
-      <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
-        <div class="card border-0 shadow rounded-4">
-          <div class="card-body p-4 p-md-5">
-            <h3 class="fw-semibold mb-4">Member Registration</h3>
+<section class="page-hero">
+  <div class="container">
+    <span class="eyebrow"><i class="fa-solid fa-user-plus"></i> Join Technoheaven</span>
+    <h1>Launch your research workspace</h1>
+    <p>Collaborate with cross-functional squads, track experiments, and unlock curated insights built for emerging tech teams.</p>
+  </div>
+</section>
+
+<section class="section-pad register-section">
+  <div class="container">
+    <div class="register-shell">
+      <div class="glass-card theme-form register-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="register-body p-1 p-md-5">
+          <div class="register-intro text-center">
+            <span class="theme-tag"><i class="fa-solid fa-globe"></i> Join the global network</span>
+            <h3 class="mb-2">Create your account</h3>
+            <p class="theme-meta">Unlock projects, collaborate with researchers worldwide, and tailor updates with your region and dial code.</p>
+          </div>
+          <div class="register-form-shell">
+
+
             {% if form_errors %}
               <div class="alert alert-danger mb-4" role="alert">
                 <ul class="mb-0 ps-3">
@@ -32,69 +34,465 @@
                 </ul>
               </div>
             {% endif %}
-            <form method="post">
+            <form method="post" class="register-form">
               {% csrf_token %}
+              <input type="hidden" name="name" id="regFullName" value="{{ form_data.name|default:'' }}">
+              <input type="hidden" name="dial_code" id="regDialCode" value="{{ form_data.dial_code|default:'+1' }}">
               <div class="row g-3">
-                <div class="col-12">
-                  <label class="form-label">Full name<span class="text-danger"> *</span></label>
-                  <input type="text" name="name" class="form-control form-control-lg" placeholder="e.g. Jane Doe" value="{{ form_data.name|default:'' }}" required>
+                <div class="col-md-6">
+                  <label class="form-label" for="regFirstName">First name<span class="text-danger"> *</span></label>
+                  <input type="text" id="regFirstName" name="first_name" class="form-control" placeholder="Jane" value="{{ form_data.first_name|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Username<span class="text-danger"> *</span></label>
-                  <input type="text" name="username" class="form-control form-control-lg" placeholder="Create a username" value="{{ form_data.username|default:'' }}" autocomplete="username" required>
+                  <label class="form-label" for="regLastName">Last name<span class="text-danger"> *</span></label>
+                  <input type="text" id="regLastName" name="last_name" class="form-control" placeholder="Doe" value="{{ form_data.last_name|default:'' }}" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Email address<span class="text-danger"> *</span></label>
-                  <input type="email" name="email" class="form-control form-control-lg" placeholder="you@example.com" value="{{ form_data.email|default:'' }}" autocomplete="email" required>
+                  <label class="form-label" for="regUsername">Username<span class="text-danger"> *</span></label>
+                  <input type="text" id="regUsername" name="username" class="form-control" placeholder="Create a username" value="{{ form_data.username|default:'' }}" autocomplete="username" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Password<span class="text-danger"> *</span></label>
-                  <input type="password" name="password" class="form-control form-control-lg" placeholder="Create a strong password" autocomplete="new-password" minlength="8" required>
+                  <label class="form-label" for="regEmail">Email address<span class="text-danger"> *</span></label>
+                  <input type="email" id="regEmail" name="email" class="form-control" placeholder="you@example.com" value="{{ form_data.email|default:'' }}" autocomplete="email" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Confirm password<span class="text-danger"> *</span></label>
-                  <input type="password" name="confirm_password" class="form-control form-control-lg" placeholder="Re-enter password" autocomplete="new-password" minlength="8" required>
+                  <label class="form-label" for="regPassword">Password<span class="text-danger"> *</span></label>
+                  <div class="password-wrapper">
+                    <input type="password" id="regPassword" name="password" class="form-control" placeholder="Create a strong password" autocomplete="new-password" minlength="8" required>
+                    <button type="button" class="password-toggle" data-target="regPassword" aria-label="Toggle password visibility"><i class="fa-regular fa-eye"></i></button>
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Country<span class="text-danger"> *</span></label>
-                  <input type="text" name="country" class="form-control form-control-lg" placeholder="Enter your country" value="{{ form_data.country|default:'' }}" required>
+                  <label class="form-label" for="regPasswordConfirm">Confirm password<span class="text-danger"> *</span></label>
+                  <div class="password-wrapper">
+                    <input type="password" id="regPasswordConfirm" name="confirm_password" class="form-control" placeholder="Re-enter password" autocomplete="new-password" minlength="8" required>
+                    <button type="button" class="password-toggle" data-target="regPasswordConfirm" aria-label="Toggle password visibility"><i class="fa-regular fa-eye"></i></button>
+                  </div>
                 </div>
-
-                <div class="col-md-4">
-                  <label class="form-label">Age</label>
-                  <input type="number" name="age" class="form-control form-control-lg" placeholder="Years" value="{{ form_data.age|default:'' }}" min="0">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Gender</label>
-                  <select name="gender" class="form-select form-select-lg">
+                <div class="col-md-6">
+                  <label class="form-label" for="regGender">Gender</label>
+                  <select id="regGender" name="gender" class="form-select">
                     <option value="" {% if not form_data.gender %}selected{% endif %}>Prefer not to say</option>
                     <option value="Female" {% if form_data.gender == 'Female' %}selected{% endif %}>Female</option>
                     <option value="Male" {% if form_data.gender == 'Male' %}selected{% endif %}>Male</option>
                     <option value="Other" {% if form_data.gender == 'Other' %}selected{% endif %}>Other</option>
                   </select>
                 </div>
-                <div class="col-md-4">
-                  <label class="form-label">Contact number</label>
-                  <input type="tel" name="contact" class="form-control form-control-lg" placeholder="Mobile or phone" value="{{ form_data.contact|default:'' }}" autocomplete="tel">
+                <div class="col-md-6">
+                  <label class="form-label" for="regProfession">Profession</label>
+                  <input type="text" id="regProfession" name="profession" class="form-control" placeholder="Research Scientist" value="{{ form_data.profession|default:'' }}">
+                </div>
+                <div class="col-md-7">
+                  <label class="form-label" for="regCountry">Country<span class="text-danger"> *</span></label>
+                  <select id="regCountry" name="country" class="form-select" required>
+                    <option value="">Select your country</option>
+                    {% with selected_country=form_data.country|default:"United States" %}
+                    <option value="Afghanistan" data-dial="+93" {% if selected_country == 'Afghanistan' %}selected{% endif %}>Afghanistan</option>
+                    <option value="Albania" data-dial="+355" {% if selected_country == 'Albania' %}selected{% endif %}>Albania</option>
+                    <option value="Algeria" data-dial="+213" {% if selected_country == 'Algeria' %}selected{% endif %}>Algeria</option>
+                    <option value="Andorra" data-dial="+376" {% if selected_country == 'Andorra' %}selected{% endif %}>Andorra</option>
+                    <option value="Angola" data-dial="+244" {% if selected_country == 'Angola' %}selected{% endif %}>Angola</option>
+                    <option value="Argentina" data-dial="+54" {% if selected_country == 'Argentina' %}selected{% endif %}>Argentina</option>
+                    <option value="Armenia" data-dial="+374" {% if selected_country == 'Armenia' %}selected{% endif %}>Armenia</option>
+                    <option value="Australia" data-dial="+61" {% if selected_country == 'Australia' %}selected{% endif %}>Australia</option>
+                    <option value="Austria" data-dial="+43" {% if selected_country == 'Austria' %}selected{% endif %}>Austria</option>
+                    <option value="Azerbaijan" data-dial="+994" {% if selected_country == 'Azerbaijan' %}selected{% endif %}>Azerbaijan</option>
+                    <option value="Bahrain" data-dial="+973" {% if selected_country == 'Bahrain' %}selected{% endif %}>Bahrain</option>
+                    <option value="Bangladesh" data-dial="+880" {% if selected_country == 'Bangladesh' %}selected{% endif %}>Bangladesh</option>
+                    <option value="Belarus" data-dial="+375" {% if selected_country == 'Belarus' %}selected{% endif %}>Belarus</option>
+                    <option value="Belgium" data-dial="+32" {% if selected_country == 'Belgium' %}selected{% endif %}>Belgium</option>
+                    <option value="Belize" data-dial="+501" {% if selected_country == 'Belize' %}selected{% endif %}>Belize</option>
+                    <option value="Benin" data-dial="+229" {% if selected_country == 'Benin' %}selected{% endif %}>Benin</option>
+                    <option value="Bhutan" data-dial="+975" {% if selected_country == 'Bhutan' %}selected{% endif %}>Bhutan</option>
+                    <option value="Bolivia" data-dial="+591" {% if selected_country == 'Bolivia' %}selected{% endif %}>Bolivia</option>
+                    <option value="Bosnia and Herzegovina" data-dial="+387" {% if selected_country == 'Bosnia and Herzegovina' %}selected{% endif %}>Bosnia and Herzegovina</option>
+                    <option value="Botswana" data-dial="+267" {% if selected_country == 'Botswana' %}selected{% endif %}>Botswana</option>
+                    <option value="Brazil" data-dial="+55" {% if selected_country == 'Brazil' %}selected{% endif %}>Brazil</option>
+                    <option value="Brunei" data-dial="+673" {% if selected_country == 'Brunei' %}selected{% endif %}>Brunei</option>
+                    <option value="Bulgaria" data-dial="+359" {% if selected_country == 'Bulgaria' %}selected{% endif %}>Bulgaria</option>
+                    <option value="Burkina Faso" data-dial="+226" {% if selected_country == 'Burkina Faso' %}selected{% endif %}>Burkina Faso</option>
+                    <option value="Burundi" data-dial="+257" {% if selected_country == 'Burundi' %}selected{% endif %}>Burundi</option>
+                    <option value="Cambodia" data-dial="+855" {% if selected_country == 'Cambodia' %}selected{% endif %}>Cambodia</option>
+                    <option value="Cameroon" data-dial="+237" {% if selected_country == 'Cameroon' %}selected{% endif %}>Cameroon</option>
+                    <option value="Canada" data-dial="+1" {% if selected_country == 'Canada' %}selected{% endif %}>Canada</option>
+                    <option value="Cape Verde" data-dial="+238" {% if selected_country == 'Cape Verde' %}selected{% endif %}>Cape Verde</option>
+                    <option value="Central African Republic" data-dial="+236" {% if selected_country == 'Central African Republic' %}selected{% endif %}>Central African Republic</option>
+                    <option value="Chad" data-dial="+235" {% if selected_country == 'Chad' %}selected{% endif %}>Chad</option>
+                    <option value="Chile" data-dial="+56" {% if selected_country == 'Chile' %}selected{% endif %}>Chile</option>
+                    <option value="China" data-dial="+86" {% if selected_country == 'China' %}selected{% endif %}>China</option>
+                    <option value="Colombia" data-dial="+57" {% if selected_country == 'Colombia' %}selected{% endif %}>Colombia</option>
+                    <option value="Comoros" data-dial="+269" {% if selected_country == 'Comoros' %}selected{% endif %}>Comoros</option>
+                    <option value="Congo (Democratic Republic)" data-dial="+243" {% if selected_country == 'Congo (Democratic Republic)' %}selected{% endif %}>Congo (Democratic Republic)</option>
+                    <option value="Congo (Republic)" data-dial="+242" {% if selected_country == 'Congo (Republic)' %}selected{% endif %}>Congo (Republic)</option>
+                    <option value="Costa Rica" data-dial="+506" {% if selected_country == 'Costa Rica' %}selected{% endif %}>Costa Rica</option>
+                    <option value="Croatia" data-dial="+385" {% if selected_country == 'Croatia' %}selected{% endif %}>Croatia</option>
+                    <option value="Cuba" data-dial="+53" {% if selected_country == 'Cuba' %}selected{% endif %}>Cuba</option>
+                    <option value="Cyprus" data-dial="+357" {% if selected_country == 'Cyprus' %}selected{% endif %}>Cyprus</option>
+                    <option value="Czech Republic" data-dial="+420" {% if selected_country == 'Czech Republic' %}selected{% endif %}>Czech Republic</option>
+                    <option value="Denmark" data-dial="+45" {% if selected_country == 'Denmark' %}selected{% endif %}>Denmark</option>
+                    <option value="Djibouti" data-dial="+253" {% if selected_country == 'Djibouti' %}selected{% endif %}>Djibouti</option>
+                    <option value="Dominica" data-dial="+1" data-dial-alt="767" {% if selected_country == 'Dominica' %}selected{% endif %}>Dominica</option>
+                    <option value="Dominican Republic" data-dial="+1" data-dial-alt="809" {% if selected_country == 'Dominican Republic' %}selected{% endif %}>Dominican Republic</option>
+                    <option value="Ecuador" data-dial="+593" {% if selected_country == 'Ecuador' %}selected{% endif %}>Ecuador</option>
+                    <option value="Egypt" data-dial="+20" {% if selected_country == 'Egypt' %}selected{% endif %}>Egypt</option>
+                    <option value="El Salvador" data-dial="+503" {% if selected_country == 'El Salvador' %}selected{% endif %}>El Salvador</option>
+                    <option value="Equatorial Guinea" data-dial="+240" {% if selected_country == 'Equatorial Guinea' %}selected{% endif %}>Equatorial Guinea</option>
+                    <option value="Eritrea" data-dial="+291" {% if selected_country == 'Eritrea' %}selected{% endif %}>Eritrea</option>
+                    <option value="Estonia" data-dial="+372" {% if selected_country == 'Estonia' %}selected{% endif %}>Estonia</option>
+                    <option value="Eswatini" data-dial="+268" {% if selected_country == 'Eswatini' %}selected{% endif %}>Eswatini</option>
+                    <option value="Ethiopia" data-dial="+251" {% if selected_country == 'Ethiopia' %}selected{% endif %}>Ethiopia</option>
+                    <option value="Fiji" data-dial="+679" {% if selected_country == 'Fiji' %}selected{% endif %}>Fiji</option>
+                    <option value="Finland" data-dial="+358" {% if selected_country == 'Finland' %}selected{% endif %}>Finland</option>
+                    <option value="France" data-dial="+33" {% if selected_country == 'France' %}selected{% endif %}>France</option>
+                    <option value="Gabon" data-dial="+241" {% if selected_country == 'Gabon' %}selected{% endif %}>Gabon</option>
+                    <option value="Gambia" data-dial="+220" {% if selected_country == 'Gambia' %}selected{% endif %}>Gambia</option>
+                    <option value="Georgia" data-dial="+995" {% if selected_country == 'Georgia' %}selected{% endif %}>Georgia</option>
+                    <option value="Germany" data-dial="+49" {% if selected_country == 'Germany' %}selected{% endif %}>Germany</option>
+                    <option value="Ghana" data-dial="+233" {% if selected_country == 'Ghana' %}selected{% endif %}>Ghana</option>
+                    <option value="Greece" data-dial="+30" {% if selected_country == 'Greece' %}selected{% endif %}>Greece</option>
+                    <option value="Grenada" data-dial="+1" data-dial-alt="473" {% if selected_country == 'Grenada' %}selected{% endif %}>Grenada</option>
+                    <option value="Guatemala" data-dial="+502" {% if selected_country == 'Guatemala' %}selected{% endif %}>Guatemala</option>
+                    <option value="Guinea" data-dial="+224" {% if selected_country == 'Guinea' %}selected{% endif %}>Guinea</option>
+                    <option value="Guinea-Bissau" data-dial="+245" {% if selected_country == 'Guinea-Bissau' %}selected{% endif %}>Guinea-Bissau</option>
+                    <option value="Guyana" data-dial="+592" {% if selected_country == 'Guyana' %}selected{% endif %}>Guyana</option>
+                    <option value="Haiti" data-dial="+509" {% if selected_country == 'Haiti' %}selected{% endif %}>Haiti</option>
+                    <option value="Honduras" data-dial="+504" {% if selected_country == 'Honduras' %}selected{% endif %}>Honduras</option>
+                    <option value="Hungary" data-dial="+36" {% if selected_country == 'Hungary' %}selected{% endif %}>Hungary</option>
+                    <option value="Iceland" data-dial="+354" {% if selected_country == 'Iceland' %}selected{% endif %}>Iceland</option>
+                    <option value="India" data-dial="+91" {% if selected_country == 'India' %}selected{% endif %}>India</option>
+                    <option value="Indonesia" data-dial="+62" {% if selected_country == 'Indonesia' %}selected{% endif %}>Indonesia</option>
+                    <option value="Iran" data-dial="+98" {% if selected_country == 'Iran' %}selected{% endif %}>Iran</option>
+                    <option value="Iraq" data-dial="+964" {% if selected_country == 'Iraq' %}selected{% endif %}>Iraq</option>
+                    <option value="Ireland" data-dial="+353" {% if selected_country == 'Ireland' %}selected{% endif %}>Ireland</option>
+                    <option value="Israel" data-dial="+972" {% if selected_country == 'Israel' %}selected{% endif %}>Israel</option>
+                    <option value="Italy" data-dial="+39" {% if selected_country == 'Italy' %}selected{% endif %}>Italy</option>
+                    <option value="Jamaica" data-dial="+1" data-dial-alt="876" {% if selected_country == 'Jamaica' %}selected{% endif %}>Jamaica</option>
+                    <option value="Japan" data-dial="+81" {% if selected_country == 'Japan' %}selected{% endif %}>Japan</option>
+                    <option value="Jordan" data-dial="+962" {% if selected_country == 'Jordan' %}selected{% endif %}>Jordan</option>
+                    <option value="Kazakhstan" data-dial="+7" {% if selected_country == 'Kazakhstan' %}selected{% endif %}>Kazakhstan</option>
+                    <option value="Kenya" data-dial="+254" {% if selected_country == 'Kenya' %}selected{% endif %}>Kenya</option>
+                    <option value="Kiribati" data-dial="+686" {% if selected_country == 'Kiribati' %}selected{% endif %}>Kiribati</option>
+                    <option value="Kuwait" data-dial="+965" {% if selected_country == 'Kuwait' %}selected{% endif %}>Kuwait</option>
+                    <option value="Kyrgyzstan" data-dial="+996" {% if selected_country == 'Kyrgyzstan' %}selected{% endif %}>Kyrgyzstan</option>
+                    <option value="Laos" data-dial="+856" {% if selected_country == 'Laos' %}selected{% endif %}>Laos</option>
+                    <option value="Latvia" data-dial="+371" {% if selected_country == 'Latvia' %}selected{% endif %}>Latvia</option>
+                    <option value="Lebanon" data-dial="+961" {% if selected_country == 'Lebanon' %}selected{% endif %}>Lebanon</option>
+                    <option value="Lesotho" data-dial="+266" {% if selected_country == 'Lesotho' %}selected{% endif %}>Lesotho</option>
+                    <option value="Liberia" data-dial="+231" {% if selected_country == 'Liberia' %}selected{% endif %}>Liberia</option>
+                    <option value="Libya" data-dial="+218" {% if selected_country == 'Libya' %}selected{% endif %}>Libya</option>
+                    <option value="Liechtenstein" data-dial="+423" {% if selected_country == 'Liechtenstein' %}selected{% endif %}>Liechtenstein</option>
+                    <option value="Lithuania" data-dial="+370" {% if selected_country == 'Lithuania' %}selected{% endif %}>Lithuania</option>
+                    <option value="Luxembourg" data-dial="+352" {% if selected_country == 'Luxembourg' %}selected{% endif %}>Luxembourg</option>
+                    <option value="Madagascar" data-dial="+261" {% if selected_country == 'Madagascar' %}selected{% endif %}>Madagascar</option>
+                    <option value="Malawi" data-dial="+265" {% if selected_country == 'Malawi' %}selected{% endif %}>Malawi</option>
+                    <option value="Malaysia" data-dial="+60" {% if selected_country == 'Malaysia' %}selected{% endif %}>Malaysia</option>
+                    <option value="Maldives" data-dial="+960" {% if selected_country == 'Maldives' %}selected{% endif %}>Maldives</option>
+                    <option value="Mali" data-dial="+223" {% if selected_country == 'Mali' %}selected{% endif %}>Mali</option>
+                    <option value="Malta" data-dial="+356" {% if selected_country == 'Malta' %}selected{% endif %}>Malta</option>
+                    <option value="Marshall Islands" data-dial="+692" {% if selected_country == 'Marshall Islands' %}selected{% endif %}>Marshall Islands</option>
+                    <option value="Mauritania" data-dial="+222" {% if selected_country == 'Mauritania' %}selected{% endif %}>Mauritania</option>
+                    <option value="Mauritius" data-dial="+230" {% if selected_country == 'Mauritius' %}selected{% endif %}>Mauritius</option>
+                    <option value="Mexico" data-dial="+52" {% if selected_country == 'Mexico' %}selected{% endif %}>Mexico</option>
+                    <option value="Micronesia" data-dial="+691" {% if selected_country == 'Micronesia' %}selected{% endif %}>Micronesia</option>
+                    <option value="Moldova" data-dial="+373" {% if selected_country == 'Moldova' %}selected{% endif %}>Moldova</option>
+                    <option value="Monaco" data-dial="+377" {% if selected_country == 'Monaco' %}selected{% endif %}>Monaco</option>
+                    <option value="Mongolia" data-dial="+976" {% if selected_country == 'Mongolia' %}selected{% endif %}>Mongolia</option>
+                    <option value="Montenegro" data-dial="+382" {% if selected_country == 'Montenegro' %}selected{% endif %}>Montenegro</option>
+                    <option value="Morocco" data-dial="+212" {% if selected_country == 'Morocco' %}selected{% endif %}>Morocco</option>
+                    <option value="Mozambique" data-dial="+258" {% if selected_country == 'Mozambique' %}selected{% endif %}>Mozambique</option>
+                    <option value="Myanmar" data-dial="+95" {% if selected_country == 'Myanmar' %}selected{% endif %}>Myanmar</option>
+                    <option value="Namibia" data-dial="+264" {% if selected_country == 'Namibia' %}selected{% endif %}>Namibia</option>
+                    <option value="Nauru" data-dial="+674" {% if selected_country == 'Nauru' %}selected{% endif %}>Nauru</option>
+                    <option value="Nepal" data-dial="+977" {% if selected_country == 'Nepal' %}selected{% endif %}>Nepal</option>
+                    <option value="Netherlands" data-dial="+31" {% if selected_country == 'Netherlands' %}selected{% endif %}>Netherlands</option>
+                    <option value="New Zealand" data-dial="+64" {% if selected_country == 'New Zealand' %}selected{% endif %}>New Zealand</option>
+                    <option value="Nicaragua" data-dial="+505" {% if selected_country == 'Nicaragua' %}selected{% endif %}>Nicaragua</option>
+                    <option value="Niger" data-dial="+227" {% if selected_country == 'Niger' %}selected{% endif %}>Niger</option>
+                    <option value="Nigeria" data-dial="+234" {% if selected_country == 'Nigeria' %}selected{% endif %}>Nigeria</option>
+                    <option value="North Macedonia" data-dial="+389" {% if selected_country == 'North Macedonia' %}selected{% endif %}>North Macedonia</option>
+                    <option value="Norway" data-dial="+47" {% if selected_country == 'Norway' %}selected{% endif %}>Norway</option>
+                    <option value="Oman" data-dial="+968" {% if selected_country == 'Oman' %}selected{% endif %}>Oman</option>
+                    <option value="Pakistan" data-dial="+92" {% if selected_country == 'Pakistan' %}selected{% endif %}>Pakistan</option>
+                    <option value="Palau" data-dial="+680" {% if selected_country == 'Palau' %}selected{% endif %}>Palau</option>
+                    <option value="Panama" data-dial="+507" {% if selected_country == 'Panama' %}selected{% endif %}>Panama</option>
+                    <option value="Papua New Guinea" data-dial="+675" {% if selected_country == 'Papua New Guinea' %}selected{% endif %}>Papua New Guinea</option>
+                    <option value="Paraguay" data-dial="+595" {% if selected_country == 'Paraguay' %}selected{% endif %}>Paraguay</option>
+                    <option value="Peru" data-dial="+51" {% if selected_country == 'Peru' %}selected{% endif %}>Peru</option>
+                    <option value="Philippines" data-dial="+63" {% if selected_country == 'Philippines' %}selected{% endif %}>Philippines</option>
+                    <option value="Poland" data-dial="+48" {% if selected_country == 'Poland' %}selected{% endif %}>Poland</option>
+                    <option value="Portugal" data-dial="+351" {% if selected_country == 'Portugal' %}selected{% endif %}>Portugal</option>
+                    <option value="Qatar" data-dial="+974" {% if selected_country == 'Qatar' %}selected{% endif %}>Qatar</option>
+                    <option value="Romania" data-dial="+40" {% if selected_country == 'Romania' %}selected{% endif %}>Romania</option>
+                    <option value="Russia" data-dial="+7" {% if selected_country == 'Russia' %}selected{% endif %}>Russia</option>
+                    <option value="Rwanda" data-dial="+250" {% if selected_country == 'Rwanda' %}selected{% endif %}>Rwanda</option>
+                    <option value="Saint Kitts and Nevis" data-dial="+1" data-dial-alt="869" {% if selected_country == 'Saint Kitts and Nevis' %}selected{% endif %}>Saint Kitts and Nevis</option>
+                    <option value="Saint Lucia" data-dial="+1" data-dial-alt="758" {% if selected_country == 'Saint Lucia' %}selected{% endif %}>Saint Lucia</option>
+                    <option value="Saint Vincent and the Grenadines" data-dial="+1" data-dial-alt="784" {% if selected_country == 'Saint Vincent and the Grenadines' %}selected{% endif %}>Saint Vincent and the Grenadines</option>
+                    <option value="Samoa" data-dial="+685" {% if selected_country == 'Samoa' %}selected{% endif %}>Samoa</option>
+                    <option value="San Marino" data-dial="+378" {% if selected_country == 'San Marino' %}selected{% endif %}>San Marino</option>
+                    <option value="Sao Tome and Principe" data-dial="+239" {% if selected_country == 'Sao Tome and Principe' %}selected{% endif %}>Sao Tome and Principe</option>
+                    <option value="Saudi Arabia" data-dial="+966" {% if selected_country == 'Saudi Arabia' %}selected{% endif %}>Saudi Arabia</option>
+                    <option value="Senegal" data-dial="+221" {% if selected_country == 'Senegal' %}selected{% endif %}>Senegal</option>
+                    <option value="Serbia" data-dial="+381" {% if selected_country == 'Serbia' %}selected{% endif %}>Serbia</option>
+                    <option value="Seychelles" data-dial="+248" {% if selected_country == 'Seychelles' %}selected{% endif %}>Seychelles</option>
+                    <option value="Sierra Leone" data-dial="+232" {% if selected_country == 'Sierra Leone' %}selected{% endif %}>Sierra Leone</option>
+                    <option value="Singapore" data-dial="+65" {% if selected_country == 'Singapore' %}selected{% endif %}>Singapore</option>
+                    <option value="Slovakia" data-dial="+421" {% if selected_country == 'Slovakia' %}selected{% endif %}>Slovakia</option>
+                    <option value="Slovenia" data-dial="+386" {% if selected_country == 'Slovenia' %}selected{% endif %}>Slovenia</option>
+                    <option value="Solomon Islands" data-dial="+677" {% if selected_country == 'Solomon Islands' %}selected{% endif %}>Solomon Islands</option>
+                    <option value="Somalia" data-dial="+252" {% if selected_country == 'Somalia' %}selected{% endif %}>Somalia</option>
+                    <option value="South Africa" data-dial="+27" {% if selected_country == 'South Africa' %}selected{% endif %}>South Africa</option>
+                    <option value="South Korea" data-dial="+82" {% if selected_country == 'South Korea' %}selected{% endif %}>South Korea</option>
+                    <option value="South Sudan" data-dial="+211" {% if selected_country == 'South Sudan' %}selected{% endif %}>South Sudan</option>
+                    <option value="Spain" data-dial="+34" {% if selected_country == 'Spain' %}selected{% endif %}>Spain</option>
+                    <option value="Sri Lanka" data-dial="+94" {% if selected_country == 'Sri Lanka' %}selected{% endif %}>Sri Lanka</option>
+                    <option value="Sudan" data-dial="+249" {% if selected_country == 'Sudan' %}selected{% endif %}>Sudan</option>
+                    <option value="Suriname" data-dial="+597" {% if selected_country == 'Suriname' %}selected{% endif %}>Suriname</option>
+                    <option value="Sweden" data-dial="+46" {% if selected_country == 'Sweden' %}selected{% endif %}>Sweden</option>
+                    <option value="Switzerland" data-dial="+41" {% if selected_country == 'Switzerland' %}selected{% endif %}>Switzerland</option>
+                    <option value="Syria" data-dial="+963" {% if selected_country == 'Syria' %}selected{% endif %}>Syria</option>
+                    <option value="Taiwan" data-dial="+886" {% if selected_country == 'Taiwan' %}selected{% endif %}>Taiwan</option>
+                    <option value="Tajikistan" data-dial="+992" {% if selected_country == 'Tajikistan' %}selected{% endif %}>Tajikistan</option>
+                    <option value="Tanzania" data-dial="+255" {% if selected_country == 'Tanzania' %}selected{% endif %}>Tanzania</option>
+                    <option value="Thailand" data-dial="+66" {% if selected_country == 'Thailand' %}selected{% endif %}>Thailand</option>
+                    <option value="Togo" data-dial="+228" {% if selected_country == 'Togo' %}selected{% endif %}>Togo</option>
+                    <option value="Tonga" data-dial="+676" {% if selected_country == 'Tonga' %}selected{% endif %}>Tonga</option>
+                    <option value="Trinidad and Tobago" data-dial="+1" data-dial-alt="868" {% if selected_country == 'Trinidad and Tobago' %}selected{% endif %}>Trinidad and Tobago</option>
+                    <option value="Tunisia" data-dial="+216" {% if selected_country == 'Tunisia' %}selected{% endif %}>Tunisia</option>
+                    <option value="Turkey" data-dial="+90" {% if selected_country == 'Turkey' %}selected{% endif %}>Turkey</option>
+                    <option value="Turkmenistan" data-dial="+993" {% if selected_country == 'Turkmenistan' %}selected{% endif %}>Turkmenistan</option>
+                    <option value="Tuvalu" data-dial="+688" {% if selected_country == 'Tuvalu' %}selected{% endif %}>Tuvalu</option>
+                    <option value="Uganda" data-dial="+256" {% if selected_country == 'Uganda' %}selected{% endif %}>Uganda</option>
+                    <option value="Ukraine" data-dial="+380" {% if selected_country == 'Ukraine' %}selected{% endif %}>Ukraine</option>
+                    <option value="United Arab Emirates" data-dial="+971" {% if selected_country == 'United Arab Emirates' %}selected{% endif %}>United Arab Emirates</option>
+                    <option value="United Kingdom" data-dial="+44" {% if selected_country == 'United Kingdom' %}selected{% endif %}>United Kingdom</option>
+                    <option value="United States" data-dial="+1" {% if selected_country == 'United States' %}selected{% endif %}>United States</option>
+                    <option value="Uruguay" data-dial="+598" {% if selected_country == 'Uruguay' %}selected{% endif %}>Uruguay</option>
+                    <option value="Uzbekistan" data-dial="+998" {% if selected_country == 'Uzbekistan' %}selected{% endif %}>Uzbekistan</option>
+                    <option value="Vanuatu" data-dial="+678" {% if selected_country == 'Vanuatu' %}selected{% endif %}>Vanuatu</option>
+                    <option value="Vatican City" data-dial="+379" {% if selected_country == 'Vatican City' %}selected{% endif %}>Vatican City</option>
+                    <option value="Venezuela" data-dial="+58" {% if selected_country == 'Venezuela' %}selected{% endif %}>Venezuela</option>
+                    <option value="Vietnam" data-dial="+84" {% if selected_country == 'Vietnam' %}selected{% endif %}>Vietnam</option>
+                    <option value="Yemen" data-dial="+967" {% if selected_country == 'Yemen' %}selected{% endif %}>Yemen</option>
+                    <option value="Zambia" data-dial="+260" {% if selected_country == 'Zambia' %}selected{% endif %}>Zambia</option>
+                    <option value="Zimbabwe" data-dial="+263" {% if selected_country == 'Zimbabwe' %}selected{% endif %}>Zimbabwe</option>
+                    {% endwith %}
+                  </select>
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label" for="regContact">Phone number<span class="text-danger"> *</span></label>
+                  <div class="input-group phone-group">
+                    <span class="input-group-text" id="dialCodeBadge">+1</span>
+                    <input type="tel" id="regContact" name="contact" class="form-control" placeholder="555 123 4567" value="{{ form_data.contact|default:'' }}" autocomplete="tel" inputmode="tel" required>
+                  </div>
                 </div>
                 <div class="col-12">
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="terms" value="1" id="terms" required {% if form_data.terms %}checked{% endif %}>
                     <label class="form-check-label" for="terms">
-                      I agree to the <a href="#!" class="text-decoration-none">terms of collaboration</a> and privacy policy.
+                      I agree to the <a href="#!" class="theme-link">terms of collaboration</a> and privacy policy.
                     </label>
                   </div>
                 </div>
                 <div class="col-12">
-                  <button class="btn btn-primary btn-lg w-100" type="submit">Join Technoheaven</button>
+                  <button class="theme-btn w-100 justify-content-center" type="submit">Join Technoheaven</button>
                 </div>
               </div>
             </form>
-            <p class="text-center text-muted mt-4 mb-0">Already registered? <a href="{% url 'login' %}" class="fw-semibold text-primary text-decoration-none">Log in to your workspace</a>.</p>
+            <p class="text-center theme-meta mt-4 mb-0">Already registered? <a href="{% url 'login' %}" class="theme-link">Log in to your workspace</a>.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .register-section {
+    padding-top: clamp(2rem, 4vw, 3rem);
+    padding-bottom: clamp(2.4rem, 5vw, 3.5rem);
+    margin-top: clamp(-1.5rem, -3vw, -0.75rem);
+  }
+
+  .register-shell {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding-inline: clamp(0.25rem, 2vw, 1rem);
+  }
+
+  .register-card {
+    padding: clamp(1.2rem, 2.75vw, 2rem);
+    overflow: hidden;
+    border: 1px solid rgba(76, 110, 245, 0.32);
+    position: relative;
+    background: linear-gradient(135deg, rgba(8, 17, 35, 0.95), rgba(11, 28, 58, 0.82));
+  }
+
+  .register-card::before {
+    content: "";
+    position: absolute;
+    inset: -20% 0 auto auto;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(76, 110, 245, 0.28), transparent 70%);
+    opacity: 0.8;
+    pointer-events: none;
+    transform: translate(18%, -12%);
+  }
+
+  .register-card::after {
+    content: "";
+    position: absolute;
+    inset: auto auto -15% -10%;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(0, 212, 168, 0.18), transparent 75%);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+
+  .register-body {
+    position: relative;
+    z-index: 1;
+  }
+
+  .register-intro {
+    max-width: 540px;
+    margin: 0 auto 2rem;
+  }
+
+  .register-intro .theme-tag {
+    margin-bottom: 0.75rem;
+    background: rgba(76, 110, 245, 0.18);
+    border-color: rgba(76, 110, 245, 0.35);
+    color: #9ec5ff;
+  }
+
+  .register-intro h3 {
+    font-weight: 650;
+    color: var(--th-text-primary);
+  }
+
+  .register-intro p {
+    color: rgba(231, 238, 252, 0.75);
+  }
+
+  .password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--th-text-muted);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .password-toggle:focus {
+    outline: none;
+    color: #12f1be;
+  }
+
+  .dial-code-select {
+    max-width: 7rem;
+  }
+
+  .phone-group .input-group-text {
+    min-width: 70px;
+    justify-content: center;
+    background: rgba(76, 110, 245, 0.22);
+    color: var(--th-text-primary);
+    border: 1px solid rgba(76, 110, 245, 0.38);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .register-form-shell .form-control::placeholder,
+  .register-form-shell .form-select option[disabled] {
+    color: rgba(231, 238, 252, 0.55);
+  }
+
+  @media (max-width: 991px) {
+    .register-card {
+      border-radius: var(--th-radius-lg);
+    }
+    .register-intro {
+      margin-bottom: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.password-toggle');
+    toggleButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        if (!input) {
+          return;
+        }
+        const isHidden = input.getAttribute('type') === 'password';
+        input.setAttribute('type', isHidden ? 'text' : 'password');
+        btn.innerHTML = isHidden ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+      });
+    });
+
+    const countrySelect = document.getElementById('regCountry');
+    const dialCodeHidden = document.getElementById('regDialCode');
+    const dialCodeBadge = document.getElementById('dialCodeBadge');
+    const firstNameInput = document.getElementById('regFirstName');
+    const lastNameInput = document.getElementById('regLastName');
+    const fullNameHidden = document.getElementById('regFullName');
+
+    const updateDialCode = () => {
+      if (!countrySelect) {
+        return;
+      }
+      const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+      if (!selectedOption) {
+        return;
+      }
+      const baseDial = selectedOption.getAttribute('data-dial');
+      const altDial = selectedOption.getAttribute('data-dial-alt');
+      const dialCode = baseDial || '';
+      if (dialCodeHidden) {
+        dialCodeHidden.value = dialCode || '';
+      }
+      if (dialCodeBadge) {
+        dialCodeBadge.textContent = dialCode || '+--';
+      }
+    };
+
+    const updateFullName = () => {
+      if (!fullNameHidden) {
+        return;
+      }
+      const first = firstNameInput ? firstNameInput.value.trim() : '';
+      const last = lastNameInput ? lastNameInput.value.trim() : '';
+      fullNameHidden.value = [first, last].filter(Boolean).join(' ');
+    };
+
+    if (countrySelect) {
+      updateDialCode();
+      countrySelect.addEventListener('change', updateDialCode);
+    }
+
+    if (firstNameInput) {
+      firstNameInput.addEventListener('input', updateFullName);
+    }
+
+    if (lastNameInput) {
+      lastNameInput.addEventListener('input', updateFullName);
+    }
+
+    updateFullName();
+  });
+</script>
+
 {% endblock %}

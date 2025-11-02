@@ -1,24 +1,44 @@
 from datetime import timedelta
 
 from django.contrib import messages
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.db import transaction
 from django.db.models import Sum
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from message.models import Blog, Comment, News
 from publication_project.models import Publication, Project, Resource, Client, Service
-from session.models import Session
-from team_gallary.models import Team, Gallery
+
+
 from visitors_details.models import Visitor
 
-from .forms import RegisterForm, BlogSubmissionForm
+from .forms import (
+    RegisterForm,
+    BlogSubmissionForm,
+    AccountIdentityForm,
+    AccountProfileForm,
+)
 from .models import UserProfile
+
+
+BLOG_STATUS_DESCRIPTIONS = {
+    'pending': 'Awaiting moderator review',
+    'published': 'Live on the public blog',
+    'rejected': 'Needs updates before it can go live',
+}
+
+
+def _format_timestamp(value, fmt):
+    if not value:
+        return None
+    if timezone.is_naive(value):
+        value = timezone.make_aware(value, timezone.get_current_timezone())
+    return timezone.localtime(value).strftime(fmt)
 
 
 def _format_form_errors(form):
@@ -94,30 +114,10 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
-def services(request):
-    # load services and group them by category (preserves defined order)
-    services_qs = Service.objects.all()
-    categories = []
-    for value, label in Service.SERVICE_CATEGORIES:
-        categories.append({
-            'value': value,
-            'label': label,
-            'services': services_qs.filter(category=value)
-        })
-
-    return render(request, 'services.html', {'categories': categories})
-
-def service_detail(request, slug):
-    service = get_object_or_404(Service, slug=slug)
-    return render(request, 'services_de.html', {'service': service})
 
 def contact(request):
     return render(request, 'contact.html')
 
-
-def clients(request):
-    clients = Client.objects.all()
-    return render(request, 'clients.html', {'clients': clients})
 
 
 def register_view(request):
@@ -266,91 +266,214 @@ def logout_view(request):
 
 
 @login_required
-def submit_blog(request):
-    if request.method == 'POST':
-        form = BlogSubmissionForm(request.POST, request.FILES)
-        if form.is_valid():
-            blog = form.save(commit=False)
-            blog.submitted_by = request.user
-            blog.status = 'pending'
-            if not blog.author:
-                full_name = request.user.get_full_name()
-                blog.author = full_name if full_name else request.user.username
-            blog.date = timezone.now().date()
-            blog.save()
-            messages.success(request, 'Thanks for your submission! Our team will review it shortly.')
-            return redirect('user_dashboard')
-    else:
-        form = BlogSubmissionForm()
-
-    return render(request, 'blog_submit.html', {'form': form})
-
-
-@login_required
 def user_dashboard(request):
-    user_blogs = Blog.objects.filter(submitted_by=request.user).order_by('-submitted_at')
-    counts = {
-        'published': user_blogs.filter(status='published').count(),
-        'pending': user_blogs.filter(status='pending').count(),
-        'rejected': user_blogs.filter(status='rejected').count(),
+    """Render the authenticated user's workspace overview."""
+
+    try:
+        profile = request.user.profile
+    except UserProfile.DoesNotExist:
+        profile = None
+
+    display_name = (
+        (profile.full_name if profile and profile.full_name else None)
+        or request.user.get_full_name()
+        or request.user.username
+    )
+
+    if profile:
+        profile_fields = [profile.country, profile.contact_number, profile.age, profile.gender]
+        completed_fields = sum(1 for field in profile_fields if field not in (None, "", 0))
+        profile_completion = int(round((completed_fields / len(profile_fields)) * 100)) if profile_fields else 0
+    else:
+        profile_completion = 0
+
+    last_login_display = _format_timestamp(request.user.last_login, '%b %d, %Y %H:%M') or 'Not recorded yet'
+    member_since_display = _format_timestamp(request.user.date_joined, '%b %d, %Y') or ''
+
+    metrics = {
+        'publications': Publication.objects.count(),
+        'projects': Project.objects.count(),
+        'resources': Resource.objects.count(),
+        'clients': Client.objects.count(),
+        'services': Service.objects.count(),
     }
+
+    recent_publications = Publication.objects.order_by('-id')[:4]
+    recent_news = News.objects.order_by('-date')[:3]
+
+    user_blogs_qs = Blog.objects.filter(submitted_by=request.user).order_by('-updated_at')
+    blog_counts = {
+        'total': user_blogs_qs.count(),
+        'pending': user_blogs_qs.filter(status='pending').count(),
+        'published': user_blogs_qs.filter(status='published').count(),
+        'rejected': user_blogs_qs.filter(status='rejected').count(),
+    }
+
+    user_blogs = []
+    for blog in user_blogs_qs:
+        blog.status_description = BLOG_STATUS_DESCRIPTIONS.get(blog.status, '')
+        blog.can_edit = True
+        blog.can_view_live = blog.status == 'published'
+        user_blogs.append(blog)
+
+    account_meta = [
+        {
+            'icon': 'fa-clock-rotate-left',
+            'label': 'Last login',
+            'value': last_login_display,
+            'caption': 'Keep your credentials protected.',
+            'progress': None,
+        },
+        {
+            'icon': 'fa-calendar-check',
+            'label': 'Member since',
+            'value': member_since_display,
+            'caption': 'Your Technoheaven journey so far.',
+            'progress': None,
+        },
+        {
+            'icon': 'fa-user-check',
+            'label': 'Profile completion',
+            'value': f"{profile_completion}%",
+            'caption': 'Complete your profile for tailored insights.',
+            'progress': profile_completion,
+        },
+    ]
 
     context = {
+        'profile': profile,
+        'display_name': display_name,
+        'metrics': metrics,
+        'recent_publications': recent_publications,
+        'recent_news': recent_news,
         'user_blogs': user_blogs,
-        'counts': counts,
+        'blog_counts': blog_counts,
+        'status_descriptions': BLOG_STATUS_DESCRIPTIONS,
+        'account_meta': account_meta,
+        'profile_completion': profile_completion,
     }
+
     return render(request, 'dashboard.html', context)
 
 
 @login_required
-def delete_blog(request, pk):
-    blog = get_object_or_404(Blog, pk=pk)
-    if not (request.user.is_staff or blog.submitted_by_id == request.user.id):
-        raise Http404
+def submit_blog(request):
+    form = BlogSubmissionForm(request.POST or None, request.FILES or None)
 
     if request.method == 'POST':
-        blog.delete()
-        messages.success(request, 'Blog removed successfully.')
-        redirect_target = 'pending_blogs' if request.user.is_staff else 'user_dashboard'
-        return redirect(redirect_target)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.submitted_by = request.user
+            blog.status = 'pending'
+            blog.save()
+            messages.success(request, 'Thanks for sharing! Your blog is queued for editorial review.')
+            return redirect('user_dashboard')
 
-    return render(request, 'blog_confirm_delete.html', {'blog': blog})
+        messages.error(request, 'We could not submit your blog. Please address the highlighted fields and try again.')
 
-
-@login_required
-def pending_blogs(request):
-    if not request.user.is_staff:
-        raise Http404
-
-    pending = Blog.objects.filter(status='pending').order_by('-submitted_at')
-    rejected = Blog.objects.filter(status='rejected').order_by('-submitted_at')
     context = {
-        'pending_blogs': pending,
-        'rejected_blogs': rejected,
+        'form': form,
+        'is_edit': False,
     }
-    return render(request, 'blog_moderation.html', context)
+
+    return render(request, 'blog_submission_form.html', context)
 
 
 @login_required
-def approve_blog(request, pk):
-    if not request.user.is_staff:
-        raise Http404
+def edit_blog(request, slug):
+    blog = get_object_or_404(Blog, slug=slug, submitted_by=request.user)
 
-    blog = get_object_or_404(Blog, pk=pk)
-    blog.status = 'published'
-    blog.date = timezone.now().date()
-    blog.save()
-    messages.success(request, f"'{blog.title}' is now live!")
-    return redirect('pending_blogs')
+    form = BlogSubmissionForm(request.POST or None, request.FILES or None, instance=blog)
+    previous_status = blog.status
+    blog.status_description = BLOG_STATUS_DESCRIPTIONS.get(blog.status, '')
+
+    if request.method == 'POST':
+        if form.is_valid():
+            updated_blog = form.save(commit=False)
+            # any edit triggers a fresh review cycle
+            updated_blog.status = 'pending'
+            updated_blog.submitted_at = timezone.now()
+            updated_blog.save()
+
+            if previous_status == 'published':
+                messages.info(
+                    request,
+                    'Your updates were saved. The article is offline until the editorial team approves the new version.'
+                )
+            elif previous_status == 'rejected':
+                messages.success(request, 'Great! The blog was resubmitted for review. We will notify you after approval.')
+            else:
+                messages.success(request, 'Changes saved. Your post remains in the review queue.')
+
+            return redirect('user_dashboard')
+
+        messages.error(request, 'Please resolve the issues below so we can resubmit your story.')
+
+    context = {
+        'form': form,
+        'is_edit': True,
+        'blog': blog,
+        'previous_status': previous_status,
+    }
+
+    return render(request, 'blog_submission_form.html', context)
 
 
 @login_required
-def reject_blog(request, pk):
-    if not request.user.is_staff:
-        raise Http404
+def edit_profile(request):
+    try:
+        profile = request.user.profile
+    except UserProfile.DoesNotExist:
+        profile = None
 
-    blog = get_object_or_404(Blog, pk=pk)
-    blog.status = 'rejected'
-    blog.save()
-    messages.warning(request, f"'{blog.title}' has been marked as rejected.")
-    return redirect('pending_blogs')
+    profile_instance = profile if profile else UserProfile(user=request.user)
+
+    if request.method == 'POST':
+        identity_form = AccountIdentityForm(request.POST, instance=request.user)
+        profile_form = AccountProfileForm(request.POST, instance=profile_instance)
+
+        if identity_form.is_valid() and profile_form.is_valid():
+            with transaction.atomic():
+                identity_form.save()
+                profile_obj = profile_form.save(commit=False)
+                profile_obj.user = request.user
+                profile_obj.save()
+
+            messages.success(request, 'Your profile details were updated successfully.')
+            return redirect('user_dashboard')
+
+        messages.error(request, 'Update failed. Please review the highlighted fields below.')
+    else:
+        identity_form = AccountIdentityForm(instance=request.user)
+        initial_profile = {}
+        if not profile:
+            initial_profile['full_name'] = request.user.get_full_name() or request.user.username
+        profile_form = AccountProfileForm(instance=profile_instance, initial=initial_profile)
+
+    context = {
+        'identity_form': identity_form,
+        'profile_form': profile_form,
+        'has_profile': profile is not None,
+    }
+
+    return render(request, 'profile_form.html', context)
+
+
+@login_required
+def change_password(request):
+    form = PasswordChangeForm(user=request.user, data=request.POST or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Password updated. You are still logged in on this device.')
+            return redirect('user_dashboard')
+
+        messages.error(request, 'We could not update your password. Please fix the issues below and try again.')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'password_change_form.html', context)

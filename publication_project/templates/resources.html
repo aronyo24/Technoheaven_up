@@ -3,41 +3,88 @@
 {% load static %}
 {% block title %}RESOURCES- TECHNOHEAVEN{% endblock %}
 {% block content %}
-<section id="gallery_main">
-    <div class="about_main clearfix">
-        <div class="container d-flex justify-content-center align-items-center">
-            <div class="container text-center" id="resourcesContainer">
-                <h2>RESOURCES</h2>
-            </div>
-        </div>
+
+<section class="page-hero">
+    <div class="container">
+        <span class="eyebrow"><i class="fa-solid fa-database"></i> Resource Library</span>
+        <h1>Resources</h1>
+        <p>
+            Access curated briefs, visual assets, and technical materials that support our research and delivery teams.
+            Every resource is crafted to translate complex innovation into actionable insight.
+        </p>
     </div>
 </section>
-<section id="resources" class="full-height px-lg-5">
+
+<section class="section-pad">
     <div class="container">
-        <div class="row justify-content-center align-items-center">
-            <div class="col-lg-8 text-center">
-                <h1 data-aos="fade-up" data-aos-delay="400">RESOURCES</h1>
-            </div>
-        </div>
-        <div class="row gy-5">
-            {% for resource in resources %}
-                {% if resource.slug %}
-                    <div class="col-lg-3 col-md-6">
-                        <a href="{% url 'resources_details' slug=resource.slug %}">
-                            <div class="col-12 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="500">
-                                <div class="bg-base p-4 rounded-4 shadow-effect">
-                                    <div>
-                                        <img class="img-fluid" style="height: 200px; object-fit: cover;" data-bs-hover-animate="pulse" src="{{ resource.resource_img.url }}" alt="Image 2"><br>
-                                        <h5>{{ resource.resource_name }}</h5>
-                                        <p class="text-brand mb-3">{{ resource.resource_description }}</p>
-                                    </div>
-                                </div>
+        {% if resources %}
+            <div class="card-grid card-grid--three resource-grid">
+                {% for resource in resources %}
+                    {% if resource.slug %}
+                        <a href="{% url 'resources_details' slug=resource.slug %}" class="glass-card resource-card">
+                            <div class="resource-card__media">
+                                {% if resource.resource_img %}
+                                    <img src="{{ resource.resource_img.url }}" alt="{{ resource.resource_name }} thumbnail" loading="lazy">
+                                {% else %}
+                                    <span class="resource-card__placeholder"><i class="fa-solid fa-image"></i></span>
+                                {% endif %}
+                            </div>
+                            <div class="resource-card__body">
+                                <h3>{{ resource.resource_name }}</h3>
+                                <p class="theme-meta">{{ resource.resource_description|truncatechars:140 }}</p>
+                                <span class="theme-link">Explore resource</span>
                             </div>
                         </a>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="glass-card text-center">
+                <h3 class="mb-2">Content is being curated</h3>
+                <p class="theme-meta mb-0">We are preparing a fresh collection of research assets. Please check back soon.</p>
+            </div>
+        {% endif %}
     </div>
 </section>
+
+<style>
+    .resource-card {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .resource-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--th-shadow-xl);
+    }
+
+    .resource-card__media img,
+    .resource-card__placeholder {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: var(--th-radius-md);
+        background: rgba(76, 110, 245, 0.12);
+        border: 1px solid rgba(76, 110, 245, 0.22);
+        display: block;
+    }
+
+    .resource-card__placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(226, 232, 240, 0.6);
+        font-size: 1.8rem;
+    }
+
+    .resource-card__body h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+    }
+</style>
+
 {% endblock %}

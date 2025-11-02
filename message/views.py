@@ -25,11 +25,13 @@ def blog_list(request):
     raw_categories = Blog._meta.get_field('category').choices
     categories = []
     for i, (value, label) in enumerate(raw_categories):
+        palette_index = i % len(color_palette)
         published_count = Blog.objects.filter(status='published', category=value).count()
         categories.append({
             'value': value,
             'label': label,
-            'color': color_palette[i % len(color_palette)],
+            'color': color_palette[palette_index],
+            'palette_index': palette_index,
             'count': published_count
         })
 
@@ -81,8 +83,11 @@ def blog_detail(request, slug):
         name = request.POST.get('name', '').strip()
         comment_text = request.POST.get('comment', '').strip()
         if name and comment_text:
-            Comment.objects.create(blog=blog, name=name, comment=comment_text)
-            messages.success(request, "Thanks for sharing your thoughts!")
+            if blog.status != 'published':
+                messages.error(request, "Comments can only be added once this post is published.")
+            else:
+                Comment.objects.create(blog=blog, name=name, comment=comment_text)
+                messages.success(request, "Thanks for sharing your thoughts!")
             return redirect('blog_detail', slug=blog.slug)
 
     comments = Comment.objects.filter(blog=blog).order_by('-date')
@@ -91,10 +96,12 @@ def blog_detail(request, slug):
     raw_categories = Blog._meta.get_field('category').choices
     categories = []
     for i, (value, label) in enumerate(raw_categories):
+        palette_index = i % len(color_palette)
         categories.append({
             'value': value,
             'label': label,
-            'color': color_palette[i % len(color_palette)],
+            'color': color_palette[palette_index],
+            'palette_index': palette_index,
             'count': Blog.objects.filter(status='published', category=value).count()
         })
 
@@ -121,6 +128,10 @@ def blog_detail(request, slug):
         'next_blog': next_blog,
         'is_owner': is_owner,
         'can_moderate': can_moderate,
+        'status_display': blog.get_status_display(),
+        'is_pending': blog.status == 'pending',
+        'is_rejected': blog.status == 'rejected',
+        'can_comment': blog.status == 'published',
     }
     return render(request, 'blogs_de.html', context)
 

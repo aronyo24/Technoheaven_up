@@ -3,59 +3,122 @@
 {% load static %}
 {% block title %}Home - TECHNOHEAVEN{% endblock %}
 {% block content %}
-<section id="gallery_main">
-    <div class="about_main clearfix" style="height: 350px">
-        <div class="container d-flex align-items-center justify-content-center" style="height: 100%;  text-align: center;">
-            <div class="gallery_main_1 text-white mt-4  " >
-                <h2 style="color: #0ce538;">CONTACT</h2>
-            </div>
-        </div>
+
+<section class="page-hero">
+    <div class="container">
+        <span class="eyebrow"><i class="fa-solid fa-inbox"></i> Contact</span>
+        <h1>Let’s co-create the next breakthrough</h1>
+        <p>
+            Share your challenge or brief and we’ll assemble the right research-led squad to explore, prototype, and
+            launch solutions that scale.
+        </p>
     </div>
 </section>
-<section id="contact" class="px-lg-5 h-100 pt-5" style="margin-bottom: 3rem;">
-     <div class="container rounded-4" style="background: #152239; color: #ffffff;">
+
+<section class="section-pad">
+    <div class="container">
         {% if messages %}
-            <div class="row">
+            <div class="mb-4">
                 {% for message in messages %}
-                    <div class="col-12 text-center">
-                        <h4 style="color: #0cf50c;">{{ message }}</h4>
-                    </div>
+                    <div class="glass-card glass-card--soft mb-3">{{ message }}</div>
                 {% endfor %}
             </div>
         {% endif %}
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-8 pb-4" data-aos="fade-up" data-aos-delay="400">
-                <h1>Contact Us</h1>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <form id="contactForm" class="row g-lg-3 gy-3" method="post" action="{% url 'contact' %}">
+
+        <div class="contact-layout">
+            <div class="glass-card theme-form">
+                <h2 class="mb-3">Send us a message</h2>
+                <p class="theme-meta mb-4">We respond within two business days.</p>
+                <form id="contactForm" method="post" action="{% url 'contact' %}">
                     {% csrf_token %}
-                    <div class="form-group col-md-6" data-aos="fade-up" data-aos-delay="500">
-                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
-                    </div>
-                    <div class="form-group col-md-6" data-aos="fade-up" data-aos-delay="600">
-                        <input type="email" name="email" class="form-control" placeholder="Your Email" required>
-                    </div>
-                    <div class="form-group col-md-12" data-aos="fade-up" data-aos-delay="700">
-                        <input type="text" name="subject" class="form-control" placeholder="Subject" required>
-                    </div>
-                    <div class="form-group col-md-12" data-aos="fade-up" data-aos-delay="800">
-                        <textarea name="message" rows="4" class="form-control" placeholder="Your Message" required></textarea>
-                    </div>
-                    <div class="form-group col-md-12" data-aos="fade-right" data-aos-delay="800">
-                        <button type="button" class="btn btn-primary col-md-12" onclick="validateForm()">Submit</button>
-                    </div>
-                    <div>
-                        <h1></h1>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="contactName">Name</label>
+                            <input type="text" name="name" id="contactName" class="form-control" placeholder="Your name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="contactEmail">Email</label>
+                            <input type="email" name="email" id="contactEmail" class="form-control" placeholder="name@company.com" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="contactSubject">Subject</label>
+                            <input type="text" name="subject" id="contactSubject" class="form-control" placeholder="How can we help?" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="contactMessage">Message</label>
+                            <textarea name="message" id="contactMessage" rows="5" class="form-control" placeholder="Tell us about your project" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="theme-btn w-100 justify-content-center">Submit message</button>
+                        </div>
                     </div>
                 </form>
+            </div>
+
+            <div class="contact-sidebar color-secondary text-dark">
+                <h3>How we collaborate</h3>
+                <ul class="contact-highlights color-secondary list-unstyled">
+                    <li><i class="fa-solid fa-comments"></i> Discovery workshops led by our strategy team</li>
+                    <li><i class="fa-solid fa-flask"></i> Experimentation frameworks tailored to your roadmap</li>
+                    <li><i class="fa-solid fa-earth-americas"></i> Distributed delivery with global experts</li>
+                </ul>
+                <div class="contact-meta">
+                    <p class="theme-meta mb-1">Prefer email? Reach us at</p>
+                    <a href="mailto:info@technoheaven.org" class="theme-link">info@technoheaven.org</a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
+<style>
+    .contact-layout {
+        display: grid;
+        gap: clamp(2rem, 4vw, 3rem);
+    }
+
+    @media (min-width: 992px) {
+        .contact-layout {
+            grid-template-columns: 1.3fr 0.8fr;
+        }
+    }
+
+    .contact-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.4rem;
+    }
+
+    .contact-highlights li {
+        display: flex;
+        gap: 0.75rem;
+        color: black;
+        padding: 0.65rem 0;
+        border-bottom: 1px solid rgba(76, 110, 245, 0.18);
+    }
+
+    .contact-highlights li:last-child {
+        border-bottom: none;
+    }
+
+    .contact-highlights i {
+        color: #2618a5;
+        font-size: 1.05rem;
+        margin-top: 0.25rem;
+    }
+
+    .contact-meta {
+        background: rgba(76, 110, 245, 0.12);
+        border-radius: var(--th-radius-md);
+        padding: 1.2rem 1.4rem;
+        border: 1px solid rgba(76, 110, 245, 0.22);
+    }
+
+    .contact-sidebar h3 {
+        font-size: 1.3rem;
+        font-weight: 650;
+    }
+</style>
 
 {% endblock %}
 
