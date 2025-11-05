@@ -3,39 +3,36 @@
 {% load static %}
 {% block title %}Services - TECHNOHEAVEN{% endblock %}
 {% block content %}
-
 <section class="page-hero">
-    <div class="container text-center text-lg-start">
-        <span class="eyebrow"><i class="fa-solid fa-sitemap"></i> Service Portfolio</span>
-        <h1>Solutions Designed for Applied Innovation</h1>
+    <div class="container">
+        <span class="eyebrow"><i class="fa-solid fa-flask"></i> Our Service Offerings</span>
+        <h1>Running Projects</h1>
         <p>
-            We partner with research institutions, enterprises, and fast-scaling ventures to translate frontier
-            technologies into resilient digital products. Explore the services powering their transformation.
+            Explore Technoheaven's advanced technology and research-driven solutions designed to power innovation, automation, and data-driven transformation.
         </p>
     </div>
 </section>
 
-<section class="section-pad">
+
+<section class="section-pad services-section">
     <div class="container">
         {% if categories %}
-            <ul class="nav nav-tabs theme-tabs justify-content-center flex-wrap" id="serviceTabs" role="tablist">
+            <div class="services-tabs" role="tablist" id="serviceTabs">
                 {% for cat in categories %}
-                    <li class="nav-item" role="presentation">
-                        <button
-                            class="nav-link {% if forloop.first %}active{% endif %}"
-                            id="tab-{{ forloop.counter }}"
-                            data-bs-toggle="tab"
-                            data-bs-target="#panel-{{ forloop.counter }}"
-                            type="button"
-                            role="tab"
-                            aria-controls="panel-{{ forloop.counter }}"
-                            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-                        >
-                            {{ cat.label }}
-                        </button>
-                    </li>
+                    <button
+                        class="services-tabs__item {% if forloop.first %}is-active{% endif %}"
+                        id="tab-{{ forloop.counter }}"
+                        data-bs-toggle="tab"
+                        data-bs-target="#panel-{{ forloop.counter }}"
+                        type="button"
+                        role="tab"
+                        aria-controls="panel-{{ forloop.counter }}"
+                        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                    >
+                        {{ cat.label }}
+                    </button>
                 {% endfor %}
-            </ul>
+            </div>
 
             <div class="tab-content pt-4" id="serviceTabsContent">
                 {% for cat in categories %}
@@ -45,9 +42,9 @@
                         role="tabpanel"
                         aria-labelledby="tab-{{ forloop.counter }}"
                     >
-                        <div class="card-grid card-grid--three">
+                        <div class="services-grid">
                             {% for svc in cat.services %}
-                                <article class="glass-card service-card h-100">
+                                <article class="service-card">
                                     <div class="service-card__icon">
                                         {% if svc.icon %}
                                             <i class="{{ svc.icon }}" aria-hidden="true"></i>
@@ -55,15 +52,15 @@
                                             <i class="fa-solid fa-cubes" aria-hidden="true"></i>
                                         {% endif %}
                                     </div>
-                                    <h2>{{ svc.service_name }}</h2>
-                                    <p class="theme-meta mb-4">{{ svc.description|default:'Details coming soon.'|truncatechars:160|linebreaksbr }}</p>
+                                    <h2 class="service-card__title">{{ svc.service_name }}</h2>
+                                    <p class="service-card__description">{{ svc.description|default:'Details coming soon.'|truncatechars:160|linebreaksbr }}</p>
                                     <div class="service-card__cta">
-                                        <a href="{% url 'contact' %}" class="theme-btn">Request consultation</a>
-                                        <a href="{% url 'service_detail' svc.slug %}" class="theme-btn theme-btn--ghost">Learn more</a>
+                                        <a href="{% url 'contact' %}" class="service-card__btn service-card__btn--primary">Get Quote</a>
+                                        <a href="{% url 'service_detail' svc.slug %}" class="service-card__btn service-card__btn--ghost">Learn more</a>
                                     </div>
                                 </article>
                             {% empty %}
-                                <div class="glass-card text-center">
+                                <div class="service-card service-card--empty">
                                     <p class="mb-0">No services listed under {{ cat.label }} yet.</p>
                                 </div>
                             {% endfor %}
@@ -81,78 +78,210 @@
 </section>
 
 <style>
-    .theme-tabs {
-        border: none;
-        gap: 0.5rem;
+    .services-hero {
+        padding: 3.2rem 0 2rem;
+        text-align: center;
     }
 
-    .theme-tabs .nav-link {
-        border: none;
-        margin: 0 0.35rem;
-        background: rgba(8, 17, 35, 0.6);
-        color: var(--th-text-muted);
-        font-weight: 500;
-        letter-spacing: 0.06em;
-        padding: 0.75rem 1.5rem;
-        border-radius: var(--th-radius-sm);
-        border-bottom: 3px solid transparent;
-        transition: all 0.2s ease;
+    .services-hero__heading {
+        margin: 0 0 0.85rem;
+        font-size: 2.25rem;
+        color: #0a2140;
+        font-weight: 700;
     }
 
-    .theme-tabs .nav-link.active {
-        color: var(--th-text-primary);
-        background: rgba(12, 26, 52, 0.95);
-        border-bottom-color: var(--th-accent-500);
-        box-shadow: var(--th-shadow-sm);
+    .services-hero__intro {
+        max-width: 860px;
+        margin: 0 auto;
+        color: #4d596b;
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+
+    .services-section {
+        background: #f5f9fc;
+    }
+
+    .services-tabs {
+        display: inline-flex;
+        gap: 1rem;
+        border-bottom: 2px solid rgba(18, 126, 92, 0.1);
+        padding: 0 0.25rem;
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .services-tabs__item {
+        position: relative;
+        border: none;
+        background: transparent;
+        color: #1d2a3b;
+        font-weight: 600;
+        padding: 0.75rem 1.1rem;
+        border-radius: 999px;
+        transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .services-tabs__item:hover {
+        color: #0f8b63;
+    }
+
+    .services-tabs__item.is-active,
+    .services-tabs__item.active {
+        color: #0f8b63;
+        background: rgba(15, 139, 99, 0.12);
+    }
+
+    .services-tabs__item.is-active::after,
+    .services-tabs__item.active::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -2px;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 3px;
+        border-radius: 999px;
+        background: #0f8b63;
+    }
+
+    .services-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        padding-top: 1.5rem;
     }
 
     .service-card {
-        display: flex;
-        flex-direction: column;
-        gap: 1.4rem;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+        border-radius: 20px;
+        padding: 1.75rem;
+        display: grid;
+        gap: 1.15rem;
+        box-shadow: 0 12px 40px rgba(12, 39, 67, 0.08);
+        border: 1px solid rgba(227, 233, 240, 0.8);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
     .service-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--th-shadow-xl);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 45px rgba(12, 39, 67, 0.14);
     }
 
     .service-card__icon {
-        width: 62px;
-        height: 62px;
-        border-radius: 20px;
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: linear-gradient(145deg, rgba(18, 139, 103, 0.18), rgba(15, 139, 99, 0.08));
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(76, 110, 245, 0.18);
-        border: 1px solid rgba(76, 110, 245, 0.28);
-        color: #12f1be;
-        font-size: 1.5rem;
-        box-shadow: 0 12px 32px rgba(5, 17, 45, 0.35);
+        color: #0f8b63;
+        font-size: 1.6rem;
+        box-shadow: 0 14px 30px rgba(15, 139, 99, 0.18);
     }
 
-    .service-card h2 {
-        font-size: 1.25rem;
-        font-weight: 650;
+    .service-card__title {
+        margin: 0;
+        font-size: 1.17rem;
+        font-weight: 700;
+        color: #0d233a;
+    }
+
+    .service-card__description {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: #5a6574;
     }
 
     .service-card__cta {
         display: flex;
+        gap: 0.75rem;
         flex-wrap: wrap;
-        gap: 0.7rem;
     }
 
-    .service-card .theme-btn {
-        flex: 1 1 auto;
+    .service-card__btn {
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 0.55rem 1.4rem;
+        transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        text-decoration: none;
+        border: 1px solid transparent;
     }
 
-    @media (max-width: 575px) {
-        .service-card__cta .theme-btn {
+    .service-card__btn--primary {
+        background: #0f8b63;
+        color: #fff;
+        border-color: #0f8b63;
+    }
+
+    .service-card__btn--primary:hover {
+        background: #0c7050;
+        border-color: #0c7050;
+    }
+
+    .service-card__btn--ghost {
+        background: #fff;
+        color: #0f8b63;
+        border-color: rgba(15, 139, 99, 0.25);
+    }
+
+    .service-card__btn--ghost:hover {
+        background: rgba(15, 139, 99, 0.08);
+        border-color: #0f8b63;
+    }
+
+    .service-card--empty {
+        text-align: center;
+        color: #5a6574;
+    }
+
+    @media (max-width: 992px) {
+        .services-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .services-hero__heading {
+            font-size: 1.85rem;
+        }
+
+        .services-hero__intro {
+            font-size: 0.98rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .service-card__cta {
+            flex-direction: column;
+        }
+
+        .service-card__btn {
             width: 100%;
         }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tabButtons = document.querySelectorAll('.services-tabs__item');
+        tabButtons.forEach(function (btn) {
+            btn.addEventListener('shown.bs.tab', function (event) {
+                tabButtons.forEach(function (el) {
+                    el.classList.remove('is-active', 'active');
+                });
+                event.target.classList.add('is-active', 'active');
+            });
+        });
+    });
+</script>
 
 {% endblock %}

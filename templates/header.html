@@ -1,385 +1,323 @@
-{% load static %}
+{% load static profile_extras %}
+
 <style>
-    #navmenu > ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        gap: 1.5rem;
-        align-items: center;
+    .nav-shell {
+        background: linear-gradient(135deg, #050f22 0%, #091d3a 100%);
+        box-shadow: 0 22px 45px rgba(4, 12, 30, 0.32);
+        border-bottom: 1px solid rgba(59, 130, 246, 0.24);
+        backdrop-filter: blur(18px);
+        z-index: 1100;
     }
 
-    #navmenu > ul > li {
-        position: relative;
-    }
-
-    #navmenu > ul > li > a {
-        text-decoration: none;
-        color: rgba(241, 245, 249, 0.82);
-        font-size: 0.8rem;
-        letter-spacing: 0.16em;
+    .nav-shell .navbar-brand {
         font-weight: 600;
+        color: #f8fafc;
+        letter-spacing: 0.03em;
+    }
+
+    .nav-shell .navbar-nav .nav-link {
+        position: relative;
+        padding: 0.65rem 0.4rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        padding: 0.4rem 0;
+        color: rgba(226, 232, 240, 0.86) !important;
+        transition: color 0.2s ease;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
-        position: relative;
-        transition: color 0.2s ease;
+        gap: 0.35rem;
     }
 
-    #navmenu > ul > li > a::after {
+    .nav-shell .navbar-toggler {
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        color: rgba(226, 232, 240, 0.9);
+        padding: 0.4rem 0.55rem;
+        border-radius: 12px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .nav-shell .navbar-toggler:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.18rem rgba(59, 130, 246, 0.35);
+    }
+
+    .nav-shell .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(226,232,240,0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+
+    .nav-shell .navbar-nav .nav-link::after {
         content: "";
         position: absolute;
         left: 0;
-        bottom: -6px;
+        bottom: 0;
         width: 100%;
         height: 2px;
-        background: #11ef08;
+        background: linear-gradient(90deg, #2563eb, #10b981);
         transform: scaleX(0);
         transform-origin: left center;
         transition: transform 0.2s ease;
         border-radius: 999px;
     }
 
-    #navmenu > ul > li.active > a,
-    #navmenu > ul > li > a:hover {
-        color: #11ef08;
+    .nav-shell .navbar-nav .nav-link:hover,
+    .nav-shell .navbar-nav .nav-link:focus-visible,
+    .nav-shell .navbar-nav .nav-link.active {
+        color: #38bdf8 !important;
     }
 
-    #navmenu > ul > li.active > a::after,
-    #navmenu > ul > li > a:hover::after {
+    .nav-shell .navbar-nav .nav-link:hover::after,
+    .nav-shell .navbar-nav .nav-link:focus-visible::after,
+    .nav-shell .navbar-nav .nav-link.active::after {
         transform: scaleX(1);
     }
 
-    #navmenu .dropdown > a {
-        padding-right: 0.8rem;
-    }
-
-    #navmenu .toggle-dropdown {
-        font-size: 0.65rem;
-        transition: transform 0.2s ease, color 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-    }
-
-    #navmenu .dropdown.dropdown-active > a .toggle-dropdown {
-        transform: rotate(180deg);
-        color: #11ef08;
-    }
-
-    #navmenu .dropdown ul {
-        list-style: none;
-        margin: 0;
-        padding: 12px 16px;
-        min-width: 220px;
-        background: rgba(8, 15, 36, 0.96);
-        border: 1px solid rgba(17, 239, 8, 0.18);
+    .nav-shell .dropdown-menu {
+        background: rgba(9, 23, 47, 0.96);
+        border: 1px solid rgba(56, 189, 248, 0.2);
         border-radius: 16px;
-        box-shadow: 0 20px 40px rgba(8, 15, 36, 0.4);
-        display: none;
-        position: absolute;
-        top: calc(100% + 14px);
-        left: 0;
-        z-index: 1000;
+        box-shadow: 0 26px 60px rgba(5, 15, 36, 0.5);
+        padding: 0.75rem 0.85rem;
+        min-width: 15rem;
     }
 
-    #navmenu .dropdown.dropdown-active > ul {
-        display: block;
-    }
-
-    #navmenu .dropdown ul li {
-        margin: 0;
-        padding: 0;
-    }
-
-    #navmenu .dropdown ul a {
-        display: block;
-        padding: 0.45rem 0;
-        text-decoration: none;
+    .nav-shell .dropdown-menu .dropdown-item {
+        border-radius: 10px;
+        padding: 0.55rem 0.9rem;
         color: rgba(226, 232, 240, 0.9);
-        font-size: 0.92rem;
-        letter-spacing: 0.06em;
-        text-transform: none;
-        transition: color 0.2s ease;
+        transition: background 0.18s ease, color 0.18s ease;
     }
 
-    #navmenu .dropdown ul a:hover {
-        color: #11ef08;
+    .nav-shell .dropdown-menu .dropdown-item:hover,
+    .nav-shell .dropdown-menu .dropdown-item:focus-visible,
+    .nav-shell .dropdown-menu .dropdown-item.active {
+        background: rgba(56, 189, 248, 0.18);
+        color: #38bdf8;
     }
 
-    .profile-avatar {
+    .nav-shell .dropdown:hover > .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+
+    .nav-shell .dropdown-toggle[aria-expanded="true"] + .dropdown-menu,
+    .nav-shell .dropdown-menu.show {
+        display: block;
+    }
+
+    .nav-shell .dropdown-toggle .fa-chevron-down {
+        transition: transform 0.2s ease;
+    }
+
+    .nav-shell .dropdown-toggle[aria-expanded="true"] .fa-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    .nav-shell .profile-icon {
+        font-size: 1.35rem;
+        color: #38bdf8;
+        margin-right: 0.4rem;
+    }
+
+    .nav-shell .profile-avatar {
+        width: 2.15rem;
+        height: 2.15rem;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(56, 189, 248, 0.5);
+        margin-right: 0.45rem;
+        box-shadow: 0 8px 22px rgba(15, 118, 110, 0.3);
+    }
+
+    .nav-shell .profile-initials {
+        width: 2.15rem;
+        height: 2.15rem;
+        border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 2.6rem;
-        height: 2.6rem;
-        border-radius: 50%;
-        background: linear-gradient(135deg, rgba(17, 239, 8, 0.16) 0%, rgba(17, 239, 8, 0.05) 100%);
-        border: 1px solid rgba(17, 239, 8, 0.28);
-        color: #11ef08;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: #0f172a;
+        background: linear-gradient(135deg, #38bdf8, #2dd4bf);
+        margin-right: 0.5rem;
+        box-shadow: 0 8px 22px rgba(59, 130, 246, 0.28);
     }
 
-    .profile-menu .toggle-dropdown {
-        display: none;
-    }
-
-    .profile-avatar i {
-        font-size: 1.3rem;
-    }
-
-    @media (max-width: 991px) {
-        #navmenu > ul {
-            flex-direction: column;
-            align-items: flex-start;
+    @media (max-width: 991.98px) {
+        .nav-shell {
+            background: rgba(5, 12, 28, 0.98);
         }
 
-        #navmenu .dropdown ul {
+        .nav-shell .navbar-brand img {
+            width: 150px;
+            height: auto;
+        }
+
+        .nav-shell .navbar-collapse {
+            border-top: 1px solid rgba(56, 189, 248, 0.25);
+            padding-top: 1rem;
+        }
+
+        .nav-shell .dropdown:hover > .dropdown-menu {
+            display: none;
+        }
+
+        .nav-shell .dropdown-menu {
             position: static;
+            transform: none !important;
             width: 100%;
-            margin-top: 0.4rem;
+            border-radius: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.18);
             box-shadow: none;
+            padding: 0.5rem 0.35rem;
+            margin-top: 0.45rem;
         }
-    }
 
-    @media (min-width: 992px) {
-        #navmenu .dropdown:hover > ul {
+        .nav-shell .navbar-nav {
+            gap: 0.35rem;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .nav-shell .navbar-nav .nav-link {
+            justify-content: center;
+            padding: 0.75rem 0.65rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            text-transform: none;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.55);
+            width: 100%;
+        }
+
+        .nav-shell .navbar-nav .nav-item {
+            width: 100%;
+        }
+
+        .nav-shell .navbar-nav .nav-link::after {
+            display: none;
+        }
+
+        .nav-shell .dropdown-menu .dropdown-item {
+            text-align: center;
+            font-size: 0.92rem;
+        }
+
+        .nav-shell .profile-avatar,
+        .nav-shell .profile-initials {
+            margin-right: 0.35rem;
+        }
+
+        .nav-shell .dropdown-menu.show {
             display: block;
         }
 
-        #navmenu .dropdown:hover > a .toggle-dropdown {
-            transform: rotate(180deg);
-            color: #11ef08;
+        .nav-shell .dropdown-toggle .fa-chevron-down {
+            margin-left: auto;
         }
     }
 </style>
-<header id="siteHeader" class="site-header fixed-top">
-    <div class="container position-relative d-flex align-items-center justify-content-between">
-        <a class="site-logo d-flex align-items-center" href="{% url 'home' %}" aria-label="Technoheaven home">
-            <img src="{% static 'images/t_logo.svg' %}" alt="Technoheaven" width="180" height="53">
-        </a>
-        <nav id="navmenu" class="navmenu" aria-label="Primary navigation">
-            {% with request.path as current_path %}
-            <ul>
-                <li class="{% if current_path == '/' or current_path == '/home/' %}active{% endif %}">
-                    <a href="{% url 'home' %}">Home</a>
-                </li>
-                <li class="{% if current_path == '/about/' %}active{% endif %}">
-                    <a href="{% url 'about' %}">About</a>
-                </li>
-                <li><a href="{% url 'blog_list' %}">Blog</a>
-                </li>
-                <li class="{% if current_path == '/services/' %}active{% endif %}">
-                    <a href="{% url 'services' %}">Services</a>
-                </li>
-                <li class="{% if current_path == '/projects/' %}active{% endif %}">
-                    <a href="{% url 'projects' %}">Projects</a>
-                </li>
 
-                <li class="{% if current_path|slice:':6' == '/team/' %}active{% endif %}">
-                    <a href="{% url 'team' %}">Team</a>
-                </li>
+<header id="siteHeader" class="fixed-top">
+    <nav class="navbar navbar-expand-lg nav-shell" style="padding: 0.85rem 0;" aria-label="Primary navigation">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}" aria-label="Technoheaven home" style="gap: 0.6rem;">
+                <img src="{% static 'images/t_logo.svg' %}" alt="Technoheaven" width="170" height="50" style="display: block; filter: drop-shadow(0 6px 12px rgba(56, 189, 248, 0.35));">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav"
+                aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="primaryNav">
+                {% with request.path as current_path %}
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="gap: 0.35rem;">
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/' or current_path == '/home/' %}active{% endif %}" {% if current_path == '/' or current_path == '/home/' %}aria-current="page"{% endif %}
+                            href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/about/' %}active{% endif %}" {% if current_path == '/about/' %}aria-current="page"{% endif %}
+                            href="{% url 'about' %}">About</a>
+                    </li>
+                    
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/blog/' %}active{% endif %}" {% if current_path == '/blog/' %}aria-current="page"{% endif %}
+                            href="{% url 'blog_list' %}">Blog</a>
+                    </li>
 
-                <li
-                    class="dropdown {% if current_path|slice:':7' == '/blogs/' or current_path == '/publications/' %}active{% endif %}">
-                    <a href="#" role="button"
-                        aria-expanded="{% if current_path|slice:':7' == '/blogs/' or current_path == '/publications/' %}true{% else %}false{% endif %}">
-                        <span>Insights</span>
-                        <i class="fa-solid fa-chevron-down toggle-dropdown"></i>
-                    </a>
-                    <ul>
-                        <li><a href="{% url 'publications' %}">Publications</a></li>
-                        <li class="{% if current_path == '/gallery/' %}active{% endif %}">
-                            <a href="{% url 'gallery' %}">Gallery</a>
-                        </li>
-                        <li class="{% if current_path|slice:':10' == '/sessions/' %}active{% endif %}">
-                            <a href="{% url 'session_list' %}">Sessions</a>
-                        </li>
-                        <li class="{% if current_path|slice:':9' == '/clients/' %}active{% endif %}">
-                            <a href="{% url 'clients' %}">Clients</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="{% if current_path == '/contact/' %}active{% endif %}">
-                    <a href="{% url 'contact' %}">Contact</a>
-                </li>
-                {% if request.user.is_authenticated %}
-                {% with display_name=request.user.get_full_name|default:request.user.username %}
-                <li class="dropdown profile-menu">
-                    <a href="#" role="button" aria-label="Account menu" aria-expanded="false">
-                        <span class="profile-avatar" aria-hidden="true"><i class="fa-solid fa-circle-user"></i></span>
-                        <span class="visually-hidden">Account</span>
-                    </a>
-                    <ul>
-                        <li class="dropdown-header">
-                            <span class="fw-semibold">{{ display_name }}</span>
-                            {% if request.user.email %}<small>{{ request.user.email }}</small>{% endif %}
-                        </li>
-                        <li><a href="{% url 'user_dashboard' %}"><i class="fa-solid fa-gauge-high"></i> Workspace
-                                dashboard</a></li>
-                        {% if request.user.is_staff %}
-                        <li><a href="{% url 'admin:index' %}"><i class="fa-solid fa-screwdriver-wrench"></i> Admin
-                                console</a></li>
-                        {% endif %}
-                        <li><a href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign
-                                out</a></li>
-                    </ul>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/services/' %}active{% endif %}" {% if current_path == '/services/' %}aria-current="page"{% endif %}
+                            href="{% url 'services' %}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/projects/' %}active{% endif %}" {% if current_path == '/projects/' %}aria-current="page"{% endif %}
+                            href="{% url 'projects' %}">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path|slice:':6' == '/team/' %}active{% endif %}" {% if current_path|slice:':6' == '/team/' %}aria-current="page"{% endif %}
+                            href="{% url 'team' %}">Team</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if current_path|slice:':7' == '/blogs/' or current_path == '/publications/' or current_path == '/gallery/' or current_path|slice:':10' == '/sessions/' or current_path|slice:':9' == '/clients/' %}active{% endif %}"
+                            href="#" role="button" id="insightsDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-display="static" aria-expanded="false">
+                            Insights
+                            <span class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.8;"></span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="insightsDropdown">
+                            <li><a class="dropdown-item {% if current_path == '/publications/' %}active{% endif %}"
+                                    href="{% url 'publications' %}">Publications</a></li>
+                            <li><a class="dropdown-item {% if current_path == '/gallery/' %}active{% endif %}"
+                                    href="{% url 'gallery' %}">Gallery</a></li>
+                            <li><a class="dropdown-item {% if current_path|slice:':10' == '/sessions/' %}active{% endif %}"
+                                    href="{% url 'session_list' %}">Sessions</a></li>
+                            <li><a class="dropdown-item {% if current_path|slice:':9' == '/clients/' %}active{% endif %}"
+                                    href="{% url 'clients' %}">Clients</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/contact/' %}active{% endif %}" {% if current_path == '/contact/' %}aria-current="page"{% endif %}
+                            href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    {% with display_name=request.user.get_full_name|default:request.user.username %}
+                    {% get_user_profile request.user as user_profile %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                            id="profileDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-display="static" aria-expanded="false">
+                            {% if user_profile and user_profile.profile_photo %}
+                                <img src="{{ user_profile.profile_photo.url }}" alt="{{ display_name }}" class="profile-avatar">
+                            {% else %}
+                                <span class="profile-initials">{{ display_name|default:request.user.username|slice:":1"|upper }}</span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                            <li><span class="dropdown-item-text" style="color: rgba(226, 232, 240, 0.7);">{{ display_name }}{% if request.user.email %}<br><small style="color: rgba(148, 163, 184, 0.8);">{{ request.user.email }}</small>{% endif %}</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'user_dashboard' %}">Dashboard</a></li>
+                            {% if request.user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Console</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% endwith %}
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/login/' %}active{% endif %}" {% if current_path == '/login/' %}aria-current="page"{% endif %}
+                            href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_path == '/register/' %}active{% endif %}" {% if current_path == '/register/' %}aria-current="page"{% endif %}
+                            href="{% url 'register' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
                 {% endwith %}
-                {% else %}
-                <li class="{% if current_path == '/login/' %}active{% endif %}">
-                    <a href="{% url 'login' %}">Login</a>
-                </li>
-                <li class="{% if current_path == '/register/' %}active{% endif %}">
-                    <a href="{% url 'register' %}">Register</a>
-                </li>
-                {% endif %}
-            </ul>
-            {% endwith %}
-        </nav>
-       
-    </div>
+            </div>
+        </div>
+    </nav>
 </header>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const navMenu = document.getElementById('navmenu');
-        const navToggle = document.querySelector('.mobile-nav-toggle');
-        const dropdownLinks = navMenu ? navMenu.querySelectorAll('.dropdown > a') : [];
-        const navLinks = navMenu ? navMenu.querySelectorAll('a[href]') : [];
 
-        if (navToggle && navMenu) {
-            navToggle.addEventListener('click', function () {
-                const isOpen = navMenu.classList.toggle('navmenu-active');
-                this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                navMenu.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
-                const icon = this.querySelector('i');
-                if (icon) {
-                    icon.classList.toggle('fa-bars', !isOpen);
-                    icon.classList.toggle('fa-xmark', isOpen);
-                }
-            });
-        }
+<div style="height: 88px;"></div>
 
-        dropdownLinks.forEach(function (link) {
-            const parentItem = link.parentElement;
-            const isActive = parentItem.classList.contains('active');
-            link.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-
-            link.addEventListener('click', function (event) {
-                const parent = this.parentElement;
-                const isDesktop = window.matchMedia('(min-width: 992px)').matches;
-                if (isDesktop) {
-                    return;
-                }
-
-                event.preventDefault();
-                const expanded = parent.classList.toggle('dropdown-active');
-                this.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-
-                if (expanded) {
-                    dropdownLinks.forEach(function (otherLink) {
-                        if (otherLink !== link && !otherLink.parentElement.classList.contains('profile-menu')) {
-                            const otherParent = otherLink.parentElement;
-                            otherParent.classList.remove('dropdown-active');
-                            otherLink.setAttribute(
-                                'aria-expanded',
-                                otherParent.classList.contains('active') ? 'true' : 'false'
-                            );
-                        }
-                    });
-                }
-            });
-
-            parentItem.addEventListener('mouseenter', function () {
-                if (!window.matchMedia('(min-width: 992px)').matches) {
-                    return;
-                }
-                if (parentItem.classList.contains('profile-menu')) {
-                    return;
-                }
-                if (!parentItem.classList.contains('dropdown-active')) {
-                    parentItem.classList.add('dropdown-active');
-                    link.setAttribute('aria-expanded', 'true');
-                }
-            });
-
-            parentItem.addEventListener('mouseleave', function () {
-                if (!window.matchMedia('(min-width: 992px)').matches) {
-                    return;
-                }
-                if (parentItem.classList.contains('profile-menu')) {
-                    return;
-                }
-                parentItem.classList.remove('dropdown-active');
-                link.setAttribute('aria-expanded', parentItem.classList.contains('active') ? 'true' : 'false');
-            });
-        });
-
-        navLinks.forEach(function (link) {
-            link.addEventListener('click', function () {
-                if (!navToggle) {
-                    return;
-                }
-
-                const isDesktop = window.matchMedia('(min-width: 992px)').matches;
-                if (isDesktop) {
-                    return;
-                }
-
-                if (this.parentElement && this.parentElement.classList.contains('dropdown')) {
-                    return;
-                }
-
-                navMenu.classList.remove('navmenu-active');
-                navMenu.setAttribute('aria-hidden', 'true');
-                navToggle.setAttribute('aria-expanded', 'false');
-                const icon = navToggle.querySelector('i');
-                if (icon) {
-                    icon.classList.add('fa-bars');
-                    icon.classList.remove('fa-xmark');
-                }
-
-                dropdownLinks.forEach(function (dropLink) {
-                    const parent = dropLink.parentElement;
-                    parent.classList.remove('dropdown-active');
-                    dropLink.setAttribute(
-                        'aria-expanded',
-                        parent.classList.contains('active') ? 'true' : 'false'
-                    );
-                });
-            });
-        });
-
-        window.addEventListener('resize', function () {
-            if (!navMenu) {
-                return;
-            }
-
-            const isDesktop = window.matchMedia('(min-width: 992px)').matches;
-            if (isDesktop) {
-                navMenu.classList.remove('navmenu-active');
-                navMenu.setAttribute('aria-hidden', 'false');
-                if (navToggle) {
-                    navToggle.setAttribute('aria-expanded', 'false');
-                    const icon = navToggle.querySelector('i');
-                    if (icon) {
-                        icon.classList.add('fa-bars');
-                        icon.classList.remove('fa-xmark');
-                    }
-                }
-                dropdownLinks.forEach(function (link) {
-                    link.parentElement.classList.remove('dropdown-active');
-                    link.setAttribute('aria-expanded', link.parentElement.classList.contains('active') ? 'true' : 'false');
-                });
-            } else {
-                navMenu.setAttribute('aria-hidden', navMenu.classList.contains('navmenu-active') ? 'false' : 'true');
-            }
-        });
-
-        if (navMenu) {
-            const isDesktop = window.matchMedia('(min-width: 992px)').matches;
-            navMenu.setAttribute('aria-hidden', isDesktop ? 'false' : 'true');
-        }
-    });
-</script>

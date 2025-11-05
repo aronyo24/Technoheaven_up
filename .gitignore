@@ -10,7 +10,7 @@ __pycache__/
 .env
 .venv/
 .mvtc
-
+/mvtc
 # IDE files
 .vscode/
 .idea/

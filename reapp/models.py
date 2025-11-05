@@ -17,6 +17,7 @@ class UserProfile(models.Model):
 	age = models.PositiveSmallIntegerField(blank=True, null=True)
 	gender = models.CharField(max_length=32, choices=GENDER_CHOICES, blank=True)
 	contact_number = models.CharField(max_length=50, blank=True)
+	profile_photo = models.ImageField(upload_to="profile_photos/", blank=True, null=True)
 	terms_accepted = models.BooleanField(default=False)
 	created_at = models.DateTimeField(auto_now_add=True)
 

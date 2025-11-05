@@ -1,24 +1,37 @@
-// Import AOS library (make sure to include the library script in your HTML file)
-import AOS from 'aos';
+// Global site interactions for Technoheaven
+(function () {
+  const initAOS = function () {
+    if (typeof AOS === 'undefined') {
+      return;
+    }
 
-// Initialize AOS with default options
-AOS.init();
+    AOS.init({
+      offset: 10,
+      duration: 1000,
+      easing: 'ease-in-out',
+      delay: 0,
+      once: false,
+      anchorPlacement: 'top-bottom'
+    });
+  };
 
-// Alternatively, you can provide custom options during initialization
-AOS.init({
-  offset: 10, // Offset (in pixels) from the top of the page
-  duration: 1000, // Duration of animation (in milliseconds)
-  easing: 'ease-in-out', // Easing type
-  delay: O, // Delay before the animation starts (in milliseconds)
-  once: false,
-  anchorPlacement: 'top-botton' // Only animate an element once during scroll
-});
+  const initCarousel = function () {
+    if (typeof bootstrap === 'undefined') {
+      return;
+    }
 
+    const carouselEl = document.getElementById('carouselExampleCaptions');
+    if (carouselEl) {
+      new bootstrap.Carousel(carouselEl, {
+        interval: 2000,
+        ride: 'carousel',
+        pause: 'hover'
+      });
+    }
+  };
 
   document.addEventListener('DOMContentLoaded', function () {
-  var myCarousel = new bootstrap.Carousel(document.getElementById('carouselExampleCaptions'), {
-  interval: 2000, // Adjust the interval as needed (in milliseconds)
-  ride: 'carousel', // Enable auto slide
-  pause: 'hover',   // Pause on hover
-});
-});
+    initAOS();
+    initCarousel();
+  });
+})();

@@ -430,7 +430,7 @@ def edit_profile(request):
 
     if request.method == 'POST':
         identity_form = AccountIdentityForm(request.POST, instance=request.user)
-        profile_form = AccountProfileForm(request.POST, instance=profile_instance)
+        profile_form = AccountProfileForm(request.POST, request.FILES, instance=profile_instance)
 
         if identity_form.is_valid() and profile_form.is_valid():
             with transaction.atomic():

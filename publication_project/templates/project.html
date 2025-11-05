@@ -26,18 +26,12 @@
         {% endif %}
 
         {% if projects %}
-            <div class="card-grid card-grid--two">
+            <div class="project-list">
                 {% for project in projects %}
-                    <article class="glass-card project-card h-100">
-                        <div class="d-flex flex-wrap align-items-center gap-3 mb-3 project-card__header">
-                            <div class="project-logo">
-                                {% if project.logo %}
-                                    <img src="{{ project.logo.url }}" alt="{{ project.project_title }} logo">
-                                {% else %}
-                                    <span class="project-logo__placeholder"><i class="fa-solid fa-diagram-project"></i></span>
-                                {% endif %}
-                            </div>
-                            <div class="flex-grow-1">
+                    <article class="glass-card project-item">
+                        <header class="project-item__header">
+                            <span class="project-item__index">#{{ forloop.counter|stringformat:"02d" }}</span>
+                            <div class="project-item__identity">
                                 <h2 class="project-title mb-1">{{ project.project_title }}</h2>
                                 <p class="theme-meta mb-0">
                                     {% if project.funded_by %}
@@ -48,22 +42,30 @@
                                     {% endif %}
                                 </p>
                             </div>
+                            <div class="project-logo">
+                                {% if project.logo %}
+                                    <img src="{{ project.logo.url }}" alt="{{ project.project_title }} logo">
+                                {% else %}
+                                    <span class="project-logo__placeholder"><i class="fa-solid fa-diagram-project"></i></span>
+                                {% endif %}
+                            </div>
+                        </header>
+
+                        <div class="project-item__body">
+                            <p class="project-item__summary mb-0">{{ project.summary }}</p>
                         </div>
 
-                        <div class="project-card__body">
-                            <p class="mb-3">{{ project.summary }}</p>
-                            <ul class="project-facts list-unstyled mb-0">
-                                {% if project.funding_amount %}
-                                    <li><i class="fa-solid fa-coins"></i>Investment: {{ project.funding_amount }}</li>
-                                {% endif %}
-                                {% if project.role %}
-                                    <li><i class="fa-solid fa-user-gear"></i>Role: {{ project.role }}</li>
-                                {% endif %}
-                                {% if project.url %}
-                                    <li><i class="fa-solid fa-arrow-up-right-from-square"></i><a href="{{ project.url }}" target="_blank" class="theme-link">Visit project site</a></li>
-                                {% endif %}
-                            </ul>
-                        </div>
+                        <ul class="project-facts list-unstyled mb-0">
+                            {% if project.funding_amount %}
+                                <li><i class="fa-solid fa-coins"></i>Investment: {{ project.funding_amount }}</li>
+                            {% endif %}
+                            {% if project.role %}
+                                <li><i class="fa-solid fa-user-gear"></i>Role: {{ project.role }}</li>
+                            {% endif %}
+                            {% if project.url %}
+                                <li><i class="fa-solid fa-arrow-up-right-from-square"></i><a href="{{ project.url }}" target="_blank" class="theme-link">Visit project site</a></li>
+                            {% endif %}
+                        </ul>
                     </article>
                 {% endfor %}
             </div>
@@ -77,44 +79,85 @@
 </section>
 
 <style>
-    .project-card {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
+    .project-list {
+        display: grid;
+        gap: 1.75rem;
     }
 
-    .project-card__header {
-        border-bottom: 1px solid rgba(91, 141, 247, 0.25);
-        padding-bottom: 1rem;
+    .project-item {
+        display: grid;
+        gap: 1.25rem;
+        padding: 1.75rem;
+        border: 1px solid rgba(91, 141, 247, 0.25);
+        border-radius: 22px;
+        box-shadow: 0 18px 45px rgba(13, 25, 64, 0.18);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .project-item:hover {
+        transform: translateY(-4px);
+        border-color: rgba(76, 110, 245, 0.45);
+    }
+
+    .project-item__header {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 1.25rem;
+        align-items: center;
+    }
+
+    .project-item__index {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 14px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        background: rgba(0, 212, 168, 0.12);
+        color: #00b48a;
+        border: 1px solid rgba(0, 212, 168, 0.2);
+    }
+
+    .project-item__identity {
+        display: grid;
+        gap: 0.35rem;
     }
 
     .project-title {
-        font-size: 1.25rem;
-        font-weight: 650;
+        font-size: 1.35rem;
+        font-weight: 660;
     }
 
     .project-logo img,
     .project-logo__placeholder {
-        width: 72px;
-        height: 72px;
-        border-radius: 18px;
+        width: 80px;
+        height: 80px;
+        border-radius: 22px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         background: rgba(76, 110, 245, 0.12);
         border: 1px solid rgba(76, 110, 245, 0.28);
         color: #4c6ef5;
-        box-shadow: 0 10px 30px rgba(5, 17, 45, 0.35);
-        padding: 0.6rem;
+        box-shadow: 0 12px 35px rgba(5, 17, 45, 0.32);
+        padding: 0.65rem;
     }
 
     .project-logo__placeholder i {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+    }
+
+    .project-item__summary {
+        color: var(--th-text-muted);
+        line-height: 1.65;
     }
 
     .project-facts {
-        display: grid;
-        gap: 0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem 1.5rem;
     }
 
     .project-facts li {
@@ -127,6 +170,27 @@
 
     .project-facts i {
         color: #00d4a8;
+    }
+
+    @media (max-width: 768px) {
+        .project-item {
+            padding: 1.5rem;
+        }
+
+        .project-item__header {
+            grid-template-columns: 1fr;
+            justify-items: start;
+        }
+
+        .project-logo {
+            order: 3;
+        }
+
+        .project-logo img,
+        .project-logo__placeholder {
+            width: 70px;
+            height: 70px;
+        }
     }
 </style>
 

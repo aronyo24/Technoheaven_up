@@ -14,234 +14,520 @@
     </div>
 </section>
 
-<section style="background:#ffffff; padding:40px 0;">
-  <div class="container" style="margin-top:40px;">
-    <div class="row">
-      <div class="col-12">
-        {% if request.user.is_authenticated %}
-          <div style="background: linear-gradient(135deg, rgba(13,110,253,0.12), rgba(32,201,151,0.12)); border:1px solid rgba(13,110,253,0.18); border-radius:12px; padding:16px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <div>
-              <h5 style="margin:0; color:#0b4ed8; font-weight:700;">Have an insight to share?</h5>
-              <p style="margin:4px 0 0 0; color:#495057;">Draft your story and submit it for review. We will publish it once approved.</p>
-            </div>
-            <a href="{% url 'blog_submit' %}"
-               style="background:#0d6efd; color:#fff; font-weight:600; padding:10px 18px; border-radius:999px; text-decoration:none;">
-              Write a Blog
-            </a>
-          </div>
-        {% else %}
-          <div style="background: rgba(21,34,57,0.05); border:1px dashed rgba(21,34,57,0.2); border-radius:12px; padding:16px 20px; margin-bottom:20px; text-align:center;">
-            <p style="margin:0; color:#495057;">Want to publish your own article? <a href="{% url 'register' %}" style="color:#0d6efd; font-weight:600;">Create an account</a> or <a href="{% url 'login' %}" style="color:#0d6efd; font-weight:600;">sign in</a> to submit your blog.</p>
-          </div>
-        {% endif %}
-      </div>
-    </div>
-    <div class="row gy-4">
-
-      <!-- Sidebar Left -->
-      <aside class="col-lg-4 col-md-12">
-        <div style="background:#fff; padding:16px; border-radius:10px; box-shadow:0 8px 20px rgba(14,20,23,0.06); border:1px solid #eef0f2; margin-bottom:16px;">
-          <h5 style="color:#0d6efd; margin-bottom:12px; font-weight:700;">Search</h5>
-          <form method="get" action="">
-            <div style="display:flex; gap:8px;">
-              <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search }}" style="flex:1; padding:10px 12px; border-radius:8px; border:1px solid #eef0f2;">
-              <button type="submit" style="background:#0d6efd; color:#fff; border:none; padding:10px 12px; border-radius:8px;">
-                <i class="fa fa-search"></i>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div style="background:#fff; padding:16px; border-radius:10px; box-shadow:0 8px 20px rgba(14,20,23,0.06); border:1px solid #eef0f2; margin-bottom:16px;">
-          <h5 style="color:#0d6efd; margin-bottom:12px; font-weight:700;">Categories</h5>
-          <ul class="list-group mb-4 category-list">
-            <li class="list-group-item category-item {% if not selected_category %}category-item--active{% endif %}">
-              <a href="{% url 'blog_list' %}" class="category-link">
-                <span class="category-label"><i class="fa fa-list category-dot"></i> All</span>
-                <span class="badge category-count">{{ all_blogs.count }}</span>
-              </a>
-            </li>
-            {% for cat in categories %}
-            <li class="list-group-item category-item {% if selected_category == cat.value %}category-item--active{% endif %}">
-              <a href="{% url 'blog_list' %}?category={{ cat.value }}" class="category-link">
-                <span class="category-label">
-                  <i class="fa fa-circle category-dot category-dot-{{ cat.palette_index }}"></i> {{ cat.label }}
-                </span>
-                <span class="badge category-count">{{ cat.count }}</span>
-              </a>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-
-        <!-- Popular Posts -->
-        <div style="background:#fff; padding:16px; border-radius:10px; box-shadow:0 8px 20px rgba(14,20,23,0.06); border:1px solid #eef0f2;">
-          <h5 style="color:#0d6efd; margin-bottom:12px; font-weight:700;">Popular Posts</h5>
-          {% with popular_blogs=all_blogs|dictsortreversed:"likes" %}
-            {% for pop_blog in popular_blogs|slice:":3" %}
-              <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
-                {% if pop_blog.image %}
-                  <img src="{{ pop_blog.image.url }}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #eef0f2;">
+<section class="blog">
+    <div class="container">
+        <div class="blog__banner">
+            <div class="blog__banner-content">
+                {% if request.user.is_authenticated %}
+                    <h2>Have an insight to share?</h2>
+                    <p>Draft your story and submit it for review. We will publish it once approved.</p>
                 {% else %}
-                  <img src="https://www.bootdey.com/image/64x64/20B2AA/ffffff" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid #eef0f2;">
+                    <h2>Share your expertise with the community</h2>
+                    <p>Create an account or sign in to submit your article for review.</p>
                 {% endif %}
-                <div style="flex:1;">
-                  <a href="{% url 'blog_detail' pop_blog.slug %}" style="text-decoration:none; color:#0b4ed8; font-weight:700;">{{ pop_blog.title|truncatechars:60 }}</a>
-                  <div style="color:#6c757d; font-size:13px;">{{ pop_blog.date }}</div>
-                </div>
-                <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
-                  <form method="post" style="margin:0;">
-                    {% csrf_token %}
-                    <input type="hidden" name="slug" value="{{ pop_blog.slug }}">
-                    <button type="submit" name="like" value="1" style="border:none; background:linear-gradient(90deg,#ff6b6b,#e83e8c); color:#fff; padding:6px 10px; border-radius:999px; font-weight:700; cursor:pointer;">
-                      <i class="fa fa-heart" style="margin-right:6px;"></i>{{ pop_blog.likes }}
-                    </button>
-                  </form>
-                </div>
-              </div>
-            {% endfor %}
-          {% endwith %}
-        </div>
-      </aside>
-
-      <!-- Blog Posts Right -->
-      <main class="col-lg-8 col-md-12">
-        {% for blog in page_obj %}
-        <div style="border-radius:10px; background:#fff; border:1px solid #eef0f2; box-shadow:0 8px 20px rgba(14,20,23,0.04); margin-bottom:18px; overflow:hidden;">
-          {% if blog.image %}
-          <img src="{{ blog.image.url }}" alt="Blog Image"
-               style="width:100%; max-height:300px; object-fit:cover; display:block;">
-          {% endif %}
-          <div style="padding:18px;">
-            <h3 style="font-size:1.5rem; font-weight:700; margin:0 0 8px 0;">
-              <a href="{% url 'blog_detail' blog.slug %}" style="text-decoration:none; color:#0b4ed8;">{{ blog.title }}</a>
-            </h3>
-            <small style="color:#6c757d;">By <b style="color:#0d6efd">{{ blog.author }}</b> | {{ blog.date }}</small>
-            <p style="margin-top:12px; color:#495057; font-size:0.95rem; line-height:1.6;">
-              {{ blog.content|safe|truncatewords:40 }}
-            </p>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
-              <a href="{% url 'blog_detail' blog.slug %}"
-                 style="padding:8px 12px; border-radius:8px; border:1px solid rgba(13,110,253,0.12); color:#0d6efd; background:transparent; text-decoration:none; font-weight:700; display:inline-block; transition:all .14s ease; cursor:pointer;"
-                 onmouseover="this.style.background='linear-gradient(90deg, rgba(13,110,253,0.10), rgba(13,110,253,0.06))'; this.style.color='red'; this.style.borderColor='rgba(13,110,253,0.22)'; this.style.boxShadow='0 8px 20px rgba(13,110,253,0.12)'; this.style.transform='translateY(-3px)';"
-                 onmouseout="this.style.background='transparent'; this.style.color='#0d6efd'; this.style.borderColor='rgba(13,110,253,0.12)'; this.style.boxShadow='none'; this.style.transform='none';">
-                Continue Reading
-              </a>
-              <span style="display:flex; gap:10px; align-items:center; color:#495057;">
-                <i class="fa fa-heart" ></i><span>{{ blog.likes }}</span>
-                <i class="fa fa-comment" style="color:#6f42c1; margin-left:6px;"></i><span>{{ blog.comments.count }}</span>
-              </span>
             </div>
-          </div>
+            {% comment %} <div class="blog__banner-actions">
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'blog_submit' %}" class="blog__banner-cta">Write a Blog</a>
+                {% else %}
+                    <a href="{% url 'register' %}" class="blog__banner-cta">Create an account</a>
+                    <a href="{% url 'login' %}" class="blog__banner-cta blog__banner-cta--ghost">Sign in</a>
+                {% endif %}
+            </div> {% endcomment %}
         </div>
-        {% empty %}
-  <p style="color:#6c757d; text-align:center;">No published blog posts yet. Be the first to <a href="{% url 'register' %}" style="color:#0d6efd; font-weight:600;">share an article</a>.</p>
-        {% endfor %}
 
-        <!-- Pagination -->
-        {% if is_paginated %}
-        <nav aria-label="Page navigation" style="margin-top:12px;">
-          <ul style="display:flex; gap:8px; justify-content:center; list-style:none; padding:0; margin:0;">
-            {% if page_obj.has_previous %}
-              <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ page_obj.previous_page_number }}" style="display:inline-block; padding:8px 12px; border-radius:8px; border:1px solid #eef0f2; color:#495057; text-decoration:none;">&laquo;</a></li>
-            {% else %}
-              <li><span style="display:inline-block; padding:8px 12px; border-radius:8px; border:1px solid #eef0f2; color:#c7c7c7;">&laquo;</span></li>
-            {% endif %}
+        <div class="row g-4">
+            <aside class="col-lg-4">
+                <div class="blog__card">
+                    <h3 class="blog__card-title">Search</h3>
+                    <form method="get" action="{% url 'blog_list' %}">
+                        <div class="blog__search">
+                            <input type="text" name="search" value="{{ search }}" placeholder="Search..." class="form-control">
+                            <button type="submit" class="blog__search-btn"><i class="fa fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
 
-            {% for num in paginator.page_range %}
-              {% if num == page_obj.number %}
-                <li><span style="display:inline-block; padding:8px 12px; border-radius:8px; background:#0d6efd; color:#fff; font-weight:700;">{{ num }}</span></li>
-              {% else %}
-                <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ num }}" style="display:inline-block; padding:8px 12px; border-radius:8px; border:1px solid #eef0f2; color:#495057; text-decoration:none;">{{ num }}</a></li>
-              {% endif %}
-            {% endfor %}
+                <div class="blog__card">
+                    <h3 class="blog__card-title">Categories</h3>
+                    <ul class="blog__category-list">
+                        <li class="blog__category-item {% if not selected_category %}is-active{% endif %}">
+                            <a href="{% url 'blog_list' %}">
+                                <span><i class="fa fa-list"></i> All</span>
+                                <span class="badge">{{ all_blogs.count }}</span>
+                            </a>
+                        </li>
+                        {% for cat in categories %}
+                            <li class="blog__category-item {% if selected_category == cat.value %}is-active{% endif %}">
+                                <a href="{% url 'blog_list' %}?category={{ cat.value }}">
+                                    <span><i class="fa fa-circle blog__category-dot blog__category-dot{{ cat.palette_index }}"></i> {{ cat.label }}</span>
+                                    <span class="badge">{{ cat.count }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
 
-            {% if page_obj.has_next %}
-              <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ page_obj.next_page_number }}" style="display:inline-block; padding:8px 12px; border-radius:8px; border:1px solid #eef0f2; color:#495057; text-decoration:none;">&raquo;</a></li>
-            {% else %}
-              <li><span style="display:inline-block; padding:8px 12px; border-radius:8px; border:1px solid #eef0f2; color:#c7c7c7;">&raquo;</span></li>
-            {% endif %}
-          </ul>
-        </nav>
-        {% endif %}
-      </main>
+                <div class="blog__card">
+                    <h3 class="blog__card-title">Popular Posts</h3>
+                    {% with popular_blogs=all_blogs|dictsortreversed:"likes" %}
+                        {% for pop_blog in popular_blogs|slice:":3" %}
+                            <article class="blog__popular">
+                                {% if pop_blog.image %}
+                                    <img src="{{ pop_blog.image.url }}" alt="{{ pop_blog.title }} thumbnail">
+                                {% else %}
+                                    <img src="https://www.bootdey.com/image/64x64/20B2AA/ffffff" alt="" />
+                                {% endif %}
+                                <div>
+                                    <a href="{% url 'blog_detail' pop_blog.slug %}" class="blog__popular-title">{{ pop_blog.title|truncatechars:60 }}</a>
+                                    <p class="blog__popular-meta">{{ pop_blog.date }}</p>
+                                </div>
+                                <form method="post" class="blog__popular-like">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="slug" value="{{ pop_blog.slug }}">
+                                    <button type="submit" name="like" value="1"><i class="fa fa-heart"></i>{{ pop_blog.likes }}</button>
+                                </form>
+                            </article>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </aside>
+
+            <main class="col-lg-8">
+                {% for blog in page_obj %}
+                    <article class="blog__post">
+                        {% if blog.image %}
+                            <a href="{% url 'blog_detail' blog.slug %}"><img src="{{ blog.image.url }}" alt="{{ blog.title }} cover"></a>
+                        {% endif %}
+                        <div class="blog__post-body">
+                            <a href="{% url 'blog_detail' blog.slug %}" class="blog__post-title">{{ blog.title }}</a>
+                            <p class="blog__post-meta">By <span>{{ blog.author }}</span> · {{ blog.date }}</p>
+                            <p class="blog__post-excerpt">{{ blog.content|safe|truncatewords:40 }}</p>
+                            <div class="blog__post-footer">
+                                <a href="{% url 'blog_detail' blog.slug %}" class="blog__post-link">Continue Reading</a>
+                                <div class="blog__post-stats">
+                                    <span><i class="fa fa-heart"></i>{{ blog.likes }}</span>
+                                    <span><i class="fa fa-comment"></i>{{ blog.comments.count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p class="blog__empty">No published blog posts yet. Be the first to <a href="{% url 'register' %}">share an article</a>.</p>
+                {% endfor %}
+
+                {% if is_paginated %}
+                    <nav aria-label="Page navigation" class="blog__pagination">
+                        <ul>
+                            {% if page_obj.has_previous %}
+                                <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                            {% else %}
+                                <li class="disabled"><span>&laquo;</span></li>
+                            {% endif %}
+
+                            {% for num in paginator.page_range %}
+                                {% if num == page_obj.number %}
+                                    <li class="active"><span>{{ num }}</span></li>
+                                {% else %}
+                                    <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                            {% else %}
+                                <li class="disabled"><span>&raquo;</span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </main>
+        </div>
     </div>
-  </div>
 </section>
 
 <style>
-:root{
-  --page-bg: #ffffff;
-  --muted: #6c757d;
-  --text-strong: #222;
-  --card-bg: #ffffff;
-  --accent: #0d6efd;    /* primary */
-  --accent-2: #dc3545;  /* danger */
-  --muted-2: #495057;
-  --soft-border: #eef0f2;
-  --soft-badge: #f4f6f8;
-  --shadow: 0 8px 20px rgba(14,20,23,0.06);
-}
+    .blog {
+        background: #f6f8fb;
+        padding: 3rem 0;
+    }
 
-/* page bg */
-section[style*="background"] { background: var(--page-bg); }
+    .blog__banner {
+        margin-bottom: 2.5rem;
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.12), rgba(32, 201, 151, 0.12));
+        border: 1px solid rgba(13, 110, 253, 0.18);
+        border-radius: 16px;
+        padding: 1.75rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
 
-/* cards */
-.card, .shadow-sm { background: var(--card-bg) !important; border: 1px solid var(--soft-border); box-shadow: var(--shadow); border-radius: 10px; }
+    .blog__banner h2 {
+        margin: 0 0 0.35rem;
+        font-size: 1.6rem;
+        color: #134ad6;
+    }
 
-/* sidebar headings */
-aside h5, .card h5 { color: var(--text-strong); font-weight:700; }
+    .blog__banner p {
+        margin: 0;
+        color: #4c5462;
+    }
 
-/* list group */
-.list-group { border: none; }
-.list-group-item { border:1px solid var(--soft-border); color: var(--muted-2); background: #fff; }
-.list-group-item a { color: inherit; text-decoration: none; display:flex; justify-content:space-between; align-items:center; }
-.list-group-item.active { background: rgba(13,110,253,0.06); border-color: rgba(13,110,253,0.12); color: var(--text-strong); }
-.category-list { padding: 0; list-style: none; }
-.category-item { transition: transform 0.2s ease, box-shadow 0.2s ease; border-radius: 8px; margin-bottom: 8px; }
-.category-item--active { box-shadow:0 8px 20px rgba(13,110,253,0.06); transform: translateY(-2px); }
-.category-link { display:flex; justify-content:space-between; align-items:center; color: inherit; text-decoration:none; }
-.category-label { display:flex; align-items:center; gap:8px; }
-.category-count { background: var(--soft-badge); color: var(--text-strong); border-radius:12px; padding:4px 8px; font-weight:600; }
-.category-dot { font-size:10px; }
-.category-dot-0 { color: #007bff; }
-.category-dot-1 { color: #6610f2; }
-.category-dot-2 { color: #20c997; }
-.category-dot-3 { color: #e83e8c; }
-.category-dot-4 { color: #fd7e14; }
-.category-dot-5 { color: #17a2b8; }
-.category-dot-6 { color: #6f42c1; }
-.category-dot-7 { color: #20a8d8; }
-.category-dot-8 { color: #343a40; }
+    .blog__banner-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
 
-/* badges */
-.badge { background: var(--soft-badge); color: var(--text-strong); border-radius: 12px; padding: 4px 8px; font-weight:600; }
+    .blog__banner-cta {
+        background: #0d6efd;
+        color: #fff !important;
+        font-weight: 600;
+        padding: 0.65rem 1.6rem;
+        border-radius: 999px;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-/* popular post thumb */
-.popular-thumb { width:64px; height:64px; object-fit:cover; border-radius:6px; }
+    .blog__banner-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 20px rgba(13, 110, 253, 0.2);
+    }
 
-/* meta text */
-.text-muted, .small { color: var(--muted); }
+    .blog__banner-cta--ghost {
+        background: rgba(13, 110, 253, 0.08);
+        color: #0d6efd !important;
+        border: 1px solid rgba(13, 110, 253, 0.2);
+    }
 
-/* controls/buttons */
-.btn-outline-primary { color: var(--accent); border-color: rgba(13,110,253,0.16); }
-.btn-outline-primary:hover { background: rgba(13,110,253,0.06); }
-.btn { border-radius: 8px; }
+    .blog__banner-cta--ghost:hover {
+        background: rgba(13, 110, 253, 0.15);
+        box-shadow: none;
+    }
 
-/* pagination */
-.pagination .page-link { color: var(--muted-2); border-color: var(--soft-border); }
-.pagination .page-item.active .page-link { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .blog__card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 1.5rem;
+        border: 1px solid #e4e8ee;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+        margin-bottom: 1.25rem;
+    }
 
-/* like icon */
-.fa-heart { color: var(--accent-2); }
+    .blog__card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #142544;
+    }
 
-/* image corners */
-.card-img-top { border-top-left-radius:10px; border-top-right-radius:10px; }
+    .blog__search {
+        display: flex;
+        gap: 0.65rem;
+    }
 
-/* small responsive tweak */
-@media (max-width:767px){
-  .card { margin-bottom: 18px; }
-}
+    .blog__search input {
+        border-radius: 10px;
+        border: 1px solid #d9dde5;
+        padding: 0.65rem 0.85rem;
+    }
+
+    .blog__search-btn {
+        border: none;
+        background: #0d6efd;
+        color: #fff;
+        border-radius: 10px;
+        width: 46px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+    }
+
+    .blog__search-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .blog__category-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.6rem;
+    }
+
+    .blog__category-item a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-decoration: none;
+        color: #4c5462;
+        padding: 0.6rem 0.75rem;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .blog__category-item a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(13, 110, 253, 0.08);
+        border-color: rgba(13, 110, 253, 0.2);
+    }
+
+    .blog__category-item.is-active a {
+        background: rgba(13, 110, 253, 0.08);
+        border-color: rgba(13, 110, 253, 0.24);
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .blog__category-dot0 { color: #007bff; }
+    .blog__category-dot1 { color: #6610f2; }
+    .blog__category-dot2 { color: #20c997; }
+    .blog__category-dot3 { color: #e83e8c; }
+    .blog__category-dot4 { color: #fd7e14; }
+    .blog__category-dot5 { color: #17a2b8; }
+    .blog__category-dot6 { color: #6f42c1; }
+    .blog__category-dot7 { color: #20a8d8; }
+    .blog__category-dot8 { color: #343a40; }
+
+    .blog__category-dot0::before,
+    .blog__category-dot1::before,
+    .blog__category-dot2::before,
+    .blog__category-dot3::before,
+    .blog__category-dot4::before,
+    .blog__category-dot5::before,
+    .blog__category-dot6::before,
+    .blog__category-dot7::before,
+    .blog__category-dot8::before {
+        margin-right: 0.5rem;
+    }
+
+    .blog__category-item span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .blog__popular {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 0.85rem;
+        align-items: center;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #eef1f6;
+    }
+
+    .blog__popular:last-child {
+        border-bottom: none;
+    }
+
+    .blog__popular img {
+        width: 64px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid #e4e8ee;
+    }
+
+    .blog__popular-title {
+        font-weight: 600;
+        color: #1a3d7c;
+        text-decoration: none;
+    }
+
+    .blog__popular-title:hover {
+        color: #0d6efd;
+    }
+
+    .blog__popular-meta {
+        margin: 0;
+        font-size: 0.82rem;
+        color: #70798c;
+    }
+
+    .blog__popular-like button {
+        border: none;
+        background: linear-gradient(135deg, #ff6b6b, #e83e8c);
+        color: #fff;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        cursor: pointer;
+    }
+
+    .blog__post {
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid #e4e8ee;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        margin-bottom: 1.75rem;
+        display: grid;
+    }
+
+    .blog__post img {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+    }
+
+    .blog__post-body {
+        padding: 1.5rem 1.75rem 1.6rem;
+        display: grid;
+        gap: 0.85rem;
+    }
+
+    .blog__post-title {
+        font-size: 1.45rem;
+        color: #143c99;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .blog__post-title:hover {
+        color: #0d6efd;
+    }
+
+    .blog__post-meta {
+        margin: 0;
+        color: #6c7484;
+        font-size: 0.9rem;
+    }
+
+    .blog__post-meta span {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .blog__post-excerpt {
+        margin: 0;
+        color: #4c5462;
+        line-height: 1.7;
+        font-size: 0.98rem;
+    }
+
+    .blog__post-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .blog__post-link {
+        padding: 0.6rem 1.1rem;
+        border-radius: 10px;
+        border: 1px solid rgba(13, 110, 253, 0.16);
+        text-decoration: none;
+        color: #0d6efd;
+        font-weight: 600;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .blog__post-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(13, 110, 253, 0.15);
+        background: rgba(13, 110, 253, 0.08);
+    }
+
+    .blog__post-stats span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #4c5462;
+    }
+
+    .blog__post-stats i.fa-heart {
+        color: #dc3545;
+    }
+
+    .blog__empty {
+        text-align: center;
+        color: #6c7484;
+    }
+
+    .blog__empty a {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    .blog__pagination {
+        margin-top: 1.5rem;
+    }
+
+    .blog__pagination ul {
+        list-style: none;
+        display: flex;
+        gap: 0.6rem;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .blog__pagination a,
+    .blog__pagination span {
+        display: inline-block;
+        padding: 0.55rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid #d9dde5;
+        text-decoration: none;
+        color: #4c5462;
+        font-weight: 500;
+    }
+
+    .blog__pagination li.active span {
+        background: #0d6efd;
+        border-color: #0d6efd;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .blog__pagination li.disabled span {
+        color: #b9c0cc;
+    }
+
+    @media (max-width: 991px) {
+        .blog__banner {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .blog__banner-actions {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .blog {
+            padding: 2.5rem 0;
+        }
+
+        .blog__post-body {
+            padding: 1.35rem;
+        }
+
+        .blog__post-footer {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .blog__post-link {
+            width: 100%;
+            text-align: center;
+        }
+
+        .blog__post-stats {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
 </style>
     
 {% endblock %}

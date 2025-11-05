@@ -69,13 +69,14 @@ class AccountIdentityForm(forms.ModelForm):
 class AccountProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ["full_name", "country", "age", "gender", "contact_number"]
+        fields = ["full_name", "country", "age", "gender", "contact_number", "profile_photo"]
         widgets = {
             "full_name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Full name"}),
             "country": forms.TextInput(attrs={"class": "form-control", "placeholder": "Country"}),
             "age": forms.NumberInput(attrs={"class": "form-control", "min": 0, "placeholder": "Age"}),
             "gender": forms.Select(attrs={"class": "form-select"}),
             "contact_number": forms.TextInput(attrs={"class": "form-control", "placeholder": "Contact number"}),
+            "profile_photo": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
 
     def clean_full_name(self):
