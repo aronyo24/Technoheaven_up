@@ -1,5 +1,28 @@
 {% extends 'base.html' %}
+{% block title %}Activation link invalid{% endblock %}
+
 {% block content %}
-<h3>Invalid or expired activation link.</h3>
-<p>Please try registering again.</p>
+
+<section class="page-hero">
+	<div class="container">
+		<span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> Activation issue</span>
+		<h1>Invalid or expired link</h1>
+		<p>The activation link is no longer valid. You can register again to receive a fresh link.</p>
+	</div>
+</section>
+
+<section class="section-pad d-flex align-items-center" style="min-height: 50vh;">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-8 col-lg-6">
+				<div class="glass-card p-4 text-center" data-aos="fade-up">
+					<h3 class="mb-3">Let's get you set up</h3>
+					<p class="theme-meta mb-4">Create a new account to continue to Technoheaven.</p>
+					<a href="{% url 'register' %}" class="theme-btn justify-content-center">Register now</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
 {% endblock %}

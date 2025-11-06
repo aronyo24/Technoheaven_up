@@ -1,6 +1,38 @@
-<h2>Verify Email for {{ email }}</h2>
-<form method="POST">
-  {% csrf_token %}
-  <input type="text" name="otp" placeholder="Enter OTP" required><br>
-  <button type="submit">Verify</button>
-</form>
+{% extends 'base.html' %}
+{% block title %}Verify your email{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> Verify your account</span>
+    <h1>Email verification</h1>
+    <p>Enter the 6‑digit code we sent to <strong>{{ email }}</strong> to activate your account.</p>
+  </div>
+  </section>
+
+<section class="section-pad auth-section d-flex align-items-center" style="min-height: 60vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+        <div class="glass-card theme-form" data-aos="fade-up">
+          <h3 class="mb-2">Verify OTP</h3>
+          <p class="theme-meta mb-4">Check your inbox (and spam) for the verification code.</p>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label" for="otpInput">OTP code</label>
+              <input id="otpInput" type="text" name="otp" class="form-control" maxlength="6" placeholder="e.g. 123456" required>
+            </div>
+            <button class="theme-btn w-100 justify-content-center" type="submit">Verify</button>
+          </form>
+          <p class="text-center theme-meta mt-4 mb-0">
+            Didn’t get a code? <a class="theme-link" href="{% url 'forgot_password' %}">Request again</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
