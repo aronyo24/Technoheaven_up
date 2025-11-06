@@ -11,19 +11,20 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
+from message import models
 from message.models import Blog, Comment, News
 from publication_project.models import Publication, Project, Resource, Client, Service
+from django.contrib.auth.models import User
 
 
 from visitors_details.models import Visitor
 
-from .forms import (
-    RegisterForm,
+from authapp.forms import (
     BlogSubmissionForm,
     AccountIdentityForm,
     AccountProfileForm,
 )
-from .models import UserProfile
+from authapp.models import UserProfile
 
 
 BLOG_STATUS_DESCRIPTIONS = {
@@ -120,142 +121,7 @@ def contact(request):
 
 
 
-def register_view(request):
-    if request.user.is_authenticated:
-        return redirect('user_dashboard')
 
-    form_errors = []
-    form = RegisterForm()
-    form_data = {
-        'name': '',
-        'username': '',
-        'email': '',
-        'country': '',
-        'age': '',
-        'gender': '',
-        'contact': '',
-        'terms': False,
-    }
-
-    if request.method == 'POST':
-        form_data.update({
-            'name': request.POST.get('name', '').strip(),
-            'username': request.POST.get('username', '').strip(),
-            'email': request.POST.get('email', '').strip(),
-            'country': request.POST.get('country', '').strip(),
-            'age': request.POST.get('age', '').strip(),
-            'gender': request.POST.get('gender', '').strip(),
-            'contact': request.POST.get('contact', '').strip(),
-            'terms': request.POST.get('terms') is not None,
-        })
-
-        full_name = form_data['name']
-        name_parts = full_name.split()
-        first_name = name_parts[0] if name_parts else ''
-        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
-
-        form_payload = {
-            'username': form_data['username'],
-            'first_name': first_name,
-            'last_name': last_name,
-            'email': form_data['email'],
-            'password1': request.POST.get('password', ''),
-            'password2': request.POST.get('confirm_password', ''),
-        }
-        form = RegisterForm(form_payload)
-
-        if not full_name:
-            form.add_error(None, 'Full name is required.')
-        if not form_data['country']:
-            form.add_error(None, 'Country is required.')
-        if not request.POST.get('terms'):
-            form.add_error(None, 'Please agree to the terms of collaboration to continue.')
-
-        if form_data['email']:
-            user_model = form._meta.model
-            if user_model.objects.filter(email__iexact=form_data['email']).exists():
-                form.add_error('email', 'An account with this email already exists.')
-
-        age_value = form_data['age']
-        if age_value:
-            try:
-                age_int = int(age_value)
-                if age_int < 0:
-                    raise ValueError
-            except (TypeError, ValueError):
-                form.add_error(None, 'Age must be a positive number.')
-            else:
-                form_data['age'] = str(age_int)
-
-        if form.is_valid():
-            try:
-                with transaction.atomic():
-                    user = form.save()
-                    if first_name or last_name:
-                        user.first_name = first_name
-                        user.last_name = last_name
-                        user.save(update_fields=['first_name', 'last_name'])
-
-                    age = int(form_data['age']) if form_data['age'] else None
-                    gender_value = form_data['gender'] if form_data['gender'] in dict(UserProfile.GENDER_CHOICES) else ''
-
-                    UserProfile.objects.create(
-                        user=user,
-                        full_name=full_name or user.get_full_name() or user.username,
-                        country=form_data['country'],
-                        age=age,
-                        gender=gender_value,
-                        contact_number=form_data['contact'],
-                        terms_accepted=form_data['terms'],
-                    )
-                login(request, user)
-                messages.success(request, 'Welcome aboard! Your Technoheaven workspace is ready.')
-                return redirect('user_dashboard')
-            except Exception:
-                form.add_error(None, 'We could not complete your registration. Please try again.')
-
-        form_errors = _format_form_errors(form)
-
-    context = {
-        'form': form,
-        'form_data': form_data,
-        'form_errors': form_errors,
-    }
-
-    return render(request, 'auth/register.html', context)
-
-
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('user_dashboard')
-
-    next_url = request.GET.get('next', '')
-    form = AuthenticationForm(request, data=request.POST or None)
-    form_errors = []
-    form_data = {'username': ''}
-
-    if request.method == 'POST':
-        form_data['username'] = request.POST.get('username', '').strip()
-
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, 'Signed in successfully.')
-            return redirect(next_url or 'user_dashboard')
-
-        form_errors = _format_form_errors(form)
-        messages.error(request, 'We could not sign you in with those credentials.')
-    else:
-        form_data['username'] = request.GET.get('username', '').strip()
-
-    context = {
-        'form': form,
-        'next': next_url,
-        'form_data': form_data,
-        'form_errors': form_errors,
-    }
-
-    return render(request, 'auth/login.html', context)
 
 
 @login_required

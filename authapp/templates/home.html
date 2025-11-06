@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome | Auth System</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0b132b, #1c2541);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 8px;
+      background: #3a86ff;
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #007bff;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome to Secure Auth System 🔐</h1>
+  <div class="btn-container">
+    <a href="{% url 'login' %}" class="btn">Login</a>
+    <a href="{% url 'register' %}" class="btn">Register</a>
+  </div>
+
+  <footer>© {{ now|date:"Y" }} Auth System | Built with Django</footer>
+
+</body>
+</html>

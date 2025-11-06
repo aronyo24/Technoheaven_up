@@ -13,9 +13,7 @@ urlpatterns = [
     path('dashboard/blog/<slug:slug>/edit/', views.edit_blog, name='edit_blog'),
     path('dashboard/profile/', views.edit_profile, name='edit_profile'),
     path('dashboard/security/', views.change_password, name='change_password'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('register/', views.register_view, name='register'),
+    
  
 
 

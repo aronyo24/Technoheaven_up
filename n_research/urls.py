@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('message.urls')),
     path('', include('team_gallary.urls')),
     path('', include('session.urls')),
+    path('', include('authapp.urls')),
 
 ]
 

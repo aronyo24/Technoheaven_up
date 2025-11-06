@@ -1,0 +1,6 @@
+<h2>Verify Email for {{ email }}</h2>
+<form method="POST">
+  {% csrf_token %}
+  <input type="text" name="otp" placeholder="Enter OTP" required><br>
+  <button type="submit">Verify</button>
+</form>

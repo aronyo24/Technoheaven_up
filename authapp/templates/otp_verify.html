@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card p-3 shadow-sm">
+      <h3 class="mb-2">Verify your account</h3>
+      <p class="mb-3">We sent a 6-digit OTP to <strong>{{ email }}</strong>.</p>
+      {% if expires_seconds_remaining %}
+        <p class="text-muted small mb-3">Your current code expires in ~{{ expires_seconds_remaining|divisibleby:60|yesno:"{#}," }}{{ expires_seconds_remaining // 60 }} minute(s).</p>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">OTP Code</label>
+          <input class="form-control" type="text" name="otp" maxlength="6" required>
+        </div>
+        <button class="btn btn-success" type="submit">Verify</button>
+      </form>
+      <hr class="my-4">
+      <div class="d-flex align-items-center justify-content-between">
+        <p class="text-muted small mb-0">Didn't receive the email? You can request a new code after the cooldown.</p>
+        <form method="post" action="{% url 'resend_otp' %}">
+          {% csrf_token %}
+          <button class="btn btn-outline-secondary" type="submit" {% if resend_seconds_remaining and resend_seconds_remaining > 0 %}disabled{% endif %}>
+            {% if resend_seconds_remaining and resend_seconds_remaining > 0 %}
+              Resend in {{ resend_seconds_remaining // 60 }}m {{ resend_seconds_remaining % 60 }}s
+            {% else %}
+              Resend OTP
+            {% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
