@@ -15,3 +15,15 @@ def get_user_profile(user):
         return user.profile
     except ObjectDoesNotExist:  # UserProfile.DoesNotExist without circular import
         return None
+
+
+@register.filter(name="startswith")
+def startswith(text, prefix):
+    """Return True if 'text' starts with the given 'prefix'.
+
+    Useful in templates: {% if request.path|startswith:some_url %}
+    """
+    try:
+        return str(text).startswith(str(prefix))
+    except Exception:
+        return False

@@ -42,36 +42,6 @@
     </div>
 </section>
 
-<style>
-    .resource-detail {
-        padding: clamp(2rem, 5vw, 3rem);
-    }
 
-    .resource-detail__content {
-        display: grid;
-        gap: 2.5rem;
-        align-items: start;
-    }
-
-    @media (min-width: 992px) {
-        .resource-detail__content {
-            grid-template-columns: 1.3fr 1fr;
-        }
-    }
-
-    .resource-detail__media img {
-        width: 100%;
-        border-radius: var(--th-radius-md);
-        border: 1px solid rgba(76, 110, 245, 0.25);
-        box-shadow: var(--th-shadow-sm);
-        background: rgba(76, 110, 245, 0.12);
-    }
-
-    .resource-detail__overview p {
-        color: var(--th-text-muted);
-        line-height: 1.8;
-        font-size: 1.02rem;
-    }
-</style>
 
 {% endblock %}

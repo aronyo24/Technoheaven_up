@@ -25,7 +25,7 @@
         transition: color 0.2s ease;
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.25rem;
     }
 
     .nav-shell .navbar-toggler {
@@ -208,8 +208,10 @@
             margin-right: 0.35rem;
         }
 
+        /* Ensure shown dropdowns are visible on mobile (override hover rule) */
+        .nav-shell .dropdown.show > .dropdown-menu,
         .nav-shell .dropdown-menu.show {
-            display: block;
+            display: block !important;
         }
 
         .nav-shell .dropdown-toggle .fa-chevron-down {
@@ -229,55 +231,66 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="primaryNav">
-                {% with request.path as current_path %}
+                {% with current_path=request.path url_name=request.resolver_match.url_name %}
+                {% url 'home' as home_url %}
+                {% url 'about' as about_url %}
+                {% url 'blog_list' as blog_url %}
+                {% url 'services' as services_url %}
+                {% url 'projects' as projects_url %}
+                {% url 'team' as team_url %}
+                {% url 'publications' as publications_url %}
+                {% url 'gallery' as gallery_url %}
+                {% url 'session_list' as sessions_url %}
+                {% url 'clients' as clients_url %}
+                {% url 'contact' as contact_url %}
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="gap: 0.35rem;">
                     <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/' or current_path == '/home/' %}active{% endif %}" {% if current_path == '/' or current_path == '/home/' %}aria-current="page"{% endif %}
-                            href="{% url 'home' %}">Home</a>
+                        <a class="nav-link {% if url_name == 'home' or current_path == '/' %}active{% endif %}" {% if url_name == 'home' or current_path == '/' %}aria-current="page"{% endif %}
+                            href="{{ home_url }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/about/' %}active{% endif %}" {% if current_path == '/about/' %}aria-current="page"{% endif %}
-                            href="{% url 'about' %}">About</a>
+                        <a class="nav-link {% if url_name == 'about' %}active{% endif %}" {% if url_name == 'about' %}aria-current="page"{% endif %}
+                            href="{{ about_url }}">About</a>
                     </li>
                     
                     
                     <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/blog/' %}active{% endif %}" {% if current_path == '/blog/' %}aria-current="page"{% endif %}
-                            href="{% url 'blog_list' %}">Blog</a>
+                        <a class="nav-link {% if current_path|startswith:blog_url %}active{% endif %}" {% if current_path|startswith:blog_url %}aria-current="page"{% endif %}
+                            href="{{ blog_url }}">Blog</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/services/' %}active{% endif %}" {% if current_path == '/services/' %}aria-current="page"{% endif %}
-                            href="{% url 'services' %}">Services</a>
+                        <a class="nav-link {% if url_name == 'services' %}active{% endif %}" {% if url_name == 'services' %}aria-current="page"{% endif %}
+                            href="{{ services_url }}">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/projects/' %}active{% endif %}" {% if current_path == '/projects/' %}aria-current="page"{% endif %}
-                            href="{% url 'projects' %}">Projects</a>
+                        <a class="nav-link {% if url_name == 'projects' %}active{% endif %}" {% if url_name == 'projects' %}aria-current="page"{% endif %}
+                            href="{{ projects_url }}">Projects</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if current_path|slice:':6' == '/team/' %}active{% endif %}" {% if current_path|slice:':6' == '/team/' %}aria-current="page"{% endif %}
-                            href="{% url 'team' %}">Team</a>
+                        <a class="nav-link {% if current_path|startswith:team_url %}active{% endif %}" {% if current_path|startswith:team_url %}aria-current="page"{% endif %}
+                            href="{{ team_url }}">Team</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if current_path|slice:':7' == '/blogs/' or current_path == '/publications/' or current_path == '/gallery/' or current_path|slice:':10' == '/sessions/' or current_path|slice:':9' == '/clients/' %}active{% endif %}"
+                        <a class="nav-link dropdown-toggle {% if current_path|startswith:publications_url or current_path|startswith:gallery_url or current_path|startswith:sessions_url or current_path|startswith:clients_url %}active{% endif %}"
                             href="#" role="button" id="insightsDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-display="static" aria-expanded="false">
                             Insights
                             <span class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.8;"></span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="insightsDropdown">
-                            <li><a class="dropdown-item {% if current_path == '/publications/' %}active{% endif %}"
-                                    href="{% url 'publications' %}">Publications</a></li>
-                            <li><a class="dropdown-item {% if current_path == '/gallery/' %}active{% endif %}"
-                                    href="{% url 'gallery' %}">Gallery</a></li>
-                            <li><a class="dropdown-item {% if current_path|slice:':10' == '/sessions/' %}active{% endif %}"
-                                    href="{% url 'session_list' %}">Sessions</a></li>
-                            <li><a class="dropdown-item {% if current_path|slice:':9' == '/clients/' %}active{% endif %}"
-                                    href="{% url 'clients' %}">Clients</a></li>
+                            <li><a class="dropdown-item {% if current_path|startswith:publications_url %}active{% endif %}"
+                                    href="{{ publications_url }}">Publications</a></li>
+                            <li><a class="dropdown-item {% if current_path|startswith:gallery_url %}active{% endif %}"
+                                    href="{{ gallery_url }}">Gallery</a></li>
+                            <li><a class="dropdown-item {% if current_path|startswith:sessions_url %}active{% endif %}"
+                                    href="{{ sessions_url }}">Sessions</a></li>
+                            <li><a class="dropdown-item {% if current_path|startswith:clients_url %}active{% endif %}"
+                                    href="{{ clients_url }}">Clients</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/contact/' %}active{% endif %}" {% if current_path == '/contact/' %}aria-current="page"{% endif %}
-                            href="{% url 'contact' %}">Contact</a>
+                        <a class="nav-link {% if url_name == 'contact' %}active{% endif %}" {% if url_name == 'contact' %}aria-current="page"{% endif %}
+                            href="{{ contact_url }}">Contact</a>
                     </li>
                     {% if request.user.is_authenticated %}
                     {% with display_name=request.user.get_full_name|default:request.user.username %}
@@ -303,14 +316,14 @@
                     </li>
                     {% endwith %}
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/login/' %}active{% endif %}" {% if current_path == '/login/' %}aria-current="page"{% endif %}
-                            href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if current_path == '/register/' %}active{% endif %}" {% if current_path == '/register/' %}aria-current="page"{% endif %}
-                            href="{% url 'register' %}">Register</a>
-                    </li>
+                                        <li class="nav-item">
+                                                <a class="nav-link {% if url_name == 'login' %}active{% endif %}" {% if url_name == 'login' %}aria-current="page"{% endif %}
+                                                        href="{% url 'login' %}">Login</a>
+                                        </li>
+                                        <li class="nav-item">
+                                                <a class="nav-link {% if url_name == 'register' %}active{% endif %}" {% if url_name == 'register' %}aria-current="page"{% endif %}
+                                                        href="{% url 'register' %}">Register</a>
+                                        </li>
                     {% endif %}
                 </ul>
                 {% endwith %}
@@ -320,4 +333,32 @@
 </header>
 
 <div style="height: 88px;"></div>
+
+<script>
+// Auto-collapse navbar on link click (mobile) and ensure dropdowns are click-friendly
+document.addEventListener('DOMContentLoaded', function () {
+    var navCollapse = document.getElementById('primaryNav');
+    if (!navCollapse) return;
+
+    function getBsCollapse() {
+        if (typeof bootstrap === 'undefined') return null;
+        return new bootstrap.Collapse(navCollapse, { toggle: false });
+    }
+
+    navCollapse.addEventListener('click', function (e) {
+        var link = e.target.closest('a.nav-link, a.dropdown-item');
+        if (!link) return;
+        // Don't auto-close when toggling dropdown
+        if (link.classList.contains('dropdown-toggle')) return;
+
+        var bsCollapse = getBsCollapse();
+        if (!bsCollapse) return;
+
+        // Only hide if the collapse is currently shown (mobile state)
+        if (navCollapse.classList.contains('show')) {
+            bsCollapse.hide();
+        }
+    });
+});
+</script>
 

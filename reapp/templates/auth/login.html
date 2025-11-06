@@ -12,11 +12,28 @@
   </div>
 </section>
 
-<section class="section-pad auth-section">
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.password-toggle');
+    toggleButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        if (!input) {
+          return;
+        }
+        const isHidden = input.getAttribute('type') === 'password';
+        input.setAttribute('type', isHidden ? 'text' : 'password');
+        btn.innerHTML = isHidden ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+      });
+    });
+  });
+  </script>
+<section class="section-pad auth-section d-flex align-items-center" style="min-height: 75vh;">
   <div class="container">
-    <div class="auth-shell">
-      <div class="auth-grid auth-grid--login">
-        <div class="glass-card theme-form auth-card" data-aos="fade-right">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+        <div class="glass-card theme-form" data-aos="fade-right">
           <h3 class="mb-3">Secure sign-in</h3>
           <p class="theme-meta mb-4">Use your credentials to continue to the Technoheaven workspace.</p>
           {% if form_errors %}
@@ -57,164 +74,9 @@
           </form>
           <p class="text-center theme-meta mt-4 mb-0">New to Technoheaven? <a href="{% url 'register' %}" class="theme-link">Create an account</a>.</p>
         </div>
-
-        
       </div>
     </div>
   </div>
 </section>
-
-<style>
-  .auth-section {
-    padding-top: clamp(2.2rem, 5vw, 3.5rem);
-    padding-bottom: clamp(2.6rem, 5vw, 3.8rem);
-    margin-top: clamp(-1rem, -2.8vw, -0.5rem);
-  }
-
-  .auth-shell {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding-inline: clamp(0.35rem, 3vw, 1.5rem);
-  }
-
-  .auth-grid--login {
-    display: grid;
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: flex-start;
-    justify-items: center;
-  }
-
-  @media (min-width: 992px) {
-    .auth-grid--login {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      justify-items: stretch;
-    }
-  }
-
-  .auth-grid--login .auth-card {
-    padding: clamp(2rem, 4.5vw, 3rem);
-    position: relative;
-    z-index: 1;
-    width: min(100%, 440px);
-  }
-
-  .auth-media {
-    display: grid;
-    gap: clamp(1.6rem, 3vw, 2.4rem);
-    justify-items: center;
-  }
-
-  .auth-media > * {
-    width: min(100%, 480px);
-  }
-
-  .auth-visual {
-    position: relative;
-    border-radius: var(--th-radius-lg);
-    overflow: hidden;
-    border: 1px solid rgba(76, 110, 245, 0.28);
-    box-shadow: var(--th-shadow-md);
-    background: linear-gradient(135deg, rgba(76, 110, 245, 0.22), rgba(0, 212, 168, 0.18));
-  }
-
-  .auth-visual img {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-  }
-
-  .auth-visual__badge {
-    position: absolute;
-    right: 1.4rem;
-    bottom: 1.4rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    background: rgba(8, 17, 35, 0.85);
-    border: 1px solid rgba(0, 212, 168, 0.35);
-    border-radius: var(--th-radius-sm);
-    box-shadow: var(--th-shadow-sm);
-    color: var(--th-text-primary);
-  }
-
-  .auth-visual__badge i {
-    font-size: 1.3rem;
-    color: #12f1be;
-  }
-
-  .auth-visual__badge strong {
-    display: block;
-    font-size: 1.2rem;
-    line-height: 1;
-  }
-
-  .auth-visual__badge span {
-    display: block;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: rgba(231, 238, 252, 0.7);
-  }
-
-  .auth-side-card {
-    position: relative;
-    padding: clamp(1.6rem, 4vw, 2.2rem);
-    border: 1px solid rgba(76, 110, 245, 0.28);
-    backdrop-filter: blur(16px);
-    box-shadow: var(--th-shadow-sm);
-  }
-
-  .auth-side-card h5 {
-    color: var(--th-text-primary);
-    font-weight: 600;
-  }
-
-  .auth-side-mini {
-    display: grid;
-    grid-template-columns: minmax(0, 96px) 1fr;
-    gap: 1rem;
-    align-items: center;
-    background: rgba(8, 17, 35, 0.5);
-    border: 1px solid rgba(76, 110, 245, 0.22);
-    border-radius: var(--th-radius-md);
-    padding: 0.85rem;
-  }
-
-  .auth-side-mini img {
-    width: 100%;
-    border-radius: var(--th-radius-sm);
-    border: 1px solid rgba(76, 110, 245, 0.3);
-  }
-
-  @media (max-width: 991px) {
-    .auth-grid--login {
-      grid-template-columns: 1fr;
-    }
-
-    .auth-media {
-      order: -1;
-    }
-  }
-</style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const toggleButtons = document.querySelectorAll('.password-toggle');
-    toggleButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const input = document.getElementById(targetId);
-        if (!input) {
-          return;
-        }
-        const isHidden = input.getAttribute('type') === 'password';
-        input.setAttribute('type', isHidden ? 'text' : 'password');
-        btn.innerHTML = isHidden ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
-      });
-    });
-  });
-</script>
 
 {% endblock %}

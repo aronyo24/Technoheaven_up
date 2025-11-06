@@ -1537,7 +1537,7 @@ height: 100%;
 
 .recent-publications {
   padding: 64px 0;
-  background: radial-gradient(circle at top, rgba(17, 239, 8, 0.18), rgba(21, 34, 57, 0.85));
+  background: radial-gradient(rgb(23, 39, 10), rgb(22, 3, 53));
 }
 
 .recent-publications__grid {

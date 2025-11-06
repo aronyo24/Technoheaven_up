@@ -47,44 +47,6 @@
     </div>
 </section>
 
-<style>
-    .resource-card {
-        display: flex;
-        flex-direction: column;
-        gap: 1.2rem;
-        text-decoration: none;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
 
-    .resource-card:hover {
-        transform: translateY(-6px);
-        box-shadow: var(--th-shadow-xl);
-    }
-
-    .resource-card__media img,
-    .resource-card__placeholder {
-        width: 100%;
-        height: 180px;
-        object-fit: cover;
-        border-radius: var(--th-radius-md);
-        background: rgba(76, 110, 245, 0.12);
-        border: 1px solid rgba(76, 110, 245, 0.22);
-        display: block;
-    }
-
-    .resource-card__placeholder {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(226, 232, 240, 0.6);
-        font-size: 1.8rem;
-    }
-
-    .resource-card__body h3 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 0.35rem;
-    }
-</style>
 
 {% endblock %}
