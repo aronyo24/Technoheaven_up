@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -56,7 +57,11 @@ def _issue_otp_and_send_email(request, user):
             'domain': current_site.domain,
         },
     )
-    email_msg = EmailMessage('Activate Your Account / OTP', message, to=[user.email])
+    subject = 'Activate your Technoheaven account'
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'Technoheaven <info@technoheaven.org>')
+    email_msg = EmailMessage(subject, message, from_email=from_email, to=[user.email], headers={
+        'Reply-To': getattr(settings, 'EMAIL_HOST_USER', 'info@technoheaven.org'),
+    })
     email_msg.content_subtype = 'html'
     email_msg.send()
 
@@ -80,7 +85,11 @@ def _issue_password_reset_otp(request, user):
         },
     )
 
-    email_msg = EmailMessage('Password Reset OTP', message, to=[user.email])
+    subject = 'Technoheaven password reset code'
+    from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'Technoheaven <info@technoheaven.org>')
+    email_msg = EmailMessage(subject, message, from_email=from_email, to=[user.email], headers={
+        'Reply-To': getattr(settings, 'EMAIL_HOST_USER', 'info@technoheaven.org'),
+    })
     email_msg.content_subtype = 'html'
     email_msg.send()
 

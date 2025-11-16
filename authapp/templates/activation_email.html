@@ -1,33 +1,44 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}Activate your Technoheaven account{% endblock %}
-
-{% block content %}
-
-<section class="page-hero">
-  <div class="container">
-    <span class="eyebrow"><i class="fa-solid fa-right-to-bracket"></i> Activate your account</span>
-    <h1>Welcome to Technoheaven</h1>
-    <p>Finish setting up your account to access your workspace and collaborate with your team.</p>
-  </div>
-</section>
-
-<section class="section-pad d-flex align-items-center" style="min-height: 50vh;">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-10 col-lg-7">
-        <div class="glass-card p-4" data-aos="fade-up">
-          <h3 class="mb-2">Hello {{ user.username }},</h3>
-          <p class="theme-meta mb-3">Thanks for registering. Use the button below to activate your account.</p>
-          <p class="mb-4"><a href="{{ activate_link }}" class="theme-btn justify-content-center">Activate your account</a></p>
-          <div class="divider my-4"></div>
-          <p class="mb-2">Alternatively, enter this one‑time passcode (OTP) on the verification page:</p>
-          <div class="display-6 fw-semibold letter-spread">{{ otp_code }}</div>
-          <p class="theme-meta mt-2 mb-0">This code expires in 15 minutes. If you didn’t request this, you can safely ignore this message.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-{% endblock %}
+<!DOCTYPE html>
+<html>
+  <body style="margin:0;padding:0;background-color:#f7f7fb;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:560px;background:#ffffff;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.06);font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#1f2440;">
+            <tr>
+              <td style="padding:28px 28px 12px 28px;">
+                <h2 style="margin:0 0 8px 0;font-size:22px;">Activate your Technoheaven account</h2>
+                <p style="margin:0;color:#6b7280;font-size:14px;">Hello {{ user.username }}, thanks for registering.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 28px;">
+                <p style="margin:0 0 16px 0;">Use the button below to activate your account:</p>
+                <p style="margin:0;">
+                  <a href="{{ activate_link }}" style="display:inline-block;background:#1f6feb;color:#ffffff;text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600;">Activate your account</a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 28px;">
+                <p style="margin:0 0 8px 0;">Or enter this one‑time passcode (OTP):</p>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:4px 28px 12px 28px;">
+                <div style="display:inline-block;font-size:28px;letter-spacing:4px;font-weight:700;color:#1f2937;padding:10px 16px;border:1px dashed #d1d5db;border-radius:10px;background:#f9fafb;">{{ otp_code }}</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 28px 24px 28px;">
+                <p style="margin:0;color:#6b7280;font-size:14px;">This code expires in 15 minutes. If you didn’t request this, you can safely ignore this email.</p>
+              </td>
+            </tr>
+          </table>
+          <div style="height:24px"></div>
+          <div style="text-align:center;color:#9aa0aa;font-size:12px;font-family:Arial,Helvetica,sans-serif;">© {{ now|default:2025 }} Technoheaven</div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -312,7 +312,7 @@
 
 .blog-editor {
   padding: 2rem 0 4rem 0;
-  background: linear-gradient(135deg, #f8faff 0%, #eef3ff 100%);
+  background: linear-gradient(135deg, #545861 0%, #eef3ff 100%);
 }
 
 .blog-editor__container {
@@ -528,19 +528,80 @@
   margin-top: 2rem;
 }
 
-@media (max-width: 768px) {
-  .blog-editor__header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.blog__banner {
+  background: linear-gradient(135deg, rgba(76, 110, 245, 0.15), rgba(0, 212, 168, 0.15));
+  border: 1px solid rgba(76, 110, 245, 0.25);
+  border-radius: var(--th-radius-lg);
+  padding: 2rem;
+  text-align: center;
+  box-shadow: var(--th-shadow-md);
+}
 
-  .blog-editor__form {
-    padding: 1.5rem;
-  }
+.blog__banner h2 {
+  font-size: 1.8rem;
+  color: var(--th-text-primary);
+  margin-bottom: 0.5rem;
+}
 
-  .blog-editor__actions {
-    width: 100%;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
+.blog__banner p {
+  color: var(--th-text-muted);
+  margin-bottom: 1rem;
+}
+
+.blog__banner .btn {
+  margin-top: 1rem;
+}
+
+.blog__card {
+  background: var(--th-surface-soft);
+  border-radius: var(--th-radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--th-shadow-sm);
+  border: 1px solid var(--th-brand-border);
+}
+
+.blog__card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--th-text-primary);
+  margin-bottom: 1rem;
+}
+
+.blog__search input {
+  border-radius: var(--th-radius-sm);
+  border: 1px solid var(--th-brand-border);
+  padding: 0.75rem;
+}
+
+.blog__search .btn {
+  background: var(--th-accent-500);
+  color: #fff;
+  border-radius: var(--th-radius-sm);
+}
+
+.card {
+  border-radius: var(--th-radius-md);
+  box-shadow: var(--th-shadow-md);
+  border: 1px solid var(--th-brand-border);
+}
+
+.card .card-body {
+  padding: 1.5rem;
+}
+
+.card .btn {
+  background: var(--th-secondary-500);
+  color: #fff;
+  border-radius: var(--th-radius-sm);
+  box-shadow: var(--th-shadow-sm);
+}
+
+.card .btn:hover {
+  background: var(--th-accent-500);
+  box-shadow: var(--th-shadow-md);
+}
+
+.dropdown-menu {
+  border-radius: var(--th-radius-sm);
+  box-shadow: var(--th-shadow-sm);
 }

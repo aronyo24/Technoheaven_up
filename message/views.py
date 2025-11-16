@@ -35,7 +35,7 @@ def blog_list(request):
             'count': published_count
         })
 
-    # paginate (6 posts per page)
+    # paginate (6 posts per page = 2 per row x 3 rows)
     paginator = Paginator(qs, 6)
     page = request.GET.get('page', 1)
     try:

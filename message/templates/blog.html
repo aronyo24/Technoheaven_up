@@ -1,533 +1,105 @@
-
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Home - TECHNOHEAVEN{% endblock %}
+
 {% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
 
-<section id="gallery_main">
-    <div class="about_main clearfix">
-        <div class="container d-flex justify-content-center align-items-center">
-            <div class="text-center" id="resourcesContainer">
-                <h2>Blog</h2>
-            </div>
-        </div>
+    <!-- Page Header -->
+    <div class="text-center mb-5">
+      <h1 class="fw-bold">Latest Blog Posts</h1>
+      <p class="text-muted">Stay updated with the newest articles and stories</p>
     </div>
-</section>
 
-<section class="blog">
-    <div class="container">
-        <div class="blog__banner">
-            <div class="blog__banner-content">
-                {% if request.user.is_authenticated %}
-                    <h2>Have an insight to share?</h2>
-                    <p>Draft your story and submit it for review. We will publish it once approved.</p>
-                {% else %}
-                    <h2>Share your expertise with the community</h2>
-                    <p>Create an account or sign in to submit your article for review.</p>
-                {% endif %}
+    <!-- Search and Category Filter -->
+    <form method="get" class="row g-3 mb-4 justify-content-center">
+      <div class="col-md-4 col-sm-6">
+        <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Search posts...">
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <select name="category" class="form-select">
+          <option value="">All Categories</option>
+          {% for cat in categories %}
+          <option value="{{ cat.value }}" {% if selected_category == cat.value %}selected{% endif %}>{{ cat.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+      </div>
+    </form>
+
+    <!-- Blog Grid -->
+    <div class="row gx-4 gy-4">
+      {% for blog in page_obj %}
+      <div class="col-12 col-md-6 col-lg-6 d-flex">
+        <article class="card shadow-sm border-0 rounded-3 flex-fill h-100">
+          {% if blog.image %}
+          <img src="{{ blog.image.url }}" class="card-img-top rounded-top" alt="{{ blog.title }}">
+          {% else %}
+          <img src="https://via.placeholder.com/600x350?text=No+Image" class="card-img-top rounded-top" alt="Placeholder">
+          {% endif %}
+
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="badge bg-secondary text-capitalize">{{ blog.category|default:"General"|cut:"_" }}</span>
+              <small class="text-muted"><i class="fa fa-calendar"></i> {{ blog.date }}</small>
             </div>
-            {% comment %} <div class="blog__banner-actions">
-                {% if request.user.is_authenticated %}
-                    <a href="{% url 'blog_submit' %}" class="blog__banner-cta">Write a Blog</a>
-                {% else %}
-                    <a href="{% url 'register' %}" class="blog__banner-cta">Create an account</a>
-                    <a href="{% url 'login' %}" class="blog__banner-cta blog__banner-cta--ghost">Sign in</a>
-                {% endif %}
-            </div> {% endcomment %}
-        </div>
 
-        <div class="row g-4">
-            <aside class="col-lg-4">
-                <div class="blog__card">
-                    <h3 class="blog__card-title">Search</h3>
-                    <form method="get" action="{% url 'blog_list' %}">
-                        <div class="blog__search">
-                            <input type="text" name="search" value="{{ search }}" placeholder="Search..." class="form-control">
-                            <button type="submit" class="blog__search-btn"><i class="fa fa-search"></i></button>
-                        </div>
-                    </form>
-                </div>
+            <h5 class="card-title">
+              <a href="{% url 'blog_detail' blog.slug %}" class="text-decoration-none text-dark fw-bold">
+                {{ blog.title|truncatechars:70 }}
+              </a>
+            </h5>
 
-                <div class="blog__card">
-                    <h3 class="blog__card-title">Categories</h3>
-                    <ul class="blog__category-list">
-                        <li class="blog__category-item {% if not selected_category %}is-active{% endif %}">
-                            <a href="{% url 'blog_list' %}">
-                                <span><i class="fa fa-list"></i> All</span>
-                                <span class="badge">{{ all_blogs.count }}</span>
-                            </a>
-                        </li>
-                        {% for cat in categories %}
-                            <li class="blog__category-item {% if selected_category == cat.value %}is-active{% endif %}">
-                                <a href="{% url 'blog_list' %}?category={{ cat.value }}">
-                                    <span><i class="fa fa-circle blog__category-dot blog__category-dot{{ cat.palette_index }}"></i> {{ cat.label }}</span>
-                                    <span class="badge">{{ cat.count }}</span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            <p class="card-text text-muted small mb-3">{{ blog.content|safe|truncatewords:30 }}</p>
 
-                <div class="blog__card">
-                    <h3 class="blog__card-title">Popular Posts</h3>
-                    {% with popular_blogs=all_blogs|dictsortreversed:"likes" %}
-                        {% for pop_blog in popular_blogs|slice:":3" %}
-                            <article class="blog__popular">
-                                {% if pop_blog.image %}
-                                    <img src="{{ pop_blog.image.url }}" alt="{{ pop_blog.title }} thumbnail">
-                                {% else %}
-                                    <img src="https://www.bootdey.com/image/64x64/20B2AA/ffffff" alt="" />
-                                {% endif %}
-                                <div>
-                                    <a href="{% url 'blog_detail' pop_blog.slug %}" class="blog__popular-title">{{ pop_blog.title|truncatechars:60 }}</a>
-                                    <p class="blog__popular-meta">{{ pop_blog.date }}</p>
-                                </div>
-                                <form method="post" class="blog__popular-like">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="slug" value="{{ pop_blog.slug }}">
-                                    <button type="submit" name="like" value="1"><i class="fa fa-heart"></i>{{ pop_blog.likes }}</button>
-                                </form>
-                            </article>
-                        {% endfor %}
-                    {% endwith %}
-                </div>
-            </aside>
-
-            <main class="col-lg-8">
-                {% for blog in page_obj %}
-                    <article class="blog__post">
-                        {% if blog.image %}
-                            <a href="{% url 'blog_detail' blog.slug %}"><img src="{{ blog.image.url }}" alt="{{ blog.title }} cover"></a>
-                        {% endif %}
-                        <div class="blog__post-body">
-                            <a href="{% url 'blog_detail' blog.slug %}" class="blog__post-title">{{ blog.title }}</a>
-                            <p class="blog__post-meta">By <span>{{ blog.author }}</span> · {{ blog.date }}</p>
-                            <p class="blog__post-excerpt">{{ blog.content|safe|truncatewords:40 }}</p>
-                            <div class="blog__post-footer">
-                                <a href="{% url 'blog_detail' blog.slug %}" class="blog__post-link">Continue Reading</a>
-                                <div class="blog__post-stats">
-                                    <span><i class="fa fa-heart"></i>{{ blog.likes }}</span>
-                                    <span><i class="fa fa-comment"></i>{{ blog.comments.count }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                {% empty %}
-                    <p class="blog__empty">No published blog posts yet. Be the first to <a href="{% url 'register' %}">share an article</a>.</p>
-                {% endfor %}
-
-                {% if is_paginated %}
-                    <nav aria-label="Page navigation" class="blog__pagination">
-                        <ul>
-                            {% if page_obj.has_previous %}
-                                <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                            {% else %}
-                                <li class="disabled"><span>&laquo;</span></li>
-                            {% endif %}
-
-                            {% for num in paginator.page_range %}
-                                {% if num == page_obj.number %}
-                                    <li class="active"><span>{{ num }}</span></li>
-                                {% else %}
-                                    <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ num }}">{{ num }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-
-                            {% if page_obj.has_next %}
-                                <li><a href="?{% if querystring_base %}{{ querystring_base }}&{% endif %}page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                            {% else %}
-                                <li class="disabled"><span>&raquo;</span></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                {% endif %}
-            </main>
-        </div>
+            <div class="mt-auto d-flex justify-content-between align-items-center border-top pt-2 small text-muted">
+              <span><i class="fa fa-user"></i> {{ blog.author }}</span>
+              <div>
+                <i class="fa fa-heart text-danger"></i> {{ blog.likes }}
+                <span class="ms-3"><i class="fa fa-comment"></i> {{ blog.comments.count }}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+      {% empty %}
+      <p class="text-center text-muted">No posts found.</p>
+      {% endfor %}
     </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        {% endif %}
+
+  {% for num in paginator.page_range %}
+  {% if page_obj.number == num %}
+  <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+  {% else %}
+  <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ num }}</a></li>
+  {% endif %}
+  {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+
+  </div>
 </section>
-
-<style>
-    .blog {
-        background: #f6f8fb;
-        padding: 3rem 0;
-    }
-
-    .blog__banner {
-        margin-bottom: 2.5rem;
-        background: linear-gradient(135deg, rgba(13, 110, 253, 0.12), rgba(32, 201, 151, 0.12));
-        border: 1px solid rgba(13, 110, 253, 0.18);
-        border-radius: 16px;
-        padding: 1.75rem 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-    }
-
-    .blog__banner h2 {
-        margin: 0 0 0.35rem;
-        font-size: 1.6rem;
-        color: #134ad6;
-    }
-
-    .blog__banner p {
-        margin: 0;
-        color: #4c5462;
-    }
-
-    .blog__banner-actions {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-
-    .blog__banner-cta {
-        background: #0d6efd;
-        color: #fff !important;
-        font-weight: 600;
-        padding: 0.65rem 1.6rem;
-        border-radius: 999px;
-        text-decoration: none;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .blog__banner-cta:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 20px rgba(13, 110, 253, 0.2);
-    }
-
-    .blog__banner-cta--ghost {
-        background: rgba(13, 110, 253, 0.08);
-        color: #0d6efd !important;
-        border: 1px solid rgba(13, 110, 253, 0.2);
-    }
-
-    .blog__banner-cta--ghost:hover {
-        background: rgba(13, 110, 253, 0.15);
-        box-shadow: none;
-    }
-
-    .blog__card {
-        background: #fff;
-        border-radius: 14px;
-        padding: 1.5rem;
-        border: 1px solid #e4e8ee;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
-        margin-bottom: 1.25rem;
-    }
-
-    .blog__card-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: #142544;
-    }
-
-    .blog__search {
-        display: flex;
-        gap: 0.65rem;
-    }
-
-    .blog__search input {
-        border-radius: 10px;
-        border: 1px solid #d9dde5;
-        padding: 0.65rem 0.85rem;
-    }
-
-    .blog__search-btn {
-        border: none;
-        background: #0d6efd;
-        color: #fff;
-        border-radius: 10px;
-        width: 46px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s ease;
-    }
-
-    .blog__search-btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .blog__category-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: grid;
-        gap: 0.6rem;
-    }
-
-    .blog__category-item a {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        text-decoration: none;
-        color: #4c5462;
-        padding: 0.6rem 0.75rem;
-        border-radius: 10px;
-        border: 1px solid transparent;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-
-    .blog__category-item a:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(13, 110, 253, 0.08);
-        border-color: rgba(13, 110, 253, 0.2);
-    }
-
-    .blog__category-item.is-active a {
-        background: rgba(13, 110, 253, 0.08);
-        border-color: rgba(13, 110, 253, 0.24);
-        color: #0d6efd;
-        font-weight: 600;
-    }
-
-    .blog__category-dot0 { color: #007bff; }
-    .blog__category-dot1 { color: #6610f2; }
-    .blog__category-dot2 { color: #20c997; }
-    .blog__category-dot3 { color: #e83e8c; }
-    .blog__category-dot4 { color: #fd7e14; }
-    .blog__category-dot5 { color: #17a2b8; }
-    .blog__category-dot6 { color: #6f42c1; }
-    .blog__category-dot7 { color: #20a8d8; }
-    .blog__category-dot8 { color: #343a40; }
-
-    .blog__category-dot0::before,
-    .blog__category-dot1::before,
-    .blog__category-dot2::before,
-    .blog__category-dot3::before,
-    .blog__category-dot4::before,
-    .blog__category-dot5::before,
-    .blog__category-dot6::before,
-    .blog__category-dot7::before,
-    .blog__category-dot8::before {
-        margin-right: 0.5rem;
-    }
-
-    .blog__category-item span {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-    }
-
-    .blog__popular {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 0.85rem;
-        align-items: center;
-        padding: 0.6rem 0;
-        border-bottom: 1px solid #eef1f6;
-    }
-
-    .blog__popular:last-child {
-        border-bottom: none;
-    }
-
-    .blog__popular img {
-        width: 64px;
-        height: 64px;
-        object-fit: cover;
-        border-radius: 12px;
-        border: 1px solid #e4e8ee;
-    }
-
-    .blog__popular-title {
-        font-weight: 600;
-        color: #1a3d7c;
-        text-decoration: none;
-    }
-
-    .blog__popular-title:hover {
-        color: #0d6efd;
-    }
-
-    .blog__popular-meta {
-        margin: 0;
-        font-size: 0.82rem;
-        color: #70798c;
-    }
-
-    .blog__popular-like button {
-        border: none;
-        background: linear-gradient(135deg, #ff6b6b, #e83e8c);
-        color: #fff;
-        padding: 0.35rem 0.7rem;
-        border-radius: 999px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        cursor: pointer;
-    }
-
-    .blog__post {
-        background: #fff;
-        border-radius: 18px;
-        overflow: hidden;
-        border: 1px solid #e4e8ee;
-        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-        margin-bottom: 1.75rem;
-        display: grid;
-    }
-
-    .blog__post img {
-        width: 100%;
-        max-height: 300px;
-        object-fit: cover;
-    }
-
-    .blog__post-body {
-        padding: 1.5rem 1.75rem 1.6rem;
-        display: grid;
-        gap: 0.85rem;
-    }
-
-    .blog__post-title {
-        font-size: 1.45rem;
-        color: #143c99;
-        text-decoration: none;
-        font-weight: 700;
-    }
-
-    .blog__post-title:hover {
-        color: #0d6efd;
-    }
-
-    .blog__post-meta {
-        margin: 0;
-        color: #6c7484;
-        font-size: 0.9rem;
-    }
-
-    .blog__post-meta span {
-        color: #0d6efd;
-        font-weight: 600;
-    }
-
-    .blog__post-excerpt {
-        margin: 0;
-        color: #4c5462;
-        line-height: 1.7;
-        font-size: 0.98rem;
-    }
-
-    .blog__post-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .blog__post-link {
-        padding: 0.6rem 1.1rem;
-        border-radius: 10px;
-        border: 1px solid rgba(13, 110, 253, 0.16);
-        text-decoration: none;
-        color: #0d6efd;
-        font-weight: 600;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
-
-    .blog__post-link:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 24px rgba(13, 110, 253, 0.15);
-        background: rgba(13, 110, 253, 0.08);
-    }
-
-    .blog__post-stats span {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        color: #4c5462;
-    }
-
-    .blog__post-stats i.fa-heart {
-        color: #dc3545;
-    }
-
-    .blog__empty {
-        text-align: center;
-        color: #6c7484;
-    }
-
-    .blog__empty a {
-        color: #0d6efd;
-        font-weight: 600;
-    }
-
-    .blog__pagination {
-        margin-top: 1.5rem;
-    }
-
-    .blog__pagination ul {
-        list-style: none;
-        display: flex;
-        gap: 0.6rem;
-        padding: 0;
-        justify-content: center;
-    }
-
-    .blog__pagination a,
-    .blog__pagination span {
-        display: inline-block;
-        padding: 0.55rem 0.85rem;
-        border-radius: 10px;
-        border: 1px solid #d9dde5;
-        text-decoration: none;
-        color: #4c5462;
-        font-weight: 500;
-    }
-
-    .blog__pagination li.active span {
-        background: #0d6efd;
-        border-color: #0d6efd;
-        color: #fff;
-        font-weight: 700;
-    }
-
-    .blog__pagination li.disabled span {
-        color: #b9c0cc;
-    }
-
-    @media (max-width: 991px) {
-        .blog__banner {
-            text-align: center;
-            justify-content: center;
-        }
-
-        .blog__banner-actions {
-            justify-content: center;
-        }
-    }
-
-    @media (max-width: 767px) {
-        .blog {
-            padding: 2.5rem 0;
-        }
-
-        .blog__post-body {
-            padding: 1.35rem;
-        }
-
-        .blog__post-footer {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .blog__post-link {
-            width: 100%;
-            text-align: center;
-        }
-
-        .blog__post-stats {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-        }
-    }
-</style>
-    
 {% endblock %}
